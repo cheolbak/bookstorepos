@@ -1,0 +1,15 @@
+---
+tag: test
+query: >
+  SELECT 1 + 1 FROM DUAL
+---
+tag: pos_entry.insert_password
+query: >
+  INSERT INTO pos_entry (pos_entry_password)
+  VALUES (?)
+---
+tag: pos_entry.update_password
+query: >
+  UPDATE pos_entry
+  SET pos_entry_password = ?
+  WHERE pos_entry_id = ?
