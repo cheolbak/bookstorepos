@@ -27,7 +27,7 @@ public class POSEntryDAO {
     public boolean updatePassword(int id, String password) {
         try (DBPlug dbPlug = new DBPlug()) {
             PreparedStatement pstmt = dbPlug.getPreparedStatementInQuery("pos_entry.update_password");
-            pstmt.setString(1, password);
+            pstmt.setString(1, BCrypt.hashpw(password, BCrypt.gensalt()));
             pstmt.setInt(2, id);
             return pstmt.executeUpdate() == 1;
         }
