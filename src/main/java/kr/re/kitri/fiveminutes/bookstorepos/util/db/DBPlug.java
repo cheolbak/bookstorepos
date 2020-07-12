@@ -102,7 +102,7 @@ public class DBPlug implements AutoCloseable {
     }
 
     public QueryData getQueryData(String tag) {
-        return Objects.requireNonNullElse(queryDataList.get(tag), new QueryData("ERROR", ""));
+        return queryDataList.getOrDefault(tag, new QueryData("ERROR", ""));
     }
 
     public PreparedStatement getPreparedStatementInQuery(String tag) throws SQLException {
