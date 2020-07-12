@@ -11,5 +11,12 @@ query: >
 tag: pos_entry.update_password
 query: >
   UPDATE pos_entry
-  SET pos_entry_password = ?
+  SET pos_entry_password = ?,
+      pos_entry_modify_date = SYSDATE
+  WHERE pos_entry_id = ?
+---
+tag: pos_entry.select
+query: >
+  SELECT pos_entry_id, pos_entry_password, pos_entry_modify_date
+  FROM pos_entry
   WHERE pos_entry_id = ?

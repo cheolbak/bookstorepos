@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -29,6 +30,16 @@ public class DBPlug implements AutoCloseable {
         private String url;
         private String user;
         private String password;
+    }
+
+    @FunctionalInterface
+    public interface InjectPreparedStatement {
+        void inject(PreparedStatement pstmt) throws SQLException;
+    }
+
+    @FunctionalInterface
+    public interface MappingResultSet<T> {
+        T mapping(ResultSet resultSet) throws SQLException;
     }
 
     private static DataSource initDataSource() {
@@ -97,6 +108,19 @@ public class DBPlug implements AutoCloseable {
 
     public PreparedStatement getPreparedStatementInQuery(String tag) throws SQLException {
         return getPreparedStatement(getQueryData(tag).getQuery());
+    }
+
+    public int executeUpdateFromQuery(String tag, InjectPreparedStatement inject) throws SQLException {
+        PreparedStatement pstmt = getPreparedStatementInQuery(tag);
+        inject.inject(pstmt);
+        return pstmt.executeUpdate();
+    }
+
+    public <T> T getMappedObjectFromExecuteQuery(String tag, InjectPreparedStatement inject,
+                                                 MappingResultSet<T> mapping) throws SQLException {
+        PreparedStatement pstmt = getPreparedStatementInQuery(tag);
+        inject.inject(pstmt);
+        return mapping.mapping(pstmt.executeQuery());
     }
 
     @Override
