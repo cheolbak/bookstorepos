@@ -5,7 +5,6 @@ import kr.re.kitri.fiveminutes.bookstorepos.util.db.DBPlug;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 

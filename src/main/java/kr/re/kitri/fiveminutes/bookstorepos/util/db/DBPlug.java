@@ -1,5 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.util.db;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -20,7 +21,7 @@ import java.util.*;
 public class DBPlug implements AutoCloseable {
 
     private static final DataSource dataSource = initDataSource();
-    private static final List<QueryData> queryDataList = getQueryDataListInResources();
+    private static final Map<String, QueryData> queryDataList = getQueryDataListInResources();
 
     @Data
     @NoArgsConstructor
@@ -66,8 +67,8 @@ public class DBPlug implements AutoCloseable {
         return Optional.empty();
     }
 
-    private static List<QueryData> getQueryDataListInResources() {
-        List<QueryData> queryDataList = new ArrayList<>();
+    private static Map<String, QueryData> getQueryDataListInResources() {
+        ImmutableMap.Builder<String, QueryData> mapBuilder = new ImmutableMap.Builder<>();
         try (
                 InputStream in = DBPlug.class.getClassLoader().getResourceAsStream("query.yml");
                 InputStreamReader inReader = new InputStreamReader(Objects.requireNonNull(in))
@@ -77,14 +78,14 @@ public class DBPlug implements AutoCloseable {
                 if (o instanceof QueryData) {
                     QueryData query = (QueryData) o;
                     log.trace("{}", query);
-                    queryDataList.add(query);
+                    mapBuilder.put(query.getTag(), query);
                 }
             }
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-        return queryDataList;
+        return mapBuilder.build();
     }
 
     private final Connection connection;
@@ -101,13 +102,15 @@ public class DBPlug implements AutoCloseable {
     }
 
     public QueryData getQueryData(String tag) {
-        return queryDataList.stream()
-                .filter(query -> query.getTag().equals(tag))
-                .findFirst().orElse(new QueryData("Error", ""));
+        return Objects.requireNonNullElse(queryDataList.get(tag), new QueryData("ERROR", ""));
     }
 
     public PreparedStatement getPreparedStatementInQuery(String tag) throws SQLException {
-        return getPreparedStatement(getQueryData(tag).getQuery());
+        QueryData queryData = getQueryData(tag);
+        if (queryData.getQuery().isEmpty()) {
+            throw new RuntimeException("QueryData를 불러올 수 없습니다. tag: " + tag);
+        }
+        return getPreparedStatement(queryData.getQuery());
     }
 
     public int executeUpdateFromQuery(String tag, InjectPreparedStatement inject) throws SQLException {
