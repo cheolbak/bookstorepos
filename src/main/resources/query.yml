@@ -38,7 +38,7 @@ query: >
 ---
 tag: book.update_stock
 query: >
-  UPDATE pos_book_stock
+  UPDATE pos_book
   SET pos_book_stock = pos_book_stock - 1
   WHERE pos_book_isbn = ?
 ---
@@ -90,7 +90,49 @@ query: >
 ---
 tag: customer.update_point
 query: >
-  UPDATE pos_customer_point
+  UPDATE pos_customer
   SET pos_customer_point = pos_customer_point + ?
   WHERE pos_book_isbn = ?
+---
+tag: customer.update_tel
+query: >
+  UPDATE pos_customer
+  SET pos_customer_tel = ?
+  WHERE pos_customer_id = ?
+---
+tag: customer.update_total
+query: >
+  UPDATE pos_customer
+  SET pos_customer_total_price = pos_customer_total_price + ?
+  WHERE pos_customer_id = ?
+---
+tag: customer.delete
+query: >
+  DELETE FROM pos_customer
+  WHERE pos_customer_id = ?
+---
+tag: sell.insert
+query: >
+  INSERT INTO pos_sell(pos_sell_id,
+                       pos_book_isbn,
+                       pos_customer_id)
+  VALUES(?, ?, ?)
+---
+tag: sell.update_count
+query: >
+  UPDATE pos_sell
+  SET pos_sell_count = pos_sell_count + 1
+  WHERE pos_sell_id = ?
+---
+tag: sell.update_price
+query: >
+  UPDATE pos_sell
+  SET pos_sell_price = pos_sell_price + ?
+  WHERE pos_sell_id = ?
+---
+tag: sell.update_usedPoint
+query: >
+  UPDATE pos_sell
+  SET pos_sell_used_point = pos_sell_used_point + ?
+  WHERE pos_sell_id = ?
 ---

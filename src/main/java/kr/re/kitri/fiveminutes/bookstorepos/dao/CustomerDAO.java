@@ -122,7 +122,7 @@ public class CustomerDAO {
 
     public int updatePoint(int id, int point) {
         try (DBPlug dbPlug = new DBPlug()) {
-            return dbPlug.executeUpdateFromQuery("pos_entry.update_password",
+            return dbPlug.executeUpdateFromQuery("customer.update_point",
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
@@ -139,5 +139,59 @@ public class CustomerDAO {
         return 0;
     }
 
+    public int updateTel(int id, String tel){
+        try(DBPlug dbPlug = new DBPlug()){
+            return dbPlug.executeUpdateFromQuery("customer.update_tel",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setString(1, tel);
+                            pstmt.setInt(2, id);
+                        }
+                    });
+        }
+        catch (SQLException e){
+            if(log.isDebugEnabled()){
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
 
+    public int updateTotal(int id, int total){
+        try(DBPlug dbPlug = new DBPlug()){
+            return dbPlug.executeUpdateFromQuery("customer.update_total",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setInt(1, total);
+                            pstmt.setInt(2, id);
+                        }
+                    });
+        }
+        catch (SQLException e){
+            if(log.isDebugEnabled()){
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    public int deleteCustomer(int id){
+        try(DBPlug dbPlug = new DBPlug()){
+            return dbPlug.executeUpdateFromQuery("customer.delete",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setInt(1, id);
+                        }
+                    });
+        }
+        catch (SQLException e){
+            if(log.isDebugEnabled()){
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
 }
