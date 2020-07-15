@@ -15,7 +15,7 @@ public class BookStorePOSApplication {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new BookSearchDialogFrame();
+            JFrame frame = new NewBookListDialogFrame();
             frame.setVisible(true);
         });
     }

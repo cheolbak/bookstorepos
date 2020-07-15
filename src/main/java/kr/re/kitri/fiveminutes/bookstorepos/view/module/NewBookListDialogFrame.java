@@ -3,6 +3,7 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,6 +14,8 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition.*;
 
 public class NewBookListDialogFrame extends JFrame {
 
@@ -35,13 +38,19 @@ public class NewBookListDialogFrame extends JFrame {
 
     private JPanel createConditionMatchPanel() {
         MarginTitledBorderPanel panel = new MarginTitledBorderPanel("조건 선택");
-        panel.addSubPanel(new JTextField(), new GridBagConstraints());
+        panel.addSubPanel(createBookCategoryComboBox(), new GridBagConstraints());
         return panel;
     }
 
-    private JComboBox<String> createBookCategoryComboBox() {
-        return null;
+    private JComboBox<Category> createBookCategoryComboBox() {
+        JComboBox<Category> combo = new JComboBox<>();
+        for (Category category : Category.values()) {
+            combo.addItem(category);
+        }
+        return combo;
     }
+
+
 
     private JPanel createResultPanel() {
         List<BookInfo> bookInfoList = new ArrayList<>();
