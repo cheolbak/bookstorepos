@@ -36,6 +36,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
 
         initPanel();
 
+        setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(900, 680);
         setLocationRelativeTo(null);

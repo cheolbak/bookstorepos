@@ -14,7 +14,7 @@ public class BookStorePOSApplication {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            AuthDialogFrame frame = new AuthDialogFrame();
+            BookSearchDialogFrame frame = new BookSearchDialogFrame();
             frame.setVisible(true);
         });
     }

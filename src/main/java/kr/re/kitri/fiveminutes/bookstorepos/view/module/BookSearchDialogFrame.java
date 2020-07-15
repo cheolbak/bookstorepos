@@ -1,9 +1,17 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 
 public class BookSearchDialogFrame extends JFrame {
 
@@ -12,8 +20,9 @@ public class BookSearchDialogFrame extends JFrame {
 
         initPanel();
 
+        setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(700, 770);
+        setSize(600, 770);
         setLocationRelativeTo(null);
         setLocation(getX(), getY());
     }
@@ -66,13 +75,43 @@ public class BookSearchDialogFrame extends JFrame {
         marginPanel.setLayout(new BorderLayout());
         marginPanel.setBorder(margin);
 
-        JPanel panel = new JPanel();
-        marginPanel.add(panel, BorderLayout.CENTER);
+        JPanel panel = new JPanel(new GridBagLayout());
 
-        Border border = BorderFactory.createLineBorder(Color.BLACK);
-        panel.setBorder(border);
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        marginPanel.add(scrollPane, BorderLayout.CENTER);
+
+        try {
+            BufferedImage image = ImageIO.read(Paths.get(System.getProperty("user.home"), "Desktop", "9791190665216.jpg").toFile());
+
+            BookInfo book = BookInfo.builder()
+                    .isbn("9791190665216")
+                    .title("객체지향 사고 프로세스")
+                    .author("맷 와일스펠드")
+                    .publisher("제이펍")
+                    .releaseDate(LocalDate.of(2020, 7, 3))
+                    .bookCoverImage(image)
+                    .build();
+
+            for (int i = 0; i < 20; i++) {
+                panel.add(new DialogBookInfoPanel(book), createBookInfoPanelConstraints(i));
+            }
+        }
+        catch (IOException ignore) { }
 
         return marginPanel;
+    }
+
+    private GridBagConstraints createBookInfoPanelConstraints(int sequence) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 0.1;
+        c.gridwidth = 1;
+        c.gridy = sequence;
+        c.insets = new Insets(10, 10, 10, 10);
+        return c;
     }
 
 }

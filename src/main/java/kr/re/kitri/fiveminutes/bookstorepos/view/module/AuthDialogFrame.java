@@ -11,6 +11,7 @@ public class AuthDialogFrame extends JFrame {
 
         initPanel();
 
+        setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(380, 114);
         setLocationRelativeTo(null);
