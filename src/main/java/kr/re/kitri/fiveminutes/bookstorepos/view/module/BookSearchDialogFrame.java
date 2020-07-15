@@ -39,17 +39,32 @@ public class BookSearchDialogFrame extends JFrame {
         marginPanel.setBorder(margin);
 
         JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
         marginPanel.add(panel, BorderLayout.CENTER);
 
         Border colorBorder = BorderFactory.createLineBorder(Color.BLACK);
         TitledBorder border = BorderFactory.createTitledBorder(colorBorder, "검색");
         panel.setBorder(border);
 
-        panel.add(createSearchScopeComboBox());
-        panel.add(createSearchInputTextField());
-        panel.add(createSearchSubmitButton());
+        panel.add(createSearchScopeComboBox(), createStandardConstraints(10, 5));
+        panel.add(createSearchInputTextField(), createTextFieldConstrants());
+        panel.add(createSearchSubmitButton(), createStandardConstraints(5, 10));
 
         return marginPanel;
+    }
+
+    private GridBagConstraints createStandardConstraints(int left, int right) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(10, left, 10, right);
+        c.anchor = GridBagConstraints.WEST;
+        return c;
+    }
+
+    private GridBagConstraints createTextFieldConstrants() {
+        GridBagConstraints c = createStandardConstraints(0, 0);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 0.1;
+        return c;
     }
 
     private JComboBox<String> createSearchScopeComboBox() {
@@ -62,7 +77,7 @@ public class BookSearchDialogFrame extends JFrame {
     }
 
     private JTextField createSearchInputTextField() {
-        return new JTextField(26);
+        return new JTextField();
     }
 
     private JButton createSearchSubmitButton() {
@@ -104,13 +119,11 @@ public class BookSearchDialogFrame extends JFrame {
     }
 
     private GridBagConstraints createBookInfoPanelConstraints(int sequence) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.WEST;
+        GridBagConstraints c = createStandardConstraints(10, 10);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.1;
         c.gridwidth = 1;
         c.gridy = sequence;
-        c.insets = new Insets(10, 10, 10, 10);
         return c;
     }
 
