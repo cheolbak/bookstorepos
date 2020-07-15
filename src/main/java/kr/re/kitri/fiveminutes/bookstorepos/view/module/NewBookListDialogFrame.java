@@ -1,7 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 
 import javax.imageio.ImageIO;
@@ -14,9 +13,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookSearchDialogFrame extends JFrame {
+public class NewBookListDialogFrame extends JFrame {
 
-    public BookSearchDialogFrame() throws HeadlessException {
+    public NewBookListDialogFrame() throws HeadlessException {
         setTitle("책 검색");
 
         initPanel();
@@ -29,49 +28,7 @@ public class BookSearchDialogFrame extends JFrame {
     }
 
     private void initPanel() {
-        add(createSearchInputPanel(), BorderLayout.NORTH);
         add(createSearchResultPanel(), BorderLayout.CENTER);
-    }
-
-    private JPanel createSearchInputPanel() {
-        MarginTitledBorderPanel panel = new MarginTitledBorderPanel("검색");
-
-        panel.addSubPanel(createSearchScopeComboBox(), createStandardConstraints(10, 5));
-        panel.addSubPanel(createSearchInputTextField(), createTextFieldConstraints());
-        panel.addSubPanel(createSearchSubmitButton(), createStandardConstraints(5, 10));
-
-        return panel;
-    }
-
-    private GridBagConstraints createStandardConstraints(int left, int right) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(10, left, 10, right);
-        c.anchor = GridBagConstraints.WEST;
-        return c;
-    }
-
-    private GridBagConstraints createTextFieldConstraints() {
-        GridBagConstraints c = createStandardConstraints(0, 0);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.1;
-        return c;
-    }
-
-    private JComboBox<String> createSearchScopeComboBox() {
-        JComboBox<String> box = new JComboBox<>();
-        box.addItem("제목");
-        box.addItem("저자/번역자");
-        box.addItem("출판사");
-        box.addItem("ISBN");
-        return box;
-    }
-
-    private JTextField createSearchInputTextField() {
-        return new JTextField();
-    }
-
-    private JButton createSearchSubmitButton() {
-        return new JButton("검색");
     }
 
     private JPanel createSearchResultPanel() {
@@ -118,7 +75,4 @@ public class BookSearchDialogFrame extends JFrame {
 
         return new DialogBookInfoListPanel(bookInfoList);
     }
-
-
-
 }
