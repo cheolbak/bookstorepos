@@ -14,6 +14,7 @@ public class BookInfo {
     private String title;
     private String author;
     private String publisher;
+    private int price;
     private LocalDate releaseDate;
     private BufferedImage bookCoverImage;
 

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.List;
 
 public class DialogBookInfoPanel extends JPanel {
 
@@ -18,26 +19,26 @@ public class DialogBookInfoPanel extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         setLayout(new GridBagLayout());
 
-        add(createBookImageLabel(), createStandardConstraints());
+        add(createBookImageLabel(), createStandardConstraints(20));
         add(createBookInfoPanel(), createInfoLabelConstraints());
         add(createStockAddButton(), createStockAddButtonConstraints());
     }
 
-    private GridBagConstraints createStandardConstraints() {
+    private GridBagConstraints createStandardConstraints(int right) {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(10, 10, 10, 10);
+        c.insets = new Insets(10, 10, 10, right);
         return c;
     }
 
     private GridBagConstraints createInfoLabelConstraints() {
-        GridBagConstraints c = createStandardConstraints();
+        GridBagConstraints c = createStandardConstraints(10);
         c.weightx = 0.1;
         return c;
     }
 
     private GridBagConstraints createStockAddButtonConstraints() {
-        GridBagConstraints c = createStandardConstraints();
+        GridBagConstraints c = createStandardConstraints(10);
         c.ipady = 10;
         return c;
     }
@@ -54,11 +55,12 @@ public class DialogBookInfoPanel extends JPanel {
             private final String value;
         }
 
-        java.util.List<Entry> columnInfoMap = Arrays.asList(
+        List<Entry> columnInfoMap = Arrays.asList(
                 new Entry("제목", bookInfo.getTitle()),
                 new Entry("저자", bookInfo.getAuthor()),
                 new Entry("출판사", bookInfo.getPublisher()),
                 new Entry("출시일", bookInfo.getReleaseDate().toString()),
+                new Entry("정가", bookInfo.getPrice() + "원"),
                 new Entry("ISBN", bookInfo.getIsbn()));
 
         JPanel panel = new JPanel(new SpringLayout());
@@ -70,7 +72,7 @@ public class DialogBookInfoPanel extends JPanel {
             panel.add(infoLabel);
         }
 
-        SpringUtilities.makeCompactGrid(panel, columnInfoMap.size(), 2, 6, 6, 6, 16);
+        SpringUtilities.makeCompactGrid(panel, columnInfoMap.size(), 2, 6, 14, 8, 14);
 
         return panel;
     }

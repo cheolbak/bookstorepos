@@ -1,6 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 
 import javax.imageio.ImageIO;
@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookSearchDialogFrame extends JFrame {
 
@@ -47,7 +49,7 @@ public class BookSearchDialogFrame extends JFrame {
         panel.setBorder(border);
 
         panel.add(createSearchScopeComboBox(), createStandardConstraints(10, 5));
-        panel.add(createSearchInputTextField(), createTextFieldConstrants());
+        panel.add(createSearchInputTextField(), createTextFieldConstraints());
         panel.add(createSearchSubmitButton(), createStandardConstraints(5, 10));
 
         return marginPanel;
@@ -60,7 +62,7 @@ public class BookSearchDialogFrame extends JFrame {
         return c;
     }
 
-    private GridBagConstraints createTextFieldConstrants() {
+    private GridBagConstraints createTextFieldConstraints() {
         GridBagConstraints c = createStandardConstraints(0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.1;
@@ -85,46 +87,50 @@ public class BookSearchDialogFrame extends JFrame {
     }
 
     private JPanel createSearchResultPanel() {
-        JPanel marginPanel = new JPanel();
-        Border margin = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-        marginPanel.setLayout(new BorderLayout());
-        marginPanel.setBorder(margin);
-
-        JPanel panel = new JPanel(new GridBagLayout());
-
-        JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        marginPanel.add(scrollPane, BorderLayout.CENTER);
+        List<BookInfo> bookInfoList = new ArrayList<>();
 
         try {
             BufferedImage image = ImageIO.read(Paths.get(System.getProperty("user.home"), "Desktop", "9791190665216.jpg").toFile());
 
-            BookInfo book = BookInfo.builder()
+            BookInfo book1 = BookInfo.builder()
                     .isbn("9791190665216")
                     .title("객체지향 사고 프로세스")
                     .author("맷 와일스펠드")
                     .publisher("제이펍")
+                    .price(24000)
                     .releaseDate(LocalDate.of(2020, 7, 3))
                     .bookCoverImage(image)
                     .build();
 
-            for (int i = 0; i < 20; i++) {
-                panel.add(new DialogBookInfoPanel(book), createBookInfoPanelConstraints(i));
-            }
+            BookInfo book2 = BookInfo.builder()
+                    .isbn("9791190665216")
+                    .title("객체지향 사고 프로세스")
+                    .author("맷 와일스펠드")
+                    .publisher("제이펍")
+                    .price(24000)
+                    .releaseDate(LocalDate.of(2020, 7, 3))
+                    .bookCoverImage(image)
+                    .build();
+
+            BookInfo book3 = BookInfo.builder()
+                    .isbn("9791190665216")
+                    .title("객체지향 사고 프로세스")
+                    .author("맷 와일스펠드")
+                    .publisher("제이펍")
+                    .price(24000)
+                    .releaseDate(LocalDate.of(2020, 7, 3))
+                    .bookCoverImage(image)
+                    .build();
+
+            bookInfoList.add(book1);
+            bookInfoList.add(book2);
+            bookInfoList.add(book3);
         }
         catch (IOException ignore) { }
 
-        return marginPanel;
+        return new DialogBookInfoListPanel(bookInfoList);
     }
 
-    private GridBagConstraints createBookInfoPanelConstraints(int sequence) {
-        GridBagConstraints c = createStandardConstraints(10, 10);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.1;
-        c.gridwidth = 1;
-        c.gridy = sequence;
-        return c;
-    }
+
 
 }
