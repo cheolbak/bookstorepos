@@ -18,12 +18,12 @@ public class DialogBookInfoPanel extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         setLayout(new GridBagLayout());
 
-        add(createBookImageLabel(), createImageLabelConstraints());
+        add(createBookImageLabel(), createStandardConstraints());
         add(createBookInfoPanel(), createInfoLabelConstraints());
         add(createStockAddButton(), createStockAddButtonConstraints());
     }
 
-    private GridBagConstraints createImageLabelConstraints() {
+    private GridBagConstraints createStandardConstraints() {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.WEST;
         c.insets = new Insets(10, 10, 10, 10);
@@ -31,17 +31,13 @@ public class DialogBookInfoPanel extends JPanel {
     }
 
     private GridBagConstraints createInfoLabelConstraints() {
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(10, 10, 10, 10);
+        GridBagConstraints c = createStandardConstraints();
         c.weightx = 0.1;
         return c;
     }
 
     private GridBagConstraints createStockAddButtonConstraints() {
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(10, 10, 10, 10);
+        GridBagConstraints c = createStandardConstraints();
         c.ipady = 10;
         return c;
     }
