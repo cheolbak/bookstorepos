@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 
 import javax.imageio.ImageIO;
@@ -16,7 +17,7 @@ import java.util.List;
 public class NewBookListDialogFrame extends JFrame {
 
     public NewBookListDialogFrame() throws HeadlessException {
-        setTitle("책 검색");
+        setTitle("새로운 책");
 
         initPanel();
 
@@ -28,10 +29,21 @@ public class NewBookListDialogFrame extends JFrame {
     }
 
     private void initPanel() {
-        add(createSearchResultPanel(), BorderLayout.CENTER);
+        add(createConditionMatchPanel(), BorderLayout.NORTH);
+        add(createResultPanel(), BorderLayout.CENTER);
     }
 
-    private JPanel createSearchResultPanel() {
+    private JPanel createConditionMatchPanel() {
+        MarginTitledBorderPanel panel = new MarginTitledBorderPanel("조건 선택");
+        panel.addSubPanel(new JTextField(), new GridBagConstraints());
+        return panel;
+    }
+
+    private JComboBox<String> createBookCategoryComboBox() {
+        return null;
+    }
+
+    private JPanel createResultPanel() {
         List<BookInfo> bookInfoList = new ArrayList<>();
 
         try {

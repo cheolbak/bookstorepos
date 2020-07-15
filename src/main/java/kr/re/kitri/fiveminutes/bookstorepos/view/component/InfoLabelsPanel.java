@@ -6,11 +6,11 @@ import lombok.Data;
 import javax.swing.*;
 import java.util.List;
 
-public class InfoLabelsPanel extends JPanel {
+public class InfoLabelsPanel<T extends JComponent> extends JPanel {
 
-    private final List<Entry> entryList;
+    private final List<Entry<T>> entryList;
 
-    public InfoLabelsPanel(List<Entry> entryList, int horizontalWrap, int verticalWrap) {
+    public InfoLabelsPanel(List<Entry<T>> entryList, int horizontalWrap, int verticalWrap) {
         super(new SpringLayout());
         this.entryList = entryList;
         addEntryListInPanel();
@@ -19,18 +19,17 @@ public class InfoLabelsPanel extends JPanel {
     }
 
     private void addEntryListInPanel() {
-        for (Entry entry : entryList) {
+        for (Entry<?> entry : entryList) {
             JLabel columnLabel = new JLabel("<html><b>" + entry.getColumn() + "</b></html>", JLabel.TRAILING);
-            JLabel infoLabel = new JLabel(entry.getValue());
             add(columnLabel);
-            add(infoLabel);
+            add(entry.getValue());
         }
     }
 
     @Data
-    public static class Entry {
+    public static class Entry<T extends JComponent> {
         private final String column;
-        private final String value;
+        private final T value;
     }
 
 }
