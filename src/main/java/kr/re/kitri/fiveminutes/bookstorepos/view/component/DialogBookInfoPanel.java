@@ -1,14 +1,13 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import kr.re.kitri.fiveminutes.bookstorepos.util.view.SpringUtilities;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
+
+import static kr.re.kitri.fiveminutes.bookstorepos.view.component.InfoLabelsPanel.Entry;
 
 public class DialogBookInfoPanel extends JPanel {
 
@@ -48,14 +47,7 @@ public class DialogBookInfoPanel extends JPanel {
     }
 
     private JPanel createBookInfoPanel() {
-        @Getter
-        @RequiredArgsConstructor
-        class Entry {
-            private final String key;
-            private final String value;
-        }
-
-        List<Entry> columnInfoMap = Arrays.asList(
+        List<Entry> entryList = Arrays.asList(
                 new Entry("제목", bookInfo.getTitle()),
                 new Entry("저자", bookInfo.getAuthor()),
                 new Entry("출판사", bookInfo.getPublisher()),
@@ -63,18 +55,7 @@ public class DialogBookInfoPanel extends JPanel {
                 new Entry("정가", bookInfo.getPrice() + "원"),
                 new Entry("ISBN", bookInfo.getIsbn()));
 
-        JPanel panel = new JPanel(new SpringLayout());
-
-        for (Entry entry : columnInfoMap) {
-            JLabel columnLabel = new JLabel("<html><b>" + entry.getKey() + "</b></html>", JLabel.TRAILING);
-            JLabel infoLabel = new JLabel(entry.getValue());
-            panel.add(columnLabel);
-            panel.add(infoLabel);
-        }
-
-        SpringUtilities.makeCompactGrid(panel, columnInfoMap.size(), 2, 6, 14, 8, 14);
-
-        return panel;
+        return new InfoLabelsPanel(entryList, 8, 16);
     }
 
     private JButton createStockAddButton() {
