@@ -39,7 +39,7 @@ query: >
 tag: book.update_stock
 query: >
   UPDATE pos_book
-  SET pos_book_stock = pos_book_stock - 1
+  SET pos_book_stock = pos_book_stock - ?
   WHERE pos_book_isbn = ?
 ---
 tag: book.select_author

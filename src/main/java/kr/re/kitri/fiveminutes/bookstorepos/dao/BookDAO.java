@@ -34,13 +34,14 @@ public class BookDAO {
         return 0;
     }
 
-    public int updateStock(String isbn){
+    public int updateStock(int stock, String isbn){
         try(DBPlug dbPlug = new DBPlug()){
             return dbPlug.executeUpdateFromQuery("book.update_stock",
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setString(1, isbn);
+                            pstmt.setInt(1, stock);
+                            pstmt.setString(2, isbn);
                         }
                     });
         }
