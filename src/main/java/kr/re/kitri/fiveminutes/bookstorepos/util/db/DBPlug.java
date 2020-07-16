@@ -1,6 +1,5 @@
 package kr.re.kitri.fiveminutes.bookstorepos.util.db;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -84,7 +83,7 @@ public class DBPlug implements AutoCloseable {
     }
 
     private static Map<String, QueryData> getQueryDataListInResources() {
-        ImmutableMap.Builder<String, QueryData> mapBuilder = new ImmutableMap.Builder<>();
+        HashMap<String, QueryData> map = new HashMap<>();
         try (
                 InputStream in = DBPlug.class.getClassLoader().getResourceAsStream("query.yml");
                 InputStreamReader inReader = new InputStreamReader(Objects.requireNonNull(in))
@@ -94,14 +93,14 @@ public class DBPlug implements AutoCloseable {
                 if (o instanceof QueryData) {
                     QueryData query = (QueryData) o;
                     log.trace("{}", query);
-                    mapBuilder.put(query.getTag(), query);
+                    map.put(query.getTag(), query);
                 }
             }
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-        return mapBuilder.build();
+        return Map.copyOf(map);
     }
 
     private final Connection connection;
