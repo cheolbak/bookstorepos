@@ -30,13 +30,14 @@ public class SellDAO {
         return 0;
     }
 
-    public int updateCount(int id){
+    public int updateCount(int id, int count){
         try(DBPlug dbPlug = new DBPlug()){
             return dbPlug.executeUpdateFromQuery("sell.update_count",
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, id);
+                            pstmt.setInt(1, count);
+                            pstmt.setInt(2, id);
                         }
                     });
         }
