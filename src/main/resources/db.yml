@@ -1,4 +1,4 @@
-driver: oracle.jdbc.driver.OracleDriver
+driver: oracle.jdbc.pool.OracleDataSource
 url: "jdbc:oracle:thin:@127.0.0.1:1521:xe"
 user: "c##pos_user"
 password: "secret"

@@ -1,9 +1,12 @@
 package kr.re.kitri.fiveminutes.bookstorepos.util.db;
 
 import com.google.common.collect.ImmutableMap;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.dbcp2.BasicDataSource;
+import oracle.ucp.jdbc.PoolDataSource;
+import oracle.ucp.jdbc.PoolDataSourceFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -43,16 +46,29 @@ public class DBPlug implements AutoCloseable {
         T mapping(ResultSet resultSet) throws SQLException;
     }
 
+    // Oracle ucp PoolDataSource를 이용한 Connection Pool
+    // https://www.kdata.or.kr/info/info_04_view.html?type=techreport&page=143&dbnum=128408
     private static DataSource initDataSource() {
-        DBConnectInfo info = getDBConnectInfoInResources().orElseThrow();
-        log.debug("{}", info);
-        BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(info.getDriver());
-        dataSource.setUrl(info.getUrl());
-        dataSource.setUsername(info.getUser());
-        dataSource.setPassword(info.getPassword());
-        log.debug("BasicDataSource Created");
-        return dataSource;
+        try {
+            DBConnectInfo info = getDBConnectInfoInResources().orElseThrow();
+            log.debug("{}", info);
+            PoolDataSource poolDataSource = PoolDataSourceFactory.getPoolDataSource();
+            poolDataSource.setConnectionFactoryClassName(info.getDriver());
+            poolDataSource.setURL(info.getUrl());
+            poolDataSource.setUser(info.getUser());
+            poolDataSource.setPassword(info.getPassword());
+            poolDataSource.setInitialPoolSize(2);
+            poolDataSource.setMinPoolSize(2);
+            poolDataSource.setMaxPoolSize(6);
+            log.debug("PoolDataSource Created");
+            return poolDataSource;
+        }
+        catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     private static Optional<DBConnectInfo> getDBConnectInfoInResources() {
