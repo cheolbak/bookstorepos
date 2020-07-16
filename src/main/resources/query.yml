@@ -136,3 +136,15 @@ query: >
   SET pos_sell_used_point = pos_sell_used_point + ?
   WHERE pos_sell_id = ?
 ---
+tag: stock.insert
+query: >
+  INSERT INTO pos_stock(pos_stock_id,
+  pos_book_isbn)
+  VALUES (?, ?)
+---
+tag: stock.update_amount
+query: >
+  UPDATE pos_stock
+  SET pos_stock_amount = pos_stock_amount + ?
+  WHERE pos_stock_id = ?
+---
