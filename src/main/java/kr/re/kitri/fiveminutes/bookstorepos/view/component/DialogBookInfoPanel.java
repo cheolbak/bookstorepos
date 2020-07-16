@@ -1,6 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,11 +12,11 @@ import static kr.re.kitri.fiveminutes.bookstorepos.view.component.InfoLabelsPane
 
 public class DialogBookInfoPanel extends JPanel {
 
-    private final BookInfo bookInfo;
+    private final DialogBookInfo dialogBookInfo;
     private final ActionListener addButtonActionListener;
 
-    public DialogBookInfoPanel(BookInfo bookInfo, ActionListener addButtonActionListener) {
-        this.bookInfo = bookInfo;
+    public DialogBookInfoPanel(DialogBookInfo dialogBookInfo, ActionListener addButtonActionListener) {
+        this.dialogBookInfo = dialogBookInfo;
         this.addButtonActionListener = addButtonActionListener;
 
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -47,19 +47,19 @@ public class DialogBookInfoPanel extends JPanel {
     }
 
     private JLabel createBookImageLabel() {
-        JLabel label = new JLabel(new ImageIcon(bookInfo.getBookCoverImage()));
+        JLabel label = new JLabel(new ImageIcon(dialogBookInfo.getBookCoverImage()));
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         return label;
     }
 
     private JPanel createBookInfoPanel() {
         List<Entry<JComponent>> entryList = Arrays.asList(
-                new Entry<>("제목", new JLabel(bookInfo.getTitle())),
-                new Entry<>("저자", new JLabel(bookInfo.getAuthor())),
-                new Entry<>("출판사", new JLabel(bookInfo.getPublisher())),
-                new Entry<>("출시일", new JLabel(bookInfo.getReleaseDate().toString())),
-                new Entry<>("정가", new JLabel(bookInfo.getPrice() + "원")),
-                new Entry<>("ISBN", new JLabel(bookInfo.getIsbn())));
+                new Entry<>("제목", new JLabel(dialogBookInfo.getTitle())),
+                new Entry<>("저자", new JLabel(dialogBookInfo.getAuthor())),
+                new Entry<>("출판사", new JLabel(dialogBookInfo.getPublisher())),
+                new Entry<>("출시일", new JLabel(dialogBookInfo.getReleaseDate().toString())),
+                new Entry<>("정가", new JLabel(dialogBookInfo.getPrice() + "원")),
+                new Entry<>("ISBN", new JLabel(dialogBookInfo.getIsbn())));
 
         return new InfoLabelsPanel<>(entryList, 8, 16);
     }

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class BookInfo {
+public class DialogBookInfo {
 
     private String isbn;
     private String title;

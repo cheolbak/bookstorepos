@@ -3,7 +3,7 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -77,12 +77,12 @@ public class BookSearchDialogFrame extends JFrame {
     }
 
     private JPanel createSearchResultPanel() {
-        List<BookInfo> bookInfoList = new ArrayList<>();
+        List<DialogBookInfo> dialogBookInfoList = new ArrayList<>();
 
         try {
             BufferedImage image = ImageIO.read(Paths.get(System.getProperty("user.home"), "Desktop", "9791190665216.jpg").toFile());
 
-            BookInfo book1 = BookInfo.builder()
+            DialogBookInfo book1 = DialogBookInfo.builder()
                     .isbn("9791190665216")
                     .title("객체지향 사고 프로세스")
                     .author("맷 와일스펠드")
@@ -92,7 +92,7 @@ public class BookSearchDialogFrame extends JFrame {
                     .bookCoverImage(image)
                     .build();
 
-            BookInfo book2 = BookInfo.builder()
+            DialogBookInfo book2 = DialogBookInfo.builder()
                     .isbn("9791190665216")
                     .title("객체지향 사고 프로세스")
                     .author("맷 와일스펠드")
@@ -102,7 +102,7 @@ public class BookSearchDialogFrame extends JFrame {
                     .bookCoverImage(image)
                     .build();
 
-            BookInfo book3 = BookInfo.builder()
+            DialogBookInfo book3 = DialogBookInfo.builder()
                     .isbn("9791190665216")
                     .title("객체지향 사고 프로세스")
                     .author("맷 와일스펠드")
@@ -112,13 +112,13 @@ public class BookSearchDialogFrame extends JFrame {
                     .bookCoverImage(image)
                     .build();
 
-            bookInfoList.add(book1);
-            bookInfoList.add(book2);
-            bookInfoList.add(book3);
+            dialogBookInfoList.add(book1);
+            dialogBookInfoList.add(book2);
+            dialogBookInfoList.add(book3);
         }
         catch (IOException ignore) { }
 
-        return new DialogBookInfoListPanel(bookInfoList);
+        return new DialogBookInfoListPanel(dialogBookInfoList);
     }
 
     private PaginationPanel createPaginationPanel() {
