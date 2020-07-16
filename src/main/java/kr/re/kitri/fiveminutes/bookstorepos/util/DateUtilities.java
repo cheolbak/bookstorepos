@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAdjusters;
 
-public class WeekOfMonthCalc {
+public class DateUtilities {
 
     public static int currentWeekOfMonth(LocalDate date, DayOfWeek baseDayOfWeek) {
         LocalDate firstDayOfMonth = date.with(TemporalAdjusters.firstDayOfMonth());

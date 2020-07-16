@@ -1,6 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
-import kr.re.kitri.fiveminutes.bookstorepos.util.WeekOfMonthCalc;
+import kr.re.kitri.fiveminutes.bookstorepos.util.DateUtilities;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
@@ -97,7 +97,7 @@ public class NewBookListDialogFrame extends JFrame {
 
         yearComboBox.setSelectedItem(Year.now().format(YEAR_FORMATTER));
         monthComboBox.setSelectedItem(YearMonth.now().getMonth().getDisplayName(TextStyle.FULL, Locale.KOREA));
-        weekOfMonthComboBox.setSelectedIndex(WeekOfMonthCalc.currentWeekOfMonth(LocalDate.now(), DayOfWeek.SUNDAY) - 1);
+        weekOfMonthComboBox.setSelectedIndex(DateUtilities.currentWeekOfMonth(LocalDate.now(), DayOfWeek.SUNDAY) - 1);
 
         return panel;
     }
@@ -117,7 +117,7 @@ public class NewBookListDialogFrame extends JFrame {
 
     private void changeItemAtWeekOfMonthComboBox(YearMonth yearMonth, JComboBox<String> weekOfMonthCombo) {
         int endWeek = yearMonth.equals(YearMonth.now())
-                ? WeekOfMonthCalc.currentWeekOfMonth(LocalDate.now(), DayOfWeek.SUNDAY)
+                ? DateUtilities.currentWeekOfMonth(LocalDate.now(), DayOfWeek.SUNDAY)
                 : yearMonth.atEndOfMonth().get(ChronoField.ALIGNED_WEEK_OF_MONTH);
 
         weekOfMonthCombo.removeAllItems();
