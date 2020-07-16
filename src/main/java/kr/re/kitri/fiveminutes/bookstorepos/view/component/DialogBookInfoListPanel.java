@@ -11,9 +11,11 @@ public class DialogBookInfoListPanel extends JPanel {
     private final List<BookInfo> bookInfoList;
 
     public DialogBookInfoListPanel(List<BookInfo> bookInfoList) {
-        super(new BorderLayout());
         this.bookInfoList = bookInfoList;
+
+        setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         add(createScrollPane(), BorderLayout.CENTER);
     }
 
@@ -29,7 +31,7 @@ public class DialogBookInfoListPanel extends JPanel {
 
         int count = 0;
         for (BookInfo bookInfo : bookInfoList) {
-            panel.add(new DialogBookInfoPanel(bookInfo), createBookInfoPanelConstraints(count));
+            panel.add(new DialogBookInfoPanel(bookInfo, (e) -> {}), createBookInfoPanelConstraints(count));
             count += 1;
         }
 

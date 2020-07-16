@@ -2,6 +2,7 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 
 import javax.imageio.ImageIO;
@@ -31,6 +32,7 @@ public class BookSearchDialogFrame extends JFrame {
     private void initPanel() {
         add(createSearchInputPanel(), BorderLayout.NORTH);
         add(createSearchResultPanel(), BorderLayout.CENTER);
+        add(createPaginationPanel(), BorderLayout.SOUTH);
     }
 
     private JPanel createSearchInputPanel() {
@@ -119,6 +121,8 @@ public class BookSearchDialogFrame extends JFrame {
         return new DialogBookInfoListPanel(bookInfoList);
     }
 
-
+    private PaginationPanel createPaginationPanel() {
+        return new PaginationPanel(10, e -> {});
+    }
 
 }

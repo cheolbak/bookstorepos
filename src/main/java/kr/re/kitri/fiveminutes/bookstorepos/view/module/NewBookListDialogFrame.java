@@ -3,6 +3,7 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 import kr.re.kitri.fiveminutes.bookstorepos.util.WeekOfMonthCalc;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 
 import javax.imageio.ImageIO;
@@ -28,7 +29,7 @@ public class NewBookListDialogFrame extends JFrame {
     private static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy년");
 
     public NewBookListDialogFrame() throws HeadlessException {
-        setTitle("새로운 책");
+        setTitle("교보문고 화제의 신상품");
 
         initPanel();
 
@@ -42,11 +43,12 @@ public class NewBookListDialogFrame extends JFrame {
     private void initPanel() {
         add(createConditionMatchPanel(), BorderLayout.NORTH);
         add(createResultPanel(), BorderLayout.CENTER);
+        add(new PaginationPanel(10, e -> {}), BorderLayout.SOUTH);
     }
 
     private JPanel createConditionMatchPanel() {
         MarginTitledBorderPanel panel = new MarginTitledBorderPanel("조건 선택");
-        panel.addSubPanel(createBookCategoryComboBox(), new GridBagConstraints());
+        panel.addSubPanel(createBookCategoryComboBox(), createStandardConstraints(10, 20));
         return setConditionPanelAddComboBoxAndEvent(panel);
     }
 
@@ -88,10 +90,10 @@ public class NewBookListDialogFrame extends JFrame {
             }
         });
 
-        panel.addSubPanel(yearComboBox, new GridBagConstraints());
-        panel.addSubPanel(monthComboBox, new GridBagConstraints());
-        panel.addSubPanel(weekOfMonthComboBox, new GridBagConstraints());
-
+        panel.addSubPanel(yearComboBox, createStandardConstraints(5, 0));
+        panel.addSubPanel(monthComboBox, createStandardConstraints(0, 0));
+        panel.addSubPanel(weekOfMonthComboBox, createStandardConstraints(0, 5));
+        panel.addSubPanel(createConditionAcceptButton(), createStandardConstraints(5, 5));
 
         yearComboBox.setSelectedItem(Year.now().format(YEAR_FORMATTER));
         monthComboBox.setSelectedItem(YearMonth.now().getMonth().getDisplayName(TextStyle.FULL, Locale.KOREA));
@@ -134,6 +136,17 @@ public class NewBookListDialogFrame extends JFrame {
             year = year.plusYears(1);
         }
         return combo;
+    }
+
+    private JButton createConditionAcceptButton() {
+        return new JButton("조건 선택");
+    }
+
+    private GridBagConstraints createStandardConstraints(int left, int right) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(10, left, 10, right);
+        c.anchor = GridBagConstraints.WEST;
+        return c;
     }
 
     private JPanel createResultPanel() {

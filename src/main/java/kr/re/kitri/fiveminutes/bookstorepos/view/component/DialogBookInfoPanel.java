@@ -4,6 +4,7 @@ import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,9 +13,12 @@ import static kr.re.kitri.fiveminutes.bookstorepos.view.component.InfoLabelsPane
 public class DialogBookInfoPanel extends JPanel {
 
     private final BookInfo bookInfo;
+    private final ActionListener addButtonActionListener;
 
-    public DialogBookInfoPanel(BookInfo bookInfo) {
+    public DialogBookInfoPanel(BookInfo bookInfo, ActionListener addButtonActionListener) {
         this.bookInfo = bookInfo;
+        this.addButtonActionListener = addButtonActionListener;
+
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         setLayout(new GridBagLayout());
 
@@ -38,7 +42,7 @@ public class DialogBookInfoPanel extends JPanel {
 
     private GridBagConstraints createStockAddButtonConstraints() {
         GridBagConstraints c = createStandardConstraints(10, 20);
-        c.ipady = 10;
+        c.ipady = 20;
         return c;
     }
 
@@ -61,8 +65,8 @@ public class DialogBookInfoPanel extends JPanel {
     }
 
     private JButton createStockAddButton() {
-        JButton button = new JButton("+");
-        // TODO: Implements ActionListener - Click to Add Stock Page
+        JButton button = new JButton("추가");
+        button.addActionListener(addButtonActionListener);
         return button;
     }
 
