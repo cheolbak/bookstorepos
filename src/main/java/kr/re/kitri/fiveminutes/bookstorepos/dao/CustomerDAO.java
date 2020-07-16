@@ -28,6 +28,7 @@ public class CustomerDAO {
                             customer.setCustomerName(resultSet.getString(2));
                             customer.setCustomerTel(resultSet.getString(3));
                             customer.setCustomerPoint(resultSet.getInt(4));
+                            customer.setCustomerTotalPrice(resultSet.getInt(5));
                             return customer;
                         }
                     });
@@ -37,7 +38,7 @@ public class CustomerDAO {
                 e.printStackTrace();
             }
         }
-        return new Customer(0,"ERROR","ERROR",0,LocalDateTime.now(),LocalDateTime.now());
+        return new Customer(0,"ERROR","ERROR",0,0,LocalDateTime.now(),LocalDateTime.now());
     }
 
     public Customer selectName(String name){
@@ -58,6 +59,7 @@ public class CustomerDAO {
                             customer.setCustomerName(resultSet.getString(2));
                             customer.setCustomerTel(resultSet.getString(3));
                             customer.setCustomerPoint(resultSet.getInt(4));
+                            customer.setCustomerTotalPrice(resultSet.getInt(5));
                             return customer;
                         }
                     });
@@ -67,7 +69,7 @@ public class CustomerDAO {
                 e.printStackTrace();
             }
         }
-        return new Customer(0,"ERROR","ERROR",0,LocalDateTime.now(),LocalDateTime.now());
+        return new Customer(0,"ERROR","ERROR",0,0,LocalDateTime.now(),LocalDateTime.now());
     }
 
     public Customer selectTel(String tel){
@@ -88,6 +90,7 @@ public class CustomerDAO {
                             customer.setCustomerName(resultSet.getString(2));
                             customer.setCustomerTel(resultSet.getString(3));
                             customer.setCustomerPoint(resultSet.getInt(4));
+                            customer.setCustomerTotalPrice(resultSet.getInt(5));
                             return customer;
                         }
                     });
@@ -97,7 +100,7 @@ public class CustomerDAO {
                 e.printStackTrace();
             }
         }
-        return new Customer(0,"ERROR","ERROR",0,LocalDateTime.now(),LocalDateTime.now());
+        return new Customer(0,"ERROR","ERROR",0,0,LocalDateTime.now(),LocalDateTime.now());
     }
 
     public int insertCustomer(Customer customer) {
@@ -158,13 +161,13 @@ public class CustomerDAO {
         return 0;
     }
 
-    public int updateTotal(int id, int total){
+    public int updateTotal(int id, int price){
         try(DBPlug dbPlug = new DBPlug()){
             return dbPlug.executeUpdateFromQuery("customer.update_total",
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, total);
+                            pstmt.setInt(1, price);
                             pstmt.setInt(2, id);
                         }
                     });

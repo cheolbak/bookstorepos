@@ -15,6 +15,7 @@ public class Customer {
     private String customerName;
     private String customerTel;
     private int customerPoint;
+    private int customerTotalPrice;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
 
