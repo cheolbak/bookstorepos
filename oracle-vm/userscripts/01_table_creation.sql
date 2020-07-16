@@ -30,6 +30,8 @@ CREATE TABLE pos_customer
   pos_customer_id          NUMBER       NOT NULL,
   pos_customer_name        VARCHAR2(20) NOT NULL,
   pos_customer_tel         CHAR(12)     NOT NULL,
+  pos_customer_point       NUMBER       DEFAULT 0 NOT NULL,
+  pos_customer_total_price  NUMBER       DEFAULT 0 NOT NULL,
   pos_customer_create_date DATE         DEFAULT SYSDATE NOT NULL,
   pos_customer_modify_date DATE         DEFAULT SYSDATE NOT NULL,
   CONSTRAINT PK_pos_customer PRIMARY KEY (pos_customer_id)
@@ -66,7 +68,9 @@ CREATE TABLE pos_sell
   pos_book_isbn   CHAR(13)  NOT NULL,
   pos_customer_id NUMBER    NOT NULL,
   pos_sell_count  NUMBER(5) DEFAULT 1 NOT NULL,
+  pos_sell_price  NUMBER DEFAULT 0 NOT NULL,
   pos_sell_date   DATE      DEFAULT SYSDATE NOT NULL,
+  pos_sell_used_point  NUMBER DEFAULT 0 NOT NULL,
   CONSTRAINT PK_pos_sell PRIMARY KEY (pos_sell_id)
 );
 /

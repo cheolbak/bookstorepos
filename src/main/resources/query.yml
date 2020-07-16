@@ -20,3 +20,134 @@ query: >
   SELECT pos_entry_id, pos_entry_password, pos_entry_modify_date
   FROM pos_entry
   WHERE pos_entry_id = ?
+---
+tag: book.select
+query: >
+  SELECT pos_book_title, pos_book_author, pos_book_publisher, pos_book_isbn,
+  pos_book_msrp, pos_book_discount_rate, pos_book_point_rate,
+  pos_book_stock, pos_book_release_date
+  FROM pos_book
+  WHERE pos_book_isbn = ?
+---
+tag: book.insert
+query: >
+  INSERT INTO pos_book(pos_book_isbn, pos_book_title, pos_book_author, pos_book_publisher,
+                         pos_book_release_date, pos_book_msrp, pos_book_discount_rate, pos_book_point_rate,
+                         pos_book_stock)
+  VALUES(?,?,?,?,?,?,?,?,?)
+---
+tag: book.update_stock
+query: >
+  UPDATE pos_book
+  SET pos_book_stock = pos_book_stock - ?
+  WHERE pos_book_isbn = ?
+---
+tag: book.select_author
+query: >
+  SELECT pos_book_title, pos_book_author, pos_book_publisher,
+  pos_book_release_date, pos_book_isbn
+  FROM pos_book
+  WHERE pos_book_author = ?
+---
+tag: book.select_title
+query: >
+  SELECT pos_book_title, pos_book_author, pos_book_publisher,
+  pos_book_release_date, pos_book_isbn
+  FROM pos_book
+  WHERE pos_book_title = ?
+---
+tag: book.select_publisher
+query: >
+  SELECT pos_book_title, pos_book_author, pos_book_publisher,
+  pos_book_release_date, pos_book_isbn
+  FROM pos_book
+  WHERE pos_book_publisher = ?
+---
+tag: customer.select_id
+query: >
+  SELECT pos_customer_id, pos_customer_name, pos_customer_tel, pos_customer_point,
+  pos_customer_total_price
+  FROM pos_customer
+  WHERE pos_customer_id = ?
+---
+tag: customer.select_name
+query: >
+  SELECT pos_customer_id, pos_customer_name, pos_customer_tel, pos_customer_point,
+  pos_customer_total_price
+  FROM pos_customer
+  WHERE pos_customer_name = ?
+---
+tag: customer.select_tel
+query: >
+  SELECT pos_customer_id, pos_customer_name, pos_customer_tel, pos_customer_point,
+  pos_customer_total_price
+  FROM pos_customer
+  WHERE pos_customer_tel = ?
+---
+tag: customer.insert
+query: >
+  INSERT INTO pos_customer(pos_customer_id,
+                           pos_customer_name,
+                           pos_customer_tel)
+  VALUES(?,?,?)
+---
+tag: customer.update_point
+query: >
+  UPDATE pos_customer
+  SET pos_customer_point = pos_customer_point + ?
+  WHERE pos_customer_id = ?
+---
+tag: customer.update_tel
+query: >
+  UPDATE pos_customer
+  SET pos_customer_tel = ?
+  WHERE pos_customer_id = ?
+---
+tag: customer.update_total
+query: >
+  UPDATE pos_customer
+  SET pos_customer_total_price = pos_customer_total_price + ?
+  WHERE pos_customer_id = ?
+---
+tag: customer.delete
+query: >
+  DELETE FROM pos_customer
+  WHERE pos_customer_id = ?
+---
+tag: sell.insert
+query: >
+  INSERT INTO pos_sell(pos_sell_id,
+                       pos_book_isbn,
+                       pos_customer_id)
+  VALUES(?, ?, ?)
+---
+tag: sell.update_count
+query: >
+  UPDATE pos_sell
+  SET pos_sell_count = pos_sell_count + ?
+  WHERE pos_sell_id = ?
+---
+tag: sell.update_price
+query: >
+  UPDATE pos_sell
+  SET pos_sell_price = pos_sell_price + ?
+  WHERE pos_sell_id = ?
+---
+tag: sell.update_usedPoint
+query: >
+  UPDATE pos_sell
+  SET pos_sell_used_point = pos_sell_used_point + ?
+  WHERE pos_sell_id = ?
+---
+tag: stock.insert
+query: >
+  INSERT INTO pos_stock(pos_stock_id,
+  pos_book_isbn)
+  VALUES (?, ?)
+---
+tag: stock.update_amount
+query: >
+  UPDATE pos_stock
+  SET pos_stock_amount = pos_stock_amount + ?
+  WHERE pos_stock_id = ?
+---
