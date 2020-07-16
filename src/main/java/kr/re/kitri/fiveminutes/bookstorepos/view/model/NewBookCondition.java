@@ -1,5 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.model;
 
+import kr.re.kitri.fiveminutes.bookstorepos.util.WeekOfMonthCalc;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,9 +8,6 @@ import lombok.RequiredArgsConstructor;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 
 @Getter
 @Builder
@@ -18,14 +16,9 @@ public class NewBookCondition {
     @Builder.Default
     private final YearMonth yearMonth = YearMonth.now();
 
+    // 일요일 기준 몇주차인지 계산
     @Builder.Default
-    // 월요일 기준 몇주차인지 계산
-    private final int weekOfMonth =
-            LocalDate.now().plusDays(
-                            YearMonth.now().atDay(1).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)
-                        )
-                        .until(YearMonth.now().atDay(1), ChronoUnit.DAYS))
-                        .get(ChronoField.ALIGNED_WEEK_OF_MONTH);
+    private final int weekOfMonth = WeekOfMonthCalc.currentWeekOfMonth(LocalDate.now(), DayOfWeek.SUNDAY);
 
     @Builder.Default
     private final Category category = Category.ALL;
