@@ -10,12 +10,24 @@ import java.time.LocalDate;
 @Builder
 public class DialogBookInfo {
 
-    private String isbn;
-    private String title;
-    private String author;
-    private String publisher;
-    private int price;
-    private LocalDate releaseDate;
+    @Builder.Default
+    private String isbn = "ERROR";
+
+    @Builder.Default
+    private String title = "";
+
+    @Builder.Default
+    private String author = "";
+
+    @Builder.Default
+    private String publisher = "";
+
+    @Builder.Default
+    private int price = 0;
+
+    @Builder.Default
+    private LocalDate releaseDate = LocalDate.EPOCH;
+
     private BufferedImage bookCoverImage;
 
 }

@@ -3,6 +3,7 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
 
 import javax.imageio.ImageIO;
@@ -59,12 +60,11 @@ public class BookSearchDialogFrame extends JFrame {
         return c;
     }
 
-    private JComboBox<String> createSearchScopeComboBox() {
-        JComboBox<String> box = new JComboBox<>();
-        box.addItem("제목");
-        box.addItem("저자/번역자");
-        box.addItem("출판사");
-        box.addItem("ISBN");
+    private JComboBox<BookSearchScope> createSearchScopeComboBox() {
+        JComboBox<BookSearchScope> box = new JComboBox<>();
+        for (BookSearchScope scope : BookSearchScope.values()) {
+            box.addItem(scope);
+        }
         return box;
     }
 
