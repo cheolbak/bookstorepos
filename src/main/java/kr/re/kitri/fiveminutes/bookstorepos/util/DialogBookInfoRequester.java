@@ -6,20 +6,23 @@ import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,40 +32,35 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DialogBookInfoRequester {
 
+    private static final File TEMP_DIR =
+            Paths.get(System.getProperty("java.io.tmpdir"), "BookStorePOSApp").toFile();
+
     public static List<DialogBookInfo> requestRecommendNewBook(NewBookCondition condition) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
         String newYmw = condition.getYearMonth().format(formatter) + condition.getWeekOfMonth();
+        String categoryCode = condition.getCategory().getCode();
 
-        FormBody form = new FormBody.Builder()
-                .add("mallGb", "KOR")
-                .add("tabGB", "1")
-                .add("subEjkGb", "KOR")
-                .add("newYmw", newYmw)
-                .add("linkClass", condition.getCategory().getCode())
-                .add("sortColumn", "near_date")
-                .add("excelYn", "Y")
-                .add("seeOverYn", "Y")
-                .add("pageNumber", "1")
-                .add("perPage", "20")
-                .add("targetPage", "")
-                .add("filter", "ALL")
-                .add("loginYN", "N")
-                .build();
-
-        Request req = new Request.Builder()
-                .post(form)
-                .url("http://www.kyobobook.co.kr/newproduct/newProductList.laf")
-                .build();
+        initTempDir();
+        String fileName = "newbook_" + newYmw + "_" + categoryCode + ".html";
+        File file = new File(TEMP_DIR, fileName);
 
         List<DialogBookInfo> infoList = new ArrayList<>();
         try {
+            // 이틀 이상 지났으면 새로 갱신
+            if (Instant.ofEpochMilli(file.lastModified()).isBefore(Instant.now().minus(Duration.ofDays(2)))) {
+                Files.deleteIfExists(file.toPath());
+            }
+
             DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
-            String html = Objects.requireNonNull(new OkHttpClient().newCall(req).execute().body()).string();
+            String html = file.exists() ? Files.readString(file.toPath())
+                                        : requestWebNewBookHtmlAndSaveTempFile(newYmw, categoryCode, file);
             Document doc = Jsoup.parse(html);
             Elements rowList = doc.select("table tr:gt(1)");
+
             for (Element row : rowList) {
                 Elements cellList = row.select("td:gt(0)");
                 String isbn = cellList.get(0).text();
+
                 DialogBookInfo info = DialogBookInfo.builder()
                         .isbn(isbn)
                         .title(cellList.get(1).text())
@@ -81,6 +79,53 @@ public class DialogBookInfoRequester {
             }
         }
         return infoList;
+    }
+
+    private static void initTempDir() {
+        if (!TEMP_DIR.isDirectory()) {
+            log.debug("TEMP_DIR is not directory.");
+            TEMP_DIR.delete();
+        }
+
+        if (!TEMP_DIR.exists()) {
+            log.debug("TEMP_DIR is not exist.");
+            TEMP_DIR.mkdirs();
+        }
+    }
+
+    private static String requestWebNewBookHtmlAndSaveTempFile(String newYmw, String categoryCode, File saveFile) {
+        FormBody form = new FormBody.Builder()
+                .add("mallGb", "KOR")
+                .add("tabGB", "1")
+                .add("subEjkGb", "KOR")
+                .add("newYmw", newYmw)
+                .add("linkClass", categoryCode)
+                .add("sortColumn", "near_date")
+                .add("excelYn", "Y")
+                .add("seeOverYn", "Y")
+                .add("pageNumber", "1")
+                .add("perPage", "20")
+                .add("targetPage", "")
+                .add("filter", "ALL")
+                .add("loginYN", "N")
+                .build();
+
+        Request req = new Request.Builder()
+                .post(form)
+                .url("http://www.kyobobook.co.kr/newproduct/newProductList.laf")
+                .build();
+
+        try {
+            ResponseBody body = Objects.requireNonNull(new OkHttpClient().newCall(req).execute().body());
+            Files.copy(body.byteStream(), saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            return body.string();
+        }
+        catch (IOException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return "ERROR";
     }
 
     public static List<DialogBookInfo> requestBookSearchManyISBNs(List<String> isbnList) {
