@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class DialogBookInfoRequester {
@@ -82,39 +83,50 @@ public class DialogBookInfoRequester {
         return infoList;
     }
 
+    public static List<DialogBookInfo> requestBookSearchManyISBNs(List<String> isbnList) {
+        return isbnList.stream()
+                .map(DialogBookInfoRequester::requestBookSearchScopeISBN)
+                .collect(Collectors.toList());
+    }
+
+    public static DialogBookInfo requestBookSearchScopeISBN(String isbn) {
+        return requestBookSearchEachTenResult(BookSearchScope.ISBN, isbn, 1).getBookInfoList().get(0);
+    }
+
     public static SearchMeta requestBookSearchEachTenResult(BookSearchScope scope, String query, int page) {
-        String url = "https://dapi.kakao.com/v3/search/book?query="
-                        + URLEncoder.encode(query, StandardCharsets.UTF_8)
-                        + "&scope=" + scope.getRequestName()
-                        + "&size=10&page=" + page;
+        if (!(scope == BookSearchScope.ISBN && !query.matches("^97[89][0-9]{10}$"))) {
+            String url = "https://dapi.kakao.com/v3/search/book?query="
+                    + URLEncoder.encode(query, StandardCharsets.UTF_8)
+                    + "&scope=" + scope.getRequestName()
+                    + "&size=10&page=" + page;
 
-        Request req = new Request.Builder()
-                .get()
-                .url(url)
-                .addHeader("Authorization", "KakaoAK 2a22f05dfbf98250a6ae67b4eed0b461")
-                .build();
-
-        try {
-            Response res = new OkHttpClient().newCall(req).execute();
-            if (res.code() != 200) {
-                throw new IOException("요청 에러: " + res.code() + ", " + Objects.requireNonNull(res.body(), "").string());
-            }
-            String body = Objects.requireNonNull(res.body()).string();
-
-            JsonObject jsonObject = JsonParser.parseString(body).getAsJsonObject();
-            JsonArray documents = jsonObject.get("documents").getAsJsonArray();
-            JsonObject meta = jsonObject.get("meta").getAsJsonObject();
-
-            return SearchMeta.builder()
-                    .totalCount(meta.get("total_count").getAsInt())
-                    .pageableCount(meta.get("pageable_count").getAsInt())
-                    .isEnd(meta.get("is_end").getAsBoolean())
-                    .bookInfoList(parseJsonToDialogBookInfoList(documents))
+            Request req = new Request.Builder()
+                    .get()
+                    .url(url)
+                    .addHeader("Authorization", "KakaoAK 2a22f05dfbf98250a6ae67b4eed0b461")
                     .build();
-        }
-        catch (IOException | NullPointerException e) {
-            if (log.isDebugEnabled()) {
-                e.printStackTrace();
+
+            try {
+                Response res = new OkHttpClient().newCall(req).execute();
+                if (res.code() != 200) {
+                    throw new IOException("요청 에러: " + res.code() + ", " + Objects.requireNonNull(res.body(), "").string());
+                }
+                String body = Objects.requireNonNull(res.body()).string();
+
+                JsonObject jsonObject = JsonParser.parseString(body).getAsJsonObject();
+                JsonArray documents = jsonObject.get("documents").getAsJsonArray();
+                JsonObject meta = jsonObject.get("meta").getAsJsonObject();
+
+                return SearchMeta.builder()
+                        .totalCount(meta.get("total_count").getAsInt())
+                        .pageableCount(meta.get("pageable_count").getAsInt())
+                        .isEnd(meta.get("is_end").getAsBoolean())
+                        .bookInfoList(parseJsonToDialogBookInfoList(documents))
+                        .build();
+            } catch (IOException | NullPointerException e) {
+                if (log.isDebugEnabled()) {
+                    e.printStackTrace();
+                }
             }
         }
         return SearchMeta.builder()
@@ -154,6 +166,9 @@ public class DialogBookInfoRequester {
 
     private static String joinJsonArrayString(JsonArray jsonArray, String prefix, String suffix) {
         Iterator<JsonElement> it = jsonArray.iterator();
+        if (!it.hasNext()) {
+            return "";
+        }
         StringJoiner joiner = new StringJoiner(", ", prefix, suffix);
 
         while (it.hasNext()) {
