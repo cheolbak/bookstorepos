@@ -12,19 +12,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,42 +31,52 @@ public class DialogBookInfoRequester {
     private static final File TEMP_DIR =
             Paths.get(System.getProperty("java.io.tmpdir"), "BookStorePOSApp").toFile();
 
-    public static List<DialogBookInfo> requestRecommendNewBook(NewBookCondition condition) {
+    public static SearchMeta requestRecommendNewBookEachPage(NewBookCondition condition, int page) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
         String newYmw = condition.getYearMonth().format(formatter) + condition.getWeekOfMonth();
         String categoryCode = condition.getCategory().getCode();
+        String sortCode = condition.getSort().getRequestName();
 
         initTempDir();
-        String fileName = "newbook_" + newYmw + "_" + categoryCode + ".html";
+        String fileName = "newbook_" + newYmw + "_" + categoryCode + "_" + sortCode + ".html";
         File file = new File(TEMP_DIR, fileName);
 
         List<DialogBookInfo> infoList = new ArrayList<>();
+        SearchMeta.SearchMetaBuilder metaBuilder = SearchMeta.builder();
         try {
             // 이틀 이상 지났으면 새로 갱신
             if (Instant.ofEpochMilli(file.lastModified()).isBefore(Instant.now().minus(Duration.ofDays(2)))) {
+                log.debug("Temp File Expired Two Days");
+                log.debug("file: {}, lastModified: {}", file.getName(), LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()));
                 Files.deleteIfExists(file.toPath());
             }
 
             DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
             String html = file.exists() ? Files.readString(file.toPath())
-                                        : requestWebNewBookHtmlAndSaveTempFile(newYmw, categoryCode, file);
+                                        : requestWebNewBookHtmlAndSaveTempFile(newYmw, categoryCode, sortCode, file);
             Document doc = Jsoup.parse(html);
-            Elements rowList = doc.select("table tr:gt(1)");
-
-            for (Element row : rowList) {
-                Elements cellList = row.select("td:gt(0)");
-                String isbn = cellList.get(0).text();
-
-                DialogBookInfo info = DialogBookInfo.builder()
-                        .isbn(isbn)
-                        .title(cellList.get(1).text())
-                        .author(cellList.get(2).text())
-                        .publisher(cellList.get(3).text())
-                        .releaseDate(LocalDate.parse(cellList.get(4).text(), parseFormat))
-                        .price(NumberFormat.getInstance().parse(cellList.get(6).text().substring(1)).intValue())
-                        .bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn))
-                        .build();
-                infoList.add(info);
+            if (page > 0) {
+                int totalCount = Integer.parseInt(doc.select("tr").last().select("td:eq(0)").get(0).text());
+                metaBuilder.totalCount(totalCount);
+                metaBuilder.pageableCount(0);
+                String selector = pagingSelectHtmlTag(totalCount, page);
+                Elements rowList = doc.select(selector);
+                metaBuilder.isEnd(selector.matches("^table tr:gt\\([0-9]+\\)$"));
+                for (Element row : rowList) {
+                    Elements cellList = row.select("td:gt(0)");
+                    String isbn = cellList.get(0).text();
+                    log.debug("getInfo: {}", isbn);
+                    DialogBookInfo info = DialogBookInfo.builder()
+                            .isbn(isbn)
+                            .title(cellList.get(1).text())
+                            .author(cellList.get(2).text())
+                            .publisher(cellList.get(3).text())
+                            .releaseDate(LocalDate.parse(cellList.get(4).text(), parseFormat))
+                            .price(NumberFormat.getInstance().parse(cellList.get(5).text().substring(1)).intValue())
+                            .bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn))
+                            .build();
+                    infoList.add(info);
+                }
             }
         }
         catch (IOException | ParseException | NullPointerException e) {
@@ -78,7 +84,7 @@ public class DialogBookInfoRequester {
                 e.printStackTrace();
             }
         }
-        return infoList;
+        return metaBuilder.bookInfoList(infoList).build();
     }
 
     private static void initTempDir() {
@@ -93,14 +99,14 @@ public class DialogBookInfoRequester {
         }
     }
 
-    private static String requestWebNewBookHtmlAndSaveTempFile(String newYmw, String categoryCode, File saveFile) {
+    private static String requestWebNewBookHtmlAndSaveTempFile(String newYmw, String categoryCode, String sortCode, File saveFile) {
         FormBody form = new FormBody.Builder()
                 .add("mallGb", "KOR")
                 .add("tabGB", "1")
                 .add("subEjkGb", "KOR")
                 .add("newYmw", newYmw)
                 .add("linkClass", categoryCode)
-                .add("sortColumn", "near_date")
+                .add("sortColumn", sortCode)
                 .add("excelYn", "Y")
                 .add("seeOverYn", "Y")
                 .add("pageNumber", "1")
@@ -117,8 +123,10 @@ public class DialogBookInfoRequester {
 
         try {
             ResponseBody body = Objects.requireNonNull(new OkHttpClient().newCall(req).execute().body());
-            Files.copy(body.byteStream(), saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            return body.string();
+            String result = getBodyStringByEucKrStream(body.byteStream());
+            Files.writeString(saveFile.toPath(), result, StandardCharsets.UTF_8,
+                                    StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+            return result;
         }
         catch (IOException e) {
             if (log.isDebugEnabled()) {
@@ -126,6 +134,24 @@ public class DialogBookInfoRequester {
             }
         }
         return "ERROR";
+    }
+
+    private static String pagingSelectHtmlTag(int totalPage, int page) {
+        //1: 0 10 / 2: 10 20 / 3: 20 30
+        int first = 1 + ((page - 1) * 10);
+        int last = 2 + (page * 10);
+        log.debug("paging first: {}, last: {}", first, last);
+        if (last >= totalPage) {
+            return "table tr:gt(" + first + ")";
+        }
+        return "table tr:gt(" + first + "):lt(" + last + ")";
+    }
+
+    private static String getBodyStringByEucKrStream(InputStream in) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "MS949"));
+        String result = reader.lines().collect(Collectors.joining(""));
+        reader.close();
+        return result;
     }
 
     public static List<DialogBookInfo> requestBookSearchManyISBNs(List<String> isbnList) {

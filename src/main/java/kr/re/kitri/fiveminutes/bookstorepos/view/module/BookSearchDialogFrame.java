@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookSearchDialogFrame extends JFrame {
+public class BookSearchDialogFrame extends JFrame implements DialogBookInfoReceiver {
 
     public BookSearchDialogFrame() throws HeadlessException {
         setTitle("책 검색");
@@ -25,7 +26,7 @@ public class BookSearchDialogFrame extends JFrame {
 
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 770);
+        setSize(670, 770);
         setLocationRelativeTo(null);
         setLocation(getX(), getY());
     }
@@ -118,11 +119,15 @@ public class BookSearchDialogFrame extends JFrame {
         }
         catch (IOException ignore) { }
 
-        return new DialogBookInfoListPanel(dialogBookInfoList);
+        return new DialogBookInfoListPanel(this);
     }
 
     private PaginationPanel createPaginationPanel() {
-        return new PaginationPanel(10, e -> {});
+        return new PaginationPanel(1);
     }
 
+    @Override
+    public void receiveBookInfo(DialogBookInfo info) {
+
+    }
 }

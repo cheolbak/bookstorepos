@@ -1,22 +1,22 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
 import kr.re.kitri.fiveminutes.bookstorepos.util.DateUtilities;
+import kr.re.kitri.fiveminutes.bookstorepos.util.DialogBookInfoRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition.Sort;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -24,9 +24,13 @@ import java.util.regex.Pattern;
 
 import static kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition.Category;
 
-public class NewBookListDialogFrame extends JFrame {
+public class NewBookListDialogFrame extends JFrame implements DialogBookInfoReceiver {
 
     private static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy년");
+
+    private PaginationPanel paginationPanel;
+    private NewBookCondition newBookCondition;
+    private DialogBookInfoListPanel dialogBookInfoListPanel;
 
     public NewBookListDialogFrame() throws HeadlessException {
         setTitle("교보문고 화제의 신상품");
@@ -35,21 +39,23 @@ public class NewBookListDialogFrame extends JFrame {
 
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 770);
+        setSize(670, 770);
         setLocationRelativeTo(null);
         setLocation(getX(), getY());
     }
 
     private void initPanel() {
+        paginationPanel = new PaginationPanel(1);
+        dialogBookInfoListPanel = new DialogBookInfoListPanel(this);
+
         add(createConditionMatchPanel(), BorderLayout.NORTH);
-        add(createResultPanel(), BorderLayout.CENTER);
-        add(new PaginationPanel(10, e -> {}), BorderLayout.SOUTH);
+        add(dialogBookInfoListPanel, BorderLayout.CENTER);
+        add(paginationPanel, BorderLayout.SOUTH);
     }
 
     private JPanel createConditionMatchPanel() {
         MarginTitledBorderPanel panel = new MarginTitledBorderPanel("조건 선택");
-        panel.addSubPanel(createBookCategoryComboBox(), createStandardConstraints(10, 20));
-        return setConditionPanelAddComboBoxAndEvent(panel);
+        return setConditionPanelAddComponentsAndEvents(panel);
     }
 
     private JComboBox<Category> createBookCategoryComboBox() {
@@ -60,10 +66,22 @@ public class NewBookListDialogFrame extends JFrame {
         return combo;
     }
 
-    private JPanel setConditionPanelAddComboBoxAndEvent(MarginTitledBorderPanel panel) {
+    private JComboBox<Sort> createBookSortComboBox() {
+        JComboBox<Sort> combo = new JComboBox<>();
+        for (Sort sort : Sort.values()) {
+            combo.addItem(sort);
+        }
+        return combo;
+    }
+
+    private JPanel setConditionPanelAddComponentsAndEvents(MarginTitledBorderPanel panel) {
+        JComboBox<Category> categoryComboBox = createBookCategoryComboBox();
         JComboBox<String> yearComboBox = createYearComboBox();
         JComboBox<String> monthComboBox = new JComboBox<>();
         JComboBox<String> weekOfMonthComboBox = new JComboBox<>();
+        JComboBox<Sort> sortComboBox = createBookSortComboBox();
+        JButton conditionAcceptButton = new JButton("불러오기");
+
 
         yearComboBox.addActionListener(e -> {
             Object yearSelected = yearComboBox.getSelectedItem();
@@ -74,6 +92,7 @@ public class NewBookListDialogFrame extends JFrame {
         });
 
         Pattern monthPattern = Pattern.compile("^([0-9]{1,2})월$");
+        Pattern weekPattern = Pattern.compile("^([0-9])주$");
 
         monthComboBox.addActionListener(e -> {
             Object yearSelected = yearComboBox.getSelectedItem();
@@ -90,10 +109,46 @@ public class NewBookListDialogFrame extends JFrame {
             }
         });
 
+        conditionAcceptButton.addActionListener(e -> {
+            Object categoryObj = categoryComboBox.getSelectedItem();
+            Object yearObj = yearComboBox.getSelectedItem();
+            Object monthObj = monthComboBox.getSelectedItem();
+            Object weekObj = weekOfMonthComboBox.getSelectedItem();
+            Object sortObj = sortComboBox.getSelectedItem();
+            if (yearObj == null || monthObj == null || weekObj == null
+                    || !(categoryObj instanceof Category) || !(sortObj instanceof Sort)) {
+                return;
+            }
+
+            Matcher monthMather = monthPattern.matcher(monthObj.toString());
+            Matcher weekMather = weekPattern.matcher(weekObj.toString());
+            if (!monthMather.matches() || !weekMather.matches()) {
+                return;
+            }
+
+            Category category = (Category) categoryObj;
+            Sort sort = (Sort) sortObj;
+            Year year = Year.parse(yearObj.toString(), YEAR_FORMATTER);
+            Month month = Month.of(Integer.parseInt(monthMather.group(1)));
+            YearMonth yearMonth = YearMonth.of(year.getValue(), month);
+            int weekOfMonth = Integer.parseInt(weekMather.group(1));
+
+            newBookCondition = NewBookCondition.builder()
+                    .yearMonth(yearMonth)
+                    .weekOfMonth(weekOfMonth)
+                    .category(category)
+                    .sort(sort)
+                    .build();
+
+            updatePanel();
+        });
+
+        panel.addSubPanel(categoryComboBox, createStandardConstraints(10, 0));
+        panel.addSubPanel(sortComboBox, createStandardConstraints(0, 5));
         panel.addSubPanel(yearComboBox, createStandardConstraints(5, 0));
         panel.addSubPanel(monthComboBox, createStandardConstraints(0, 0));
         panel.addSubPanel(weekOfMonthComboBox, createStandardConstraints(0, 5));
-        panel.addSubPanel(createConditionAcceptButton(), createStandardConstraints(5, 5));
+        panel.addSubPanel(conditionAcceptButton, createStandardConstraints(5, 5));
 
         yearComboBox.setSelectedItem(Year.now().format(YEAR_FORMATTER));
         monthComboBox.setSelectedItem(YearMonth.now().getMonth().getDisplayName(TextStyle.FULL, Locale.KOREA));
@@ -128,6 +183,20 @@ public class NewBookListDialogFrame extends JFrame {
         weekOfMonthCombo.updateUI();
     }
 
+    private void updatePanel() {
+        SearchMeta searchMeta = DialogBookInfoRequester.requestRecommendNewBookEachPage(newBookCondition, 1);
+        dialogBookInfoListPanel.setDialogBookInfoList(searchMeta.getBookInfoList());
+        dialogBookInfoListPanel.updateUI();
+        paginationPanel.setLastPage(searchMeta.getTotalCount() / 10 + 1);
+        paginationPanel.setPageChangeListener(e -> {
+            SearchMeta meta = DialogBookInfoRequester.requestRecommendNewBookEachPage(newBookCondition, e.getCurrentPageNumber());
+            dialogBookInfoListPanel.setDialogBookInfoList(meta.getBookInfoList());
+            dialogBookInfoListPanel.updateUI();
+            e.getPaginationPanel().updateUI();
+        });
+        paginationPanel.updateUI();
+    }
+
     private JComboBox<String> createYearComboBox() {
         JComboBox<String> combo = new JComboBox<>();
         Year year = Year.now().minusYears(2);
@@ -138,10 +207,6 @@ public class NewBookListDialogFrame extends JFrame {
         return combo;
     }
 
-    private JButton createConditionAcceptButton() {
-        return new JButton("조건 선택");
-    }
-
     private GridBagConstraints createStandardConstraints(int left, int right) {
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(10, left, 10, right);
@@ -149,48 +214,8 @@ public class NewBookListDialogFrame extends JFrame {
         return c;
     }
 
-    private JPanel createResultPanel() {
-        List<DialogBookInfo> dialogBookInfoList = new ArrayList<>();
-
-        try {
-            BufferedImage image = ImageIO.read(Paths.get(System.getProperty("user.home"), "Desktop", "9791190665216.jpg").toFile());
-
-            DialogBookInfo book1 = DialogBookInfo.builder()
-                    .isbn("9791190665216")
-                    .title("객체지향 사고 프로세스")
-                    .author("맷 와일스펠드")
-                    .publisher("제이펍")
-                    .price(24000)
-                    .releaseDate(LocalDate.of(2020, 7, 3))
-                    .bookCoverImage(image)
-                    .build();
-
-            DialogBookInfo book2 = DialogBookInfo.builder()
-                    .isbn("9791190665216")
-                    .title("객체지향 사고 프로세스")
-                    .author("맷 와일스펠드")
-                    .publisher("제이펍")
-                    .price(24000)
-                    .releaseDate(LocalDate.of(2020, 7, 3))
-                    .bookCoverImage(image)
-                    .build();
-
-            DialogBookInfo book3 = DialogBookInfo.builder()
-                    .isbn("9791190665216")
-                    .title("객체지향 사고 프로세스")
-                    .author("맷 와일스펠드")
-                    .publisher("제이펍")
-                    .price(24000)
-                    .releaseDate(LocalDate.of(2020, 7, 3))
-                    .bookCoverImage(image)
-                    .build();
-
-            dialogBookInfoList.add(book1);
-            dialogBookInfoList.add(book2);
-            dialogBookInfoList.add(book3);
-        }
-        catch (IOException ignore) { }
-
-        return new DialogBookInfoListPanel(dialogBookInfoList);
+    @Override
+    public void receiveBookInfo(DialogBookInfo info) {
+        // TODO: 재고 추가 액션
     }
 }

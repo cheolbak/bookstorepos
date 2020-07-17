@@ -41,10 +41,11 @@ public class BookCoverImageRequester {
         int originalWidth = originalImage.getWidth();
         int originalHeight = originalImage.getHeight();
 
-        int resizedHeight = 190;
-        double ratio = resizedHeight / (double) originalHeight;
-        int resizedWidth = (int) (originalWidth * ratio);
+        double ratio = (double) 125 / (double) originalWidth;
 
+        int resizedWidth = (int) (originalWidth * ratio);
+        int resizedHeight = (int) (originalHeight * ratio);
+        log.debug("{} image resize width: {}, height: {}", isbn, resizedWidth, resizedHeight);
         Image image = originalImage.getScaledInstance(resizedWidth, resizedHeight, Image.SCALE_SMOOTH);
 
         BufferedImage resizedImage = new BufferedImage(resizedWidth, resizedHeight, BufferedImage.TYPE_INT_RGB);

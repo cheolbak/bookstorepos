@@ -1,10 +1,13 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,18 +16,18 @@ import static kr.re.kitri.fiveminutes.bookstorepos.view.component.InfoLabelsPane
 public class DialogBookInfoPanel extends JPanel {
 
     private final DialogBookInfo dialogBookInfo;
-    private final ActionListener addButtonActionListener;
+    private final AddStockClickListener addStockClickListener;
 
-    public DialogBookInfoPanel(DialogBookInfo dialogBookInfo, ActionListener addButtonActionListener) {
+    public DialogBookInfoPanel(DialogBookInfo dialogBookInfo, AddStockClickListener addStockClickListener) {
         this.dialogBookInfo = dialogBookInfo;
-        this.addButtonActionListener = addButtonActionListener;
+        this.addStockClickListener = addStockClickListener;
 
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         setLayout(new GridBagLayout());
 
-        add(createBookImageLabel(), createStandardConstraints(20, 20));
+        add(createBookImagePanel(), createStandardConstraints(30, 20));
         add(createBookInfoPanel(), createInfoLabelConstraints());
-        add(createStockAddButton(), createStockAddButtonConstraints());
+        add(createActionButtonPanel(), createStandardConstraints(10, 10));
     }
 
     private GridBagConstraints createStandardConstraints(int left, int right) {
@@ -40,34 +43,87 @@ public class DialogBookInfoPanel extends JPanel {
         return c;
     }
 
-    private GridBagConstraints createStockAddButtonConstraints() {
+    private GridBagConstraints createActionButtonConstraints(int row) {
         GridBagConstraints c = createStandardConstraints(10, 20);
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.gridy = row;
         c.ipady = 20;
         return c;
     }
 
-    private JLabel createBookImageLabel() {
+    private JPanel createBookImagePanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
         JLabel label = new JLabel(new ImageIcon(dialogBookInfo.getBookCoverImage()));
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        return label;
+        panel.add(label);
+        return panel;
     }
 
     private JPanel createBookInfoPanel() {
         List<Entry<JComponent>> entryList = Arrays.asList(
-                new Entry<>("제목", new JLabel(dialogBookInfo.getTitle())),
-                new Entry<>("저자", new JLabel(dialogBookInfo.getAuthor())),
-                new Entry<>("출판사", new JLabel(dialogBookInfo.getPublisher())),
+                new Entry<>("제목", reduceTextAndCreateLabel(dialogBookInfo.getTitle())),
+                new Entry<>("저자", reduceTextAndCreateLabel(dialogBookInfo.getAuthor())),
+                new Entry<>("출판사", reduceTextAndCreateLabel(dialogBookInfo.getPublisher())),
                 new Entry<>("출시일", new JLabel(dialogBookInfo.getReleaseDate().toString())),
                 new Entry<>("정가", new JLabel(dialogBookInfo.getPrice() + "원")),
-                new Entry<>("ISBN", new JLabel(dialogBookInfo.getIsbn())));
+                new Entry<>("ISBN", new JLabel(dialogBookInfo.getIsbn()))
+        );
 
-        return new InfoLabelsPanel<>(entryList, 8, 16);
+        return new InfoLabelsPanel<>(entryList, 10, 16);
+    }
+
+    private JLabel reduceTextAndCreateLabel(String text) {
+        if (text.length() <= 22) {
+            return new JLabel(text);
+        }
+        JLabel label = new JLabel(text.substring(0, 20) + "...");
+        label.setToolTipText(text);
+        return label;
+    }
+
+    private JPanel createActionButtonPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.add(createLinkDetailInfoPage(), createActionButtonConstraints(1));
+        panel.add(createStockAddButton(), createActionButtonConstraints(2));
+        return panel;
+    }
+
+    private JButton createLinkDetailInfoPage() {
+        JButton button = new JButton("상세 정보");
+        button.addActionListener(e -> {
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                    String baseUrl = "http://www.kyobobook.co.kr/product/detailViewKor.laf?barcode=";
+                    URI uri = URI.create(baseUrl + dialogBookInfo.getIsbn());
+                    try {
+                        desktop.browse(uri);
+                    }
+                    catch (IOException ignore) { }
+                }
+            }
+        });
+        return button;
     }
 
     private JButton createStockAddButton() {
         JButton button = new JButton("추가");
-        button.addActionListener(addButtonActionListener);
+        button.addActionListener(e -> {
+            addStockClickListener.click(new AddStockClickEvent(dialogBookInfo));
+        });
         return button;
     }
 
+    @FunctionalInterface
+    public interface AddStockClickListener {
+        void click(AddStockClickEvent e);
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class AddStockClickEvent {
+        private final DialogBookInfo currentBookInfo;
+    }
 }

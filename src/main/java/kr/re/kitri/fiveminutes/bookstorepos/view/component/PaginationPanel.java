@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import lombok.Data;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,17 +11,22 @@ public class PaginationPanel extends JPanel {
     private static final int FIRST_PAGE = 1;
 
     private int currentPage;
-    private final int lastPage;
-    private final PageChangeListener pageChangeListener;
 
-    public PaginationPanel(int lastPage, PageChangeListener pageChangeListener) {
+    @Setter
+    private int lastPage;
+
+    @Setter
+    private PageChangeListener pageChangeListener;
+
+    private final PageStatusLabel pageStatusLabel;
+
+    public PaginationPanel(int lastPage) {
+        this.pageStatusLabel = new PageStatusLabel(FIRST_PAGE);
         this.currentPage = FIRST_PAGE;
         this.lastPage = lastPage;
-        this.pageChangeListener = pageChangeListener;
+        this.pageChangeListener = e -> {};
 
         setLayout(new GridBagLayout());
-
-        PageStatusLabel pageStatusLabel = new PageStatusLabel(lastPage);
 
         add(createFirstButton(pageStatusLabel));
         add(createPreviousButton(pageStatusLabel));
@@ -29,6 +35,14 @@ public class PaginationPanel extends JPanel {
         add(createLastButton(pageStatusLabel));
     }
 
+    @Override
+    public void updateUI() {
+        if (pageStatusLabel != null) {
+            pageStatusLabel.setLastPage(lastPage);
+            pageStatusLabel.setViewPageStatus(FIRST_PAGE);
+        }
+        super.updateUI();
+    }
 
     private JButton createFirstButton(PageStatusLabel pageStatusLabel) {
         JButton button = new JButton("<<");
@@ -76,7 +90,8 @@ public class PaginationPanel extends JPanel {
 
     private static class PageStatusLabel extends JLabel {
 
-        private final int lastPage;
+        @Setter
+        private int lastPage;
 
         public PageStatusLabel(int lastPage) {
             this.lastPage = lastPage;
