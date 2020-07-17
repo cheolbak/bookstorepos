@@ -1,101 +1,115 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import java.awt.Color;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellUserInfo;
 
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class Person_Sell extends JPanel {
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField userSerchText;
+	private JTextField useMoneyText;
+	private JPanel panel_2;
+	//private SellUserInfo;
+
 	public Person_Sell() {
 		setLayout(null);
-		
+
 		JPanel panel = new JPanel();
-		TitledBorder serchTb=new TitledBorder(new LineBorder(Color.black),"회원검색");
+		TitledBorder serchTb = new TitledBorder(new LineBorder(Color.black), "회원검색");
 		panel.setBorder(serchTb);
-		panel.setBounds(35, 51, 371, 64);
+		panel.setBounds(35, 51, 438, 64);
 		add(panel);
 		panel.setLayout(null);
-		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(17, 25, 116, 24);
-		panel.add(comboBox);
-		
-		textField = new JTextField();
-		textField.setBounds(147, 25, 210, 24);
-		panel.add(textField);
-		textField.setColumns(10);
-		
+
+		JComboBox userSerchBox = new JComboBox();
+		userSerchBox.setBounds(17, 25, 116, 24);
+		panel.add(userSerchBox);
+
+		userSerchText = new JTextField();
+		userSerchText.setBounds(147, 25, 201, 24);
+		panel.add(userSerchText);
+		userSerchText.setColumns(10);
+
+		JButton searchBtn = new JButton("확인");
+
+		searchBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		searchBtn.setBounds(355, 24, 69, 27);
+		panel.add(searchBtn);
+
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(35, 137, 371, 55);
+		panel_1.setBounds(35, 137, 438, 55);
 		add(panel_1);
 		panel_1.setLayout(null);
-		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("비회원 구매");
-		chckbxNewCheckBox.setBounds(10, 15, 131, 30);
-		panel_1.add(chckbxNewCheckBox);
-		
-		JPanel panel_2 = new JPanel();
-		TitledBorder personinfo=new TitledBorder(new LineBorder(Color.black),"회원정보");
+
+		JCheckBox unUserChckbox = new JCheckBox("비회원 구매");
+		unUserChckbox.setBounds(10, 15, 131, 30);
+		panel_1.add(unUserChckbox);
+
+		panel_2 = new JPanel();
+		TitledBorder personinfo = new TitledBorder(new LineBorder(Color.black), "회원정보");
 		panel_2.setBorder(personinfo);
-		panel_2.setBounds(35, 214, 375, 328);
+		panel_2.setBounds(35, 214, 438, 328);
 		add(panel_2);
 		panel_2.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("회원번호:");
-		lblNewLabel.setBounds(20, 40, 62, 18);
-		panel_2.add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("이름:");
-		lblNewLabel_1.setBounds(20, 80, 62, 18);
-		panel_2.add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_2 = new JLabel("전화번호:");
-		lblNewLabel_2.setBounds(20, 120, 62, 18);
-		panel_2.add(lblNewLabel_2);
-		
-		JLabel lblNewLabel_3 = new JLabel("현재 적립금:");
-		lblNewLabel_3.setBounds(20, 160, 80, 18);
-		panel_2.add(lblNewLabel_3);
-		
-		JLabel lblNewLabel_4 = new JLabel("적립예정 적립금:");
-		lblNewLabel_4.setBounds(20, 200, 120, 18);
-		panel_2.add(lblNewLabel_4);
-		
-		JLabel lblNewLabel_5 = new JLabel("사용할 적립금:");
-		lblNewLabel_5.setBounds(20, 240, 103, 18);
-		panel_2.add(lblNewLabel_5);
-		
-		JLabel lblNewLabel_6 = new JLabel("회원번호값");
-		lblNewLabel_6.setBounds(140, 40, 170, 18);
-		panel_2.add(lblNewLabel_6);
-		
-		JLabel lblNewLabel_7 = new JLabel("이름값");
-		lblNewLabel_7.setBounds(140, 80, 170, 18);
-		panel_2.add(lblNewLabel_7);
-		
-		JLabel lblNewLabel_8 = new JLabel("전화번호값");
-		lblNewLabel_8.setBounds(140, 120, 170, 18);
-		panel_2.add(lblNewLabel_8);
-		
-		JLabel lblNewLabel_9 = new JLabel("현재 적립금값");
-		lblNewLabel_9.setBounds(140, 160, 170, 18);
-		panel_2.add(lblNewLabel_9);
-		
-		JLabel lblNewLabel_10 = new JLabel("적립예정값");
-		lblNewLabel_10.setBounds(140, 200, 170, 18);
-		panel_2.add(lblNewLabel_10);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(140, 240, 170, 24);
-		panel_2.add(textField_1);
-		textField_1.setColumns(10);
 
+		JLabel userNum = new JLabel("회원번호:");
+		userNum.setBounds(20, 40, 62, 18);
+		panel_2.add(userNum);
+
+		JLabel userName = new JLabel("이름:");
+		userName.setBounds(20, 80, 62, 18);
+		panel_2.add(userName);
+
+		JLabel userphone = new JLabel("전화번호:");
+		userphone.setBounds(20, 120, 62, 18);
+		panel_2.add(userphone);
+
+		JLabel presentMoney = new JLabel("현재 적립금:");
+		presentMoney.setBounds(20, 160, 80, 18);
+		panel_2.add(presentMoney);
+
+		JLabel expectedMoney = new JLabel("적립예정 적립금:");
+		expectedMoney.setBounds(20, 200, 120, 18);
+		panel_2.add(expectedMoney);
+
+		JLabel useMoney = new JLabel("사용할 적립금:");
+		useMoney.setBounds(20, 240, 103, 18);
+		panel_2.add(useMoney);
+
+		JLabel userNumValue = new JLabel("회원번호값");
+		userNumValue.setBounds(140, 40, 170, 18);
+		panel_2.add(userNumValue);
+
+		JLabel userNameValue = new JLabel("이름값");
+		userNameValue.setBounds(140, 80, 170, 18);
+		panel_2.add(userNameValue);
+
+		JLabel userPhoneValue = new JLabel("전화번호값");
+		userPhoneValue.setBounds(140, 120, 170, 18);
+		panel_2.add(userPhoneValue);
+
+		JLabel presentMoneyValue = new JLabel("현재 적립금값");
+		presentMoneyValue.setBounds(140, 160, 170, 18);
+		panel_2.add(presentMoneyValue);
+
+		JLabel expectedMoneyValue = new JLabel("적립예정값");
+		expectedMoneyValue.setBounds(140, 200, 170, 18);
+		panel_2.add(expectedMoneyValue);
+
+		useMoneyText = new JTextField();
+		useMoneyText.setBounds(140, 240, 170, 24);
+		panel_2.add(useMoneyText);
+		useMoneyText.setColumns(10);
 	}
 }

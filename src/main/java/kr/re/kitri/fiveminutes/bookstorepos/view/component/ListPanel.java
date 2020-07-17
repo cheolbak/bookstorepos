@@ -1,8 +1,10 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ListPanel extends JPanel {
-	private JTextField totalprice_Text;
+	private JTextField totalpriceText;
 	
 	public ListPanel() {
 		setLayout(null);
@@ -12,30 +14,46 @@ public class ListPanel extends JPanel {
 		add(panel);
 		panel.setLayout(null);
 		
-		JButton selectRemove = new JButton("선택삭제");
-		selectRemove.setBounds(286, 12, 105, 27);
-		panel.add(selectRemove);
+		JButton selectRemoveBtn = new JButton("선택삭제");
+
+		selectRemoveBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		selectRemoveBtn.setBounds(286, 12, 105, 27);
+		panel.add(selectRemoveBtn);
 		
 				
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(51, 583, 405, 61);
 		add(panel_1);
 		
-		JLabel totalprice_Label = new JLabel("총계 :");
-		panel_1.add(totalprice_Label);
+		JLabel totalpriceLabel = new JLabel("총계 :");
+		panel_1.add(totalpriceLabel);
 		
-		totalprice_Text = new JTextField();
-		panel_1.add(totalprice_Text);
-		totalprice_Text.setColumns(10);
+		totalpriceText = new JTextField();
+		panel_1.add(totalpriceText);
+		totalpriceText.setColumns(10);
 		
-		JButton totalprice_Button = new JButton("결제");
-		panel_1.add(totalprice_Button);
+		JButton totalpriceBtn = new JButton("결제");
+
+		totalpriceBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		panel_1.add(totalpriceBtn);
 		
 		
 		DefaultListModel<String> m = new DefaultListModel<>();
-		JList<String>list = new JList<>(m);
+		JList<String>booklist = new JList<>(m);
 		
-		JScrollPane scrollPane = new JScrollPane(list);
+		JScrollPane scrollPane = new JScrollPane(booklist);
 		scrollPane.setBounds(51, 121, 398, 450);
 		add(scrollPane);
 		

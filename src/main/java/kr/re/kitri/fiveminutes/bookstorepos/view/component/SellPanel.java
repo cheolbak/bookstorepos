@@ -6,18 +6,17 @@ import javax.swing.JPanel;
 
 public class SellPanel extends JPanel{
 	
-	private JPanel p1;
-	private JPanel p2;
-	private JPanel p3;
+	private JPanel bookListPanel;
+	private JPanel bookInfoPanel;
+	private JPanel userInfoPanel;
 	
 	public SellPanel() {
-		p1=new ListPanel();
-		p2=new Bookinfo_Sell();
-		p3=new Person_Sell();
+		bookListPanel=new ListPanel();
+		bookInfoPanel=new Bookinfo_Sell();
+		userInfoPanel=new Person_Sell();
 		setLayout(new GridLayout());
-		add(p1);
-		add(p2);
-		add(p3);
-		
+		add(bookListPanel);
+		add(bookInfoPanel);
+		add(userInfoPanel);
 	}
 }
