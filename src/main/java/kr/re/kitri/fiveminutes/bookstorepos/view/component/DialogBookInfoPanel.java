@@ -25,9 +25,9 @@ public class DialogBookInfoPanel extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         setLayout(new GridBagLayout());
 
-        add(createBookImagePanel(), createStandardConstraints(30, 20));
+        add(createBookImagePanel(), createStandardConstraints(25, 20));
         add(createBookInfoPanel(), createInfoLabelConstraints());
-        add(createActionButtonPanel(), createStandardConstraints(10, 10));
+        add(createActionButtonPanel(), createStandardConstraints(0, 10));
     }
 
     private GridBagConstraints createStandardConstraints(int left, int right) {
@@ -75,10 +75,10 @@ public class DialogBookInfoPanel extends JPanel {
     }
 
     private JLabel reduceTextAndCreateLabel(String text) {
-        if (text.length() <= 22) {
+        if (text.length() <= 20) {
             return new JLabel(text);
         }
-        JLabel label = new JLabel(text.substring(0, 20) + "...");
+        JLabel label = new JLabel(text.substring(0, 18) + "...");
         label.setToolTipText(text);
         return label;
     }
@@ -110,9 +110,7 @@ public class DialogBookInfoPanel extends JPanel {
 
     private JButton createStockAddButton() {
         JButton button = new JButton("추가");
-        button.addActionListener(e -> {
-            addStockClickListener.click(new AddStockClickEvent(dialogBookInfo));
-        });
+        button.addActionListener(e -> addStockClickListener.click(new AddStockClickEvent(dialogBookInfo)));
         return button;
     }
 

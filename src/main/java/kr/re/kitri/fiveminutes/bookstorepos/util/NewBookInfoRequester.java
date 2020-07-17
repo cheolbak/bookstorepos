@@ -1,19 +1,19 @@
 package kr.re.kitri.fiveminutes.bookstorepos.util;
 
-import com.google.gson.*;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,23 +22,29 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class DialogBookInfoRequester {
+public class NewBookInfoRequester {
+
+    private NewBookInfoRequester() { }
 
     private static final File TEMP_DIR =
             Paths.get(System.getProperty("java.io.tmpdir"), "BookStorePOSApp").toFile();
 
     public static SearchMeta requestRecommendNewBookEachPage(NewBookCondition condition, int page) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
-        String newYmw = condition.getYearMonth().format(formatter) + condition.getWeekOfMonth();
+        YearMonth yearMonth = condition.getYearMonth();
+        String year = String.valueOf(yearMonth.getYear());
+        String month = String.format("%02d", yearMonth.getMonthValue());
+        String week = String.valueOf(condition.getWeekOfMonth());
         String categoryCode = condition.getCategory().getCode();
         String sortCode = condition.getSort().getRequestName();
 
         initTempDir();
-        String fileName = "newbook_" + newYmw + "_" + categoryCode + "_" + sortCode + ".html";
+        String fileName = "newbook_" + year + month + week + "_" + categoryCode + "_" + sortCode + ".html";
         File file = new File(TEMP_DIR, fileName);
 
         List<DialogBookInfo> infoList = new ArrayList<>();
@@ -53,15 +59,13 @@ public class DialogBookInfoRequester {
 
             DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
             String html = file.exists() ? Files.readString(file.toPath())
-                                        : requestWebNewBookHtmlAndSaveTempFile(newYmw, categoryCode, sortCode, file);
+                                        : requestWebNewBookHtmlAndSaveTempFile(year, month, week, categoryCode, sortCode, file);
             Document doc = Jsoup.parse(html);
             if (page > 0) {
                 int totalCount = Integer.parseInt(doc.select("tr").last().select("td:eq(0)").get(0).text());
                 metaBuilder.totalCount(totalCount);
-                metaBuilder.pageableCount(0);
                 String selector = pagingSelectHtmlTag(totalCount, page);
                 Elements rowList = doc.select(selector);
-                metaBuilder.isEnd(selector.matches("^table tr:gt\\([0-9]+\\)$"));
                 for (Element row : rowList) {
                     Elements cellList = row.select("td:gt(0)");
                     String isbn = cellList.get(0).text();
@@ -87,6 +91,7 @@ public class DialogBookInfoRequester {
         return metaBuilder.bookInfoList(infoList).build();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void initTempDir() {
         if (!TEMP_DIR.isDirectory()) {
             log.debug("TEMP_DIR is not directory.");
@@ -99,12 +104,12 @@ public class DialogBookInfoRequester {
         }
     }
 
-    private static String requestWebNewBookHtmlAndSaveTempFile(String newYmw, String categoryCode, String sortCode, File saveFile) {
+    private static String requestWebNewBookHtmlAndSaveTempFile(String year, String month, String week, String categoryCode, String sortCode, File saveFile) {
         FormBody form = new FormBody.Builder()
                 .add("mallGb", "KOR")
                 .add("tabGB", "1")
                 .add("subEjkGb", "KOR")
-                .add("newYmw", newYmw)
+                .add("newYmw", year + month + week)
                 .add("linkClass", categoryCode)
                 .add("sortColumn", sortCode)
                 .add("excelYn", "Y")
@@ -114,6 +119,9 @@ public class DialogBookInfoRequester {
                 .add("targetPage", "")
                 .add("filter", "ALL")
                 .add("loginYN", "N")
+                .add("yyyy", year)
+                .add("mm", month)
+                .add("week", week)
                 .build();
 
         Request req = new Request.Builder()
@@ -153,99 +161,4 @@ public class DialogBookInfoRequester {
         reader.close();
         return result;
     }
-
-    public static List<DialogBookInfo> requestBookSearchManyISBNs(List<String> isbnList) {
-        return isbnList.stream()
-                .map(DialogBookInfoRequester::requestBookSearchScopeISBN)
-                .collect(Collectors.toList());
-    }
-
-    public static DialogBookInfo requestBookSearchScopeISBN(String isbn) {
-        return requestBookSearchEachTenResult(BookSearchScope.ISBN, isbn, 1).getBookInfoList().get(0);
-    }
-
-    public static SearchMeta requestBookSearchEachTenResult(BookSearchScope scope, String query, int page) {
-        if (!(scope == BookSearchScope.ISBN && !query.matches("^97[89][0-9]{10}$"))) {
-            String url = "https://dapi.kakao.com/v3/search/book?query="
-                    + URLEncoder.encode(query, StandardCharsets.UTF_8)
-                    + "&scope=" + scope.getRequestName()
-                    + "&size=10&page=" + page;
-
-            Request req = new Request.Builder()
-                    .get()
-                    .url(url)
-                    .addHeader("Authorization", "KakaoAK 2a22f05dfbf98250a6ae67b4eed0b461")
-                    .build();
-
-            try {
-                Response res = new OkHttpClient().newCall(req).execute();
-                if (res.code() != 200) {
-                    throw new IOException("요청 에러: " + res.code() + ", " + Objects.requireNonNull(res.body(), "").string());
-                }
-                String body = Objects.requireNonNull(res.body()).string();
-
-                JsonObject jsonObject = JsonParser.parseString(body).getAsJsonObject();
-                JsonArray documents = jsonObject.get("documents").getAsJsonArray();
-                JsonObject meta = jsonObject.get("meta").getAsJsonObject();
-
-                return SearchMeta.builder()
-                        .totalCount(meta.get("total_count").getAsInt())
-                        .pageableCount(meta.get("pageable_count").getAsInt())
-                        .isEnd(meta.get("is_end").getAsBoolean())
-                        .bookInfoList(parseJsonToDialogBookInfoList(documents))
-                        .build();
-            } catch (IOException | NullPointerException e) {
-                if (log.isDebugEnabled()) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return SearchMeta.builder()
-                .totalCount(0)
-                .pageableCount(0)
-                .isEnd(true)
-                .bookInfoList(Collections.singletonList(DialogBookInfo.builder().build()))
-                .build();
-    }
-
-    private static List<DialogBookInfo> parseJsonToDialogBookInfoList(JsonArray documents) throws IOException {
-        List<DialogBookInfo> bookInfoList = new ArrayList<>();
-
-        for (JsonElement document : documents) {
-            JsonObject obj = document.getAsJsonObject();
-
-            String isbn = Arrays.stream(obj.get("isbn").getAsString().split(" "))
-                    .filter(s -> s.matches("^97[89][0-9]{10}$"))
-                    .findFirst().orElseThrow(() -> new JsonParseException("ISBN을 찾을 수 없습니다."));
-
-            String authors = joinJsonArrayString(obj.get("authors").getAsJsonArray(), "", "");
-            String translators = joinJsonArrayString(obj.get("translators").getAsJsonArray(), " (번역: ", ")");
-
-            bookInfoList.add(
-                    DialogBookInfo.builder()
-                            .isbn(isbn)
-                            .title(obj.get("title").getAsString())
-                            .author(authors + translators)
-                            .publisher(obj.get("publisher").getAsString())
-                            .price(obj.get("price").getAsInt())
-                            .releaseDate(LocalDate.from(OffsetDateTime.parse(obj.get("datetime").getAsString())))
-                            .bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn))
-                            .build());
-        }
-        return bookInfoList;
-    }
-
-    private static String joinJsonArrayString(JsonArray jsonArray, String prefix, String suffix) {
-        Iterator<JsonElement> it = jsonArray.iterator();
-        if (!it.hasNext()) {
-            return "";
-        }
-        StringJoiner joiner = new StringJoiner(", ", prefix, suffix);
-
-        while (it.hasNext()) {
-            joiner.add(it.next().getAsString());
-        }
-        return joiner.toString();
-    }
-
 }

@@ -12,9 +12,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 
 @Slf4j
 public class BookCoverImageRequester {
@@ -32,7 +34,16 @@ public class BookCoverImageRequester {
 
         String url = requestImageUrl(isbn);
         log.debug("Book {} GetImageUrl: {}", isbn, url);
-        return ImageIO.read(saveImageFileInTempDir(url, fileName));
+        try {
+            return ImageIO.read(saveImageFileInTempDir(url, fileName));
+        }
+        catch (IOException | NullPointerException ignore) { }
+
+        InputStream errLoadImgIn = BookCoverImageRequester.class.getClassLoader().getResourceAsStream("cover_load_error.jpg");
+        if (errLoadImgIn != null) {
+            return ImageIO.read(errLoadImgIn);
+        }
+        throw new IOException("Image Load Error");
     }
 
     public static BufferedImage requestThumbnailBookCoverImage(String isbn) throws IOException {
@@ -56,6 +67,7 @@ public class BookCoverImageRequester {
         return resizedImage;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void initTempDir() {
         if (!TEMP_DIR.isDirectory()) {
             log.debug("TEMP_DIR is not directory.");
@@ -78,14 +90,18 @@ public class BookCoverImageRequester {
         return document.select("div.cover img").attr("src");
     }
 
-    private static File saveImageFileInTempDir(String imageUrl, String fileName) throws IOException {
+    private static File saveImageFileInTempDir(String imageUrl, String fileName) throws IOException, NullPointerException {
+        if (imageUrl == null || imageUrl.isBlank()) {
+            throw new IOException("URL을 받아오지 못했습니다.");
+        }
+        URI uri = URI.create(imageUrl);
         Request req = new Request.Builder()
                                 .get()
-                                .url(imageUrl)
+                                .url(uri.toURL())
                                 .build();
 
-        InputStream in = new OkHttpClient().newCall(req)
-                                .execute().body().byteStream();
+        InputStream in = Objects.requireNonNull(new OkHttpClient().newCall(req)
+                                                .execute().body()).byteStream();
         File file = new File(TEMP_DIR, fileName);
         Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         in.close();

@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum BookSearchScope {
 
-    TITLE("제목", "title"),
-    PERSON("저자/번역자", "person"),
-    PUBLISHER("출판사", "publisher"),
-    ISBN("ISBN", "isbn");
+    TITLE("제목", "d_titl"),
+    PERSON("저자/번역자", "d_auth"),
+    PUBLISHER("출판사", "d_publ"),
+    ISBN("ISBN", "d_isbn");
 
     private final String viewName;
 

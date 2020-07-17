@@ -1,7 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
 import kr.re.kitri.fiveminutes.bookstorepos.util.DateUtilities;
-import kr.re.kitri.fiveminutes.bookstorepos.util.DialogBookInfoRequester;
+import kr.re.kitri.fiveminutes.bookstorepos.util.NewBookInfoRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
@@ -17,7 +17,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -154,6 +154,8 @@ public class NewBookListDialogFrame extends JFrame implements DialogBookInfoRece
         monthComboBox.setSelectedItem(YearMonth.now().getMonth().getDisplayName(TextStyle.FULL, Locale.KOREA));
         weekOfMonthComboBox.setSelectedIndex(DateUtilities.currentWeekOfMonth(LocalDate.now(), DayOfWeek.SUNDAY) - 1);
 
+        Arrays.stream(conditionAcceptButton.getActionListeners()).forEach(actionListener -> actionListener.actionPerformed(null));
+
         return panel;
     }
 
@@ -184,12 +186,12 @@ public class NewBookListDialogFrame extends JFrame implements DialogBookInfoRece
     }
 
     private void updatePanel() {
-        SearchMeta searchMeta = DialogBookInfoRequester.requestRecommendNewBookEachPage(newBookCondition, 1);
+        SearchMeta searchMeta = NewBookInfoRequester.requestRecommendNewBookEachPage(newBookCondition, 1);
         dialogBookInfoListPanel.setDialogBookInfoList(searchMeta.getBookInfoList());
         dialogBookInfoListPanel.updateUI();
         paginationPanel.setLastPage(searchMeta.getTotalCount() / 10 + 1);
         paginationPanel.setPageChangeListener(e -> {
-            SearchMeta meta = DialogBookInfoRequester.requestRecommendNewBookEachPage(newBookCondition, e.getCurrentPageNumber());
+            SearchMeta meta = NewBookInfoRequester.requestRecommendNewBookEachPage(newBookCondition, e.getCurrentPageNumber());
             dialogBookInfoListPanel.setDialogBookInfoList(meta.getBookInfoList());
             dialogBookInfoListPanel.updateUI();
             e.getPaginationPanel().updateUI();
@@ -216,6 +218,7 @@ public class NewBookListDialogFrame extends JFrame implements DialogBookInfoRece
 
     @Override
     public void receiveBookInfo(DialogBookInfo info) {
+        JOptionPane.showConfirmDialog(this, info.getIsbn());
         // TODO: 재고 추가 액션
     }
 }

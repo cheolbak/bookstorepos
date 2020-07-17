@@ -9,20 +9,11 @@ import org.junit.jupiter.api.Test;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-public class DialogBookInfoRequesterTest {
-
-    @Test
-    public void isbnSearch() {
-        String isbn = "9791136707031";
-        DialogBookInfo info = DialogBookInfoRequester.requestBookSearchScopeISBN(isbn);
-        log.info("info: {}", info.toString());
-        assertEquals(info.getIsbn(), isbn);
-    }
+public class NewBookInfoRequesterTest {
 
     @Test
     public void getNewBookList() {
@@ -32,8 +23,8 @@ public class DialogBookInfoRequesterTest {
                 .category(NewBookCondition.Category.COMICS)
                 .sort(NewBookCondition.Sort.SALE_QUANTITY)
                 .build();
-        SearchMeta infoList = DialogBookInfoRequester.requestRecommendNewBookEachPage(condition, 2);
-        log.debug("totalPage: {}, isEnd: {}", infoList.getTotalCount(), infoList.isEnd());
+        SearchMeta infoList = NewBookInfoRequester.requestRecommendNewBookEachPage(condition, 2);
+        log.debug("totalPage: {}", infoList.getTotalCount());
         for (DialogBookInfo info : infoList.getBookInfoList()) {
             log.debug("{}", info);
         }
