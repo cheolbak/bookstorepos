@@ -1,13 +1,16 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import java.awt.Color;
-import java.awt.Component;
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
+import kr.re.kitri.fiveminutes.bookstorepos.service.StockAdd;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.BarcodeImageReadDialogFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.NewBookListDialogFrame;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
@@ -15,8 +18,10 @@ public class Bookinfo_Stock extends JPanel {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
+	private StockPanel stockPanel;
 
-	public Bookinfo_Stock() {
+	public Bookinfo_Stock(StockPanel stockPanel) {
+		this.stockPanel = stockPanel;
 		setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -36,20 +41,40 @@ public class Bookinfo_Stock extends JPanel {
 		JButton add_Button = new JButton("등록");
 		add_Button.setBounds(274, 5, 61, 27);
 		panel.add(add_Button);
+
 		
 		JButton picture_Button = new JButton("사진인식");
 		picture_Button.setBounds(340, 5, 89, 27);
 		panel.add(picture_Button);
-		
-	
-		
+		picture_Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BarcodeImageReadDialogFrame f = new BarcodeImageReadDialogFrame();
+				f.setVisible(true);
+			}
+		});
+
 		JButton bookserch_Button = new JButton("책 검색");
 		bookserch_Button.setBounds(528, 5, 79, 27);
 		panel.add(bookserch_Button);
+		bookserch_Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BookSearchDialogFrame f = new BookSearchDialogFrame();
+				f.setVisible(true);
+			}
+		});
 		
 		JButton newbook_Button = new JButton("신간목록");
 		newbook_Button.setBounds(621, 5, 89, 27);
 		panel.add(newbook_Button);
+		newbook_Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				NewBookListDialogFrame f = new NewBookListDialogFrame();
+				f.setVisible(true);
+			}
+		});
 		
 		JPanel panel_1 = new JPanel();
 		TitledBorder tb=new TitledBorder(new LineBorder(Color.black),"책 정보");
@@ -142,5 +167,45 @@ public class Bookinfo_Stock extends JPanel {
 		lblNewLabel_4.setBounds(440, 280, 62, 18);
 		panel_1.add(lblNewLabel_4);
 
+		add_Button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String isbn = textField.getText();
+				if(isbn.equals("")){
+					return;
+				}
+
+				StockAdd stockAdd = new StockAdd(isbn);
+				Book book = stockAdd.searchBook();
+
+
+				/*
+				Book book = new Book();
+				book.setBookTitle("testing");
+				book.setBookMSRP(10);
+				book.setBookDiscountRate(10);
+				*/
+
+				returnToListPanel(book);
+			}
+
+			public void returnToListPanel(Book book){
+				ListPanel p = stockPanel.getP1();
+				DefaultListModel<String> m = p.getM();
+				JList<String>list = p.getList();
+
+				m.addElement(book.getBookTitle() + "  " + book.getBookAuthor() +
+						"  " + book.getBookPublisher() + "  " + book.getBookMSRP() +
+						"  " + book.getBookDiscountRate() + "  " + book.getBookPointRate() +
+						"  " + book.getBookISBN());
+
+				JTextField totalPrice = p.getTotalprice_Text();
+				int total = 0;
+				for(int i=0;i<m.size();i++){
+					total += ( 100 - book.getBookDiscountRate()) * 0.01 * book.getBookMSRP();
+				}
+				totalPrice.setText(total+"");
+				p.setTotalprice_Text(totalPrice);
+			}
+		});
 	}
 }
