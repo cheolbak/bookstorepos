@@ -97,7 +97,6 @@ public class RecordPanel extends JPanel {
 
         completeBtn.setLocation(150,550);
 
-
         return chartSetPanel;
     }
 }
