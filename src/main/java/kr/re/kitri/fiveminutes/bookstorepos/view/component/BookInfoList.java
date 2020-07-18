@@ -1,41 +1,50 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.util.Util;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
-public class StockRegisterList extends JList<StockBookInfo> implements DataRegister<StockBookInfo> {
+public class BookInfoList extends JList<BookInfo> implements DataRegister<BookInfo> {
 
-    private final StockRegisterListModel listModel;
+    private final BookInfoListModel listModel;
 
-    public StockRegisterList() {
-        this.listModel = new StockRegisterListModel();
+    public BookInfoList() {
+        this.listModel = new BookInfoListModel();
 
-        setCellRenderer(new StockRegisterListCellRenderer());
+        setCellRenderer(new BookInfoListCellRenderer());
         setModel(listModel);
     }
 
     @Override
-    public void put(StockBookInfo info) {
+    public void put(BookInfo info) {
         listModel.put(info);
     }
 
-    public void removeAt(int index) {
-        listModel.removeAt(index);
+    public void removeAtSelected() {
+        if (getSelectedIndex() == -1) {
+            return;
+        }
+        BookInfo value = getSelectedValue();
+        remove(value.getIsbn());
     }
 
-    private static class StockRegisterListCellRenderer implements ListCellRenderer<StockBookInfo> {
+    public void remove(String isbn) {
+        listModel.remove(isbn);
+    }
+
+    private static class BookInfoListCellRenderer implements ListCellRenderer<BookInfo> {
 
         private final ListCellPanel panel = new ListCellPanel();
 
         @Override
-        public Component getListCellRendererComponent(JList<? extends StockBookInfo> parentList, StockBookInfo value,
+        public Component getListCellRendererComponent(JList<? extends BookInfo> parentList, BookInfo value,
                                                       int index, boolean isSelected, boolean cellHasFocus) {
             return panel.setInfoView(value).status(isSelected);
         }
@@ -47,7 +56,7 @@ public class StockRegisterList extends JList<StockBookInfo> implements DataRegis
                 setBackground(Color.WHITE);
             }
 
-            public ListCellPanel setInfoView(StockBookInfo info) {
+            public ListCellPanel setInfoView(BookInfo info) {
                 setToolTipText(info.getTitle());
                 initPanel(info);
                 return this;
@@ -65,25 +74,26 @@ public class StockRegisterList extends JList<StockBookInfo> implements DataRegis
                 return this;
             }
 
-            private void initPanel(StockBookInfo info) {
+            private void initPanel(BookInfo info) {
                 removeAll();
                 add(createBookCoverImageLabel(info.getBookCoverImage()), createImageLabelConstraints());
                 add(createInfoLabelsPanel(info), createInfoLabelsConstraints());
-                add(createStockInfoLabelsPanel(info), createStockLabelsConstraints());
             }
 
             private JLabel createBookCoverImageLabel(BufferedImage original) {
-                BufferedImage image = Util.resizeImage(original, 36, 54);
+                BufferedImage image = Util.resizeImage(original, 40, 60);
                 JLabel label = new JLabel(new ImageIcon(image));
                 label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 return label;
             }
 
-            private JPanel createInfoLabelsPanel(StockBookInfo info) {
+            private JPanel createInfoLabelsPanel(BookInfo info) {
+                NumberFormat numFormat = NumberFormat.getInstance();
+                numFormat.setCurrency(Currency.getInstance(Locale.KOREA));
                 List<InfoLabelsPanel.Entry<JLabel>> entries = Arrays.asList(
                         new InfoLabelsPanel.Entry<>("ISBN", new JLabel(info.getIsbn())),
                         new InfoLabelsPanel.Entry<>("제목", reduceTextAndCreateLabel(info.getTitle())),
-                        new InfoLabelsPanel.Entry<>("출판", reduceTextAndCreateLabel(info.getPublisher()))
+                        new InfoLabelsPanel.Entry<>("가격", new JLabel(numFormat.format(info.getPrice())))
                 );
                 InfoLabelsPanel<JLabel> labelPanel = new InfoLabelsPanel<>(entries, 4, 2);
                 labelPanel.setBackground(new Color(255, 255, 255, 0));
@@ -91,23 +101,12 @@ public class StockRegisterList extends JList<StockBookInfo> implements DataRegis
             }
 
             private JLabel reduceTextAndCreateLabel(String text) {
-                if (text.length() <= 20) {
+                if (text.length() <= 28) {
                     return new JLabel(text);
                 }
-                JLabel label = new JLabel(text.substring(0, 18) + "...");
+                JLabel label = new JLabel(text.substring(0, 26) + "...");
                 label.setToolTipText(text);
                 return label;
-            }
-
-            private JPanel createStockInfoLabelsPanel(StockBookInfo info) {
-                List<InfoLabelsPanel.Entry<JLabel>> entries = Arrays.asList(
-                        new InfoLabelsPanel.Entry<>("가격", new JLabel(String.valueOf(info.getOriginalPrice()))),
-                        new InfoLabelsPanel.Entry<>("현재", new JLabel(String.valueOf(info.getCurrentStock()))),
-                        new InfoLabelsPanel.Entry<>("추가", new JLabel(String.valueOf(info.getInsertStock())))
-                );
-                InfoLabelsPanel<JLabel> labelPanel = new InfoLabelsPanel<>(entries, 4, 2);
-                labelPanel.setBackground(new Color(255, 255, 255, 0));
-                return labelPanel;
             }
 
             private GridBagConstraints createImageLabelConstraints() {
@@ -121,14 +120,7 @@ public class StockRegisterList extends JList<StockBookInfo> implements DataRegis
                 GridBagConstraints c = new GridBagConstraints();
                 c.insets = new Insets(5, 5, 5, 5);
                 c.anchor = GridBagConstraints.WEST;
-                c.weightx = 0.2;
-                return c;
-            }
-
-            private GridBagConstraints createStockLabelsConstraints() {
-                GridBagConstraints c = new GridBagConstraints();
-                c.insets = new Insets(5, 5, 5, 5);
-                c.anchor = GridBagConstraints.WEST;
+                c.weightx = 0.1;
                 return c;
             }
 
@@ -136,29 +128,33 @@ public class StockRegisterList extends JList<StockBookInfo> implements DataRegis
 
     } // StockRegisterListCellRenderer inner class End
 
-    private static class StockRegisterListModel implements ListModel<StockBookInfo> {
-        private final List<StockBookInfo> bookInfoList;
+    private static class BookInfoListModel implements ListModel<BookInfo> {
+        private final List<String> isbnList;
+        private final Map<String, BookInfo> bookInfoMap;
 
-        public StockRegisterListModel() {
-            this.bookInfoList = new ArrayList<>();
+        public BookInfoListModel() {
+            this.isbnList = new ArrayList<>();
+            this.bookInfoMap = new HashMap<>();
         }
 
-        public void put(StockBookInfo info) {
-            bookInfoList.add(info);
+        public void put(BookInfo info) {
+            isbnList.add(info.getIsbn());
+            bookInfoMap.put(info.getIsbn(), info);
         }
 
-        public void removeAt(int index) {
-            bookInfoList.remove(index);
+        public void remove(String isbn) {
+            isbnList.remove(isbn);
+            bookInfoMap.remove(isbn);
         }
 
         @Override
         public int getSize() {
-            return bookInfoList.size();
+            return isbnList.size();
         }
 
         @Override
-        public StockBookInfo getElementAt(int index) {
-            return bookInfoList.get(index);
+        public BookInfo getElementAt(int index) {
+            return bookInfoMap.get(isbnList.get(index));
         }
 
         @Override

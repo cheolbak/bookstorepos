@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ListPanel extends JPanel {
 	private JTextField totalpriceText;
@@ -19,15 +18,13 @@ public class ListPanel extends JPanel {
 		panel.setBounds(51, 50, 405, 53);
 		add(panel);
 		panel.setLayout(null);
+
+
+
 		
 		JButton selectRemoveBtn = new JButton("선택삭제");
 
-		selectRemoveBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
 
-			}
-		});
 
 		selectRemoveBtn.setBounds(286, 12, 105, 27);
 		panel.add(selectRemoveBtn);
@@ -66,13 +63,21 @@ public class ListPanel extends JPanel {
 //
 //
 //		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
 		List<String> isbnList = List.of("9791165074524", "9788959529377", "9788966189984");
 		List<DialogBookInfo> dialogBookInfo = BookInfoSearchRequester.requestBookSearchManyISBNs(isbnList);
-		StockRegisterList stockRegisterList = new StockRegisterList();
-		dialogBookInfo.stream().map(StockBookInfo::fromDialogBookInfo).forEach(stockRegisterList::put);
-		stockRegisterList.setBounds(51, 121, 398, 450);
-		add(stockRegisterList);
+		BookInfoList bookInfoList = new BookInfoList();
+		dialogBookInfo.stream().map(StockBookInfo::fromDialogBookInfo).forEach(bookInfoList::put);
+		bookInfoList.setBounds(51, 121, 398, 450);
+		add(bookInfoList);
 
+		selectRemoveBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				bookInfoList.removeAtSelected();
+				bookInfoList.updateUI();
+			}
+		});
 	}
 
 }

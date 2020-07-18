@@ -8,14 +8,14 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class StockBookInfo {
+public class StockBookInfo implements BookInfo {
 
     private String isbn;
     private String title;
     private String author;
     private String publisher;
     private LocalDate releaseDate;
-    private int originalPrice;
+    private int price;
     private BufferedImage bookCoverImage;
 
     @Builder.Default
@@ -42,7 +42,7 @@ public class StockBookInfo {
                 .publisher(dialogInfo.getPublisher())
                 .releaseDate(dialogInfo.getReleaseDate())
                 .bookCoverImage(dialogInfo.getBookCoverImage())
-                .originalPrice(dialogInfo.getPrice())
+                .price(dialogInfo.getPrice())
                 .insertStock(insertStock)
                 .build();
     }
