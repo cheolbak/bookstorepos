@@ -68,9 +68,13 @@ public class ListPanel extends JPanel {
 				if(selected == -1){
 					return;
 				}
+				String[] splitStr = m.get(selected).split("  ");
+
+				int minusPrice = (int) ((100 - Integer.parseInt(splitStr[4])) * 0.01 * Integer.parseInt(splitStr[3]));
+				int totalPrice = Integer.parseInt(totalprice_Text.getText());
+
+				totalprice_Text.setText((totalPrice-minusPrice)+"");
 				m.remove(selected);
-
-
 			}
 		});
 
