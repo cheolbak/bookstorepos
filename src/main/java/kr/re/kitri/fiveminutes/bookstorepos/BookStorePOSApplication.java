@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.MainFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
 
 import javax.swing.*;
 

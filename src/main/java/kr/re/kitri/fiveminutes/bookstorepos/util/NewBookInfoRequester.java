@@ -77,7 +77,7 @@ public class NewBookInfoRequester {
                             .publisher(cellList.get(3).text())
                             .releaseDate(LocalDate.parse(cellList.get(4).text(), parseFormat))
                             .price(NumberFormat.getInstance().parse(cellList.get(5).text().substring(1)).intValue())
-                            .bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn))
+                            .bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn, 125, 190))
                             .build();
                     infoList.add(info);
                 }

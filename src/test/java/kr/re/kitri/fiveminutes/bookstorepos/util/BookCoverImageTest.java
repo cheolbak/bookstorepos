@@ -25,7 +25,7 @@ public class BookCoverImageTest {
 
     @Test
     public void requestThumbnailImage() throws IOException, InterruptedException {
-        BufferedImage bufferedImage = BookCoverImageRequester.requestThumbnailBookCoverImage("9788958077633");
+        BufferedImage bufferedImage = BookCoverImageRequester.requestThumbnailBookCoverImage("9788958077633", 125, 190);
         JFrame frame = new JFrame();
         JLabel label = new JLabel();
         label.setIcon(new ImageIcon(bufferedImage));

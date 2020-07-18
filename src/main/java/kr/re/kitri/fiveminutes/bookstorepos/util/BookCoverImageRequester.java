@@ -46,13 +46,20 @@ public class BookCoverImageRequester {
         throw new IOException("Image Load Error");
     }
 
-    public static BufferedImage requestThumbnailBookCoverImage(String isbn) throws IOException {
+    public static BufferedImage requestThumbnailBookCoverImage(String isbn, int maxWidth, int maxHeight) throws IOException {
         BufferedImage originalImage = requestBookCoverImage(isbn);
 
         int originalWidth = originalImage.getWidth();
         int originalHeight = originalImage.getHeight();
 
-        double ratio = (double) 125 / (double) originalWidth;
+        double ratio = 1.;
+
+        if (originalWidth > maxWidth && (double) maxWidth / (double) originalWidth < ratio) {
+            ratio = (double) maxWidth / (double) originalWidth;
+        }
+        if (originalHeight > maxHeight && (double) maxHeight / (double) originalHeight < ratio) {
+            ratio = (double) maxHeight / (double) originalHeight;
+        }
 
         int resizedWidth = (int) (originalWidth * ratio);
         int resizedHeight = (int) (originalHeight * ratio);

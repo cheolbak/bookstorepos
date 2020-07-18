@@ -98,10 +98,7 @@ public class BookInfoSearchRequester {
 
         XPathExpression xPath = XPathFactory.newInstance().newXPath().compile("//rss/channel/item");
         NodeList itemNodes = (NodeList) xPath.evaluate(doc, XPathConstants.NODESET);
-        log.debug("itemNodes.getLength(): {}", itemNodes.getLength());
         ItemInfoIterator: for (int i = 0; i < itemNodes.getLength(); i++) {
-            log.debug("iterator i: {}", i);
-            log.debug("getNodeName(): {}", itemNodes.item(i).getNodeName());
             if (!itemNodes.item(i).getNodeName().equals("item")) {
                 continue;
             }
@@ -109,10 +106,8 @@ public class BookInfoSearchRequester {
 
             DialogBookInfo.DialogBookInfoBuilder builder = DialogBookInfo.builder();
             String isbn = "";
-            log.debug("itemChildNodes.getLength(): {}", itemChildNodes.getLength());
             for (int j = 0; j < itemChildNodes.getLength(); j++) {
                 Node item = itemChildNodes.item(j);
-                log.debug("item getNodeName: {}", item.getNodeName());
                 String nodeName = item.getNodeName();
                 switch (nodeName) {
                     case "title":
@@ -146,7 +141,7 @@ public class BookInfoSearchRequester {
                         break;
                 }
             }
-            builder.bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn));
+            builder.bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn, 125, 190));
 
             bookList.add(builder.build());
         }

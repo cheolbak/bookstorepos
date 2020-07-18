@@ -1,7 +1,13 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
+import kr.re.kitri.fiveminutes.bookstorepos.util.BookInfoSearchRequester;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListPanel extends JPanel {
 	private JTextField totalpriceText;
@@ -50,17 +56,23 @@ public class ListPanel extends JPanel {
 		panel_1.add(totalpriceBtn);
 		
 		
-		DefaultListModel<String> m = new DefaultListModel<>();
-		JList<String>booklist = new JList<>(m);
+//		DefaultListModel<String> m = new DefaultListModel<>();
+//		JList<String>booklist = new JList<>(m);
 		
-		JScrollPane scrollPane = new JScrollPane(booklist);
-		scrollPane.setBounds(51, 121, 398, 450);
-		add(scrollPane);
-		
-		
-		
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	
+//		JScrollPane scrollPane = new JScrollPane(booklist);
+//		scrollPane.setBounds(51, 121, 398, 450);
+//		add(scrollPane);
+//
+//
+//
+//		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		List<String> isbnList = List.of("9791165074524", "9788959529377", "9788966189984");
+		List<DialogBookInfo> dialogBookInfo = BookInfoSearchRequester.requestBookSearchManyISBNs(isbnList);
+		StockRegisterList stockRegisterList = new StockRegisterList();
+		dialogBookInfo.stream().map(StockBookInfo::fromDialogBookInfo).forEach(stockRegisterList::put);
+		stockRegisterList.setBounds(51, 121, 398, 450);
+		add(stockRegisterList);
+
 	}
 
 }
