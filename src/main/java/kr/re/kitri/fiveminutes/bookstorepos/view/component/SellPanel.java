@@ -5,11 +5,11 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 
 public class SellPanel extends JPanel{
-	
+
 	private JPanel p1;
 	private JPanel p2;
 	private JPanel p3;
-	
+
 	public SellPanel() {
 		p1=new ListPanel();
 		p2=new Bookinfo_Sell();
@@ -18,6 +18,6 @@ public class SellPanel extends JPanel{
 		add(p1);
 		add(p2);
 		add(p3);
-		
+
 	}
 }

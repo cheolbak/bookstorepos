@@ -5,6 +5,8 @@ import kr.re.kitri.fiveminutes.bookstorepos.service.StockAdd;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BarcodeImageReadDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.NewBookListDialogFrame;
+import lombok.Data;
+import lombok.ToString;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,10 +16,23 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+@Data
 public class Bookinfo_Stock extends JPanel {
 	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JLabel subjectV_Label;
+	private JLabel lblNewLabel_2_1;
+	private JLabel lblNewLabel_2_2;
+	private JLabel lblNewLabel_2_3;
+	private JLabel lblNewLabel_2_4;
+	private JLabel lblNewLabel_2_5;
+	private JLabel lblNewLabel_2_6;
+	private JLabel lblNewLabel_2_7;
+	private JLabel lblNewLabel_2_9;
+	private JLabel lblNewLabel_1_8;
+	private JLabel lblNewLabel_3;
+	private JLabel lblNewLabel_4;
+
+	@ToString.Exclude
 	private StockPanel stockPanel;
 
 	public Bookinfo_Stock(StockPanel stockPanel) {
@@ -119,51 +134,51 @@ public class Bookinfo_Stock extends JPanel {
 		addStock_Label.setBounds(35, 360, 62, 18);
 		panel_1.add(addStock_Label);
 				
-		JLabel subjectV_Label = new JLabel("제목 값");
+		subjectV_Label = new JLabel("제목 값");
 		subjectV_Label.setBounds(130, 40, 164, 18);
 		panel_1.add(subjectV_Label);
 		
-		JLabel lblNewLabel_2_1 = new JLabel("저자 값");
+		lblNewLabel_2_1 = new JLabel("저자 값");
 		lblNewLabel_2_1.setBounds(130, 80, 164, 18);
 		panel_1.add(lblNewLabel_2_1);
 		
-		JLabel lblNewLabel_2_2 = new JLabel("출판사 값");
+		lblNewLabel_2_2 = new JLabel("출판사 값");
 		lblNewLabel_2_2.setBounds(130, 120, 164, 18);
 		panel_1.add(lblNewLabel_2_2);
 		
-		JLabel lblNewLabel_2_3 = new JLabel("isbn값");
+		lblNewLabel_2_3 = new JLabel("isbn값");
 		lblNewLabel_2_3.setBounds(130, 160, 164, 18);
 		panel_1.add(lblNewLabel_2_3);
 		
-		JLabel lblNewLabel_2_4 = new JLabel("정가 값");
+		lblNewLabel_2_4 = new JLabel("정가 값");
 		lblNewLabel_2_4.setBounds(130, 200, 164, 18);
 		panel_1.add(lblNewLabel_2_4);
 		
-		JLabel lblNewLabel_2_5 = new JLabel("판매가 값");
+		lblNewLabel_2_5 = new JLabel("판매가 값");
 		lblNewLabel_2_5.setBounds(130, 240, 164, 18);
 		panel_1.add(lblNewLabel_2_5);
 		
-		JLabel lblNewLabel_2_6 = new JLabel("적립금 값");
+		lblNewLabel_2_6 = new JLabel("적립금 값");
 		lblNewLabel_2_6.setBounds(130, 280, 164, 18);
 		panel_1.add(lblNewLabel_2_6);
 		
-		JLabel lblNewLabel_2_7 = new JLabel("현재 재고량 값");
+		lblNewLabel_2_7 = new JLabel("현재 재고량 값");
 		lblNewLabel_2_7.setBounds(130, 320, 154, 18);
 		panel_1.add(lblNewLabel_2_7);
 				
-		JLabel lblNewLabel_2_9 = new JLabel("추가 재고 값");
+		lblNewLabel_2_9 = new JLabel("추가 재고 값");
 		lblNewLabel_2_9.setBounds(130, 360, 154, 18);
 		panel_1.add(lblNewLabel_2_9);
 		
-		JLabel lblNewLabel_1_8 = new JLabel("그림값");
+		lblNewLabel_1_8 = new JLabel("그림값");
 		lblNewLabel_1_8.setBounds(495, 40, 164, 178);
 		panel_1.add(lblNewLabel_1_8);
 		
-		JLabel lblNewLabel_3 = new JLabel("% 할인");
+		lblNewLabel_3 = new JLabel("% 할인");
 		lblNewLabel_3.setBounds(440, 240, 62, 18);
 		panel_1.add(lblNewLabel_3);
 		
-		JLabel lblNewLabel_4 = new JLabel("% 적립");
+		lblNewLabel_4 = new JLabel("% 적립");
 		lblNewLabel_4.setBounds(440, 280, 62, 18);
 		panel_1.add(lblNewLabel_4);
 
@@ -191,10 +206,16 @@ public class Bookinfo_Stock extends JPanel {
 						"  " + book.getBookISBN());
 
 				JTextField totalPrice = p.getTotalprice_Text();
-				int total = 0;
-				for(int i=0;i<m.size();i++){
-					total += ( 100 - book.getBookDiscountRate()) * 0.01 * book.getBookMSRP();
+				int total;
+				if(p.getTotalprice_Text().getText().equals("")){
+					total = 0;
 				}
+				else{
+					total = Integer.parseInt(p.getTotalprice_Text().getText());
+				}
+
+				total += ( 100 - book.getBookDiscountRate()) * 0.01 * book.getBookMSRP();
+
 				totalPrice.setText(total+"");
 				p.setTotalprice_Text(totalPrice);
 			}

@@ -11,10 +11,10 @@ import javax.swing.JPanel;
 @Data
 public class StockPanel extends JPanel {
 	private ListPanel p1;
-	private JPanel p2;
+	private Bookinfo_Stock p2;
 
 	public StockPanel(){
-		p1=new ListPanel();
+		p1=new ListPanel(this);
 		p2=new Bookinfo_Stock(this);
 		setLayout(new GridLayout());
 		add(p1);
