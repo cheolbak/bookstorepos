@@ -217,7 +217,7 @@ public class NewBookListDialogFrame extends JFrame implements DialogBookInfoRece
     }
 
     @Override
-    public void receiveBookInfo(DialogBookInfo info) {
+    public void sendBookInfoToReceiver(DialogBookInfo info) {
         JOptionPane.showConfirmDialog(this, info.getIsbn());
         // TODO: 재고 추가 액션
     }

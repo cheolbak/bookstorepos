@@ -43,11 +43,12 @@ public class DialogBookInfoListPanel extends JPanel {
             return panel;
         }
 
+        DialogBookInfoPanel.AddStockClickListener listener =
+                e -> parentFrame.sendBookInfoToReceiver(e.getCurrentBookInfo());
+
         int count = 0;
         for (DialogBookInfo dialogBookInfo : dialogBookInfoList) {
-            panel.add(new DialogBookInfoPanel(dialogBookInfo, e -> {
-                parentFrame.receiveBookInfo(e.getCurrentBookInfo());
-            }), createBookInfoPanelConstraints(count));
+            panel.add(new DialogBookInfoPanel(dialogBookInfo, listener), createBookInfoPanelConstraints(count));
             count += 1;
         }
 

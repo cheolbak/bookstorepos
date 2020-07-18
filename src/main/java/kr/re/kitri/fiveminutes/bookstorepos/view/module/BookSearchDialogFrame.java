@@ -101,7 +101,7 @@ public class BookSearchDialogFrame extends JFrame implements DialogBookInfoRecei
     }
 
     @Override
-    public void receiveBookInfo(DialogBookInfo info) {
+    public void sendBookInfoToReceiver(DialogBookInfo info) {
         // TODO: Action Add Stock Button
     }
 }
