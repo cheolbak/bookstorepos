@@ -38,7 +38,6 @@ public class StockAdd {
         }
         return book;
     }
-
 }
 
 

@@ -40,17 +40,17 @@ public class ListPanel extends JPanel {
 		JButton totalprice_Button = new JButton("결제");
 		panel_1.add(totalprice_Button);
 		totalprice_Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(totalprice_Text.getText().equals("")){
-					return;
-				}
-				int result = JOptionPane.showConfirmDialog(null,totalprice_Text.getText()+"원을 결제하시겠습니까?","결제 창",JOptionPane.YES_NO_OPTION);
-				if(result == JOptionPane.YES_OPTION){
-
-				}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(totalprice_Text.getText().equals("")){
+				return;
 			}
-		});
+			int result = JOptionPane.showConfirmDialog(null,totalprice_Text.getText()+"원을 결제하시겠습니까?","결제 창",JOptionPane.YES_NO_OPTION);
+			if(result == JOptionPane.YES_OPTION){
+
+			}
+		}
+	});
 
 		m = new DefaultListModel<>();
 		list = new JList<>(m);

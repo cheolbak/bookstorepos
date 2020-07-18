@@ -177,14 +177,6 @@ public class Bookinfo_Stock extends JPanel {
 				StockAdd stockAdd = new StockAdd(isbn);
 				Book book = stockAdd.searchBook();
 
-
-				/*
-				Book book = new Book();
-				book.setBookTitle("testing");
-				book.setBookMSRP(10);
-				book.setBookDiscountRate(10);
-				*/
-
 				returnToListPanel(book);
 			}
 
