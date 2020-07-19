@@ -1,6 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.ImageViewPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.BarcodeImageViewPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BarcodeImage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +21,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
 
     private final Map<String, BarcodeImage> barcodeImageMap = new HashMap<>();
 
-    private final ImageViewPanel imageViewPanel = new ImageViewPanel();
+    private final BarcodeImageViewPanel barcodeImageViewPanel = new BarcodeImageViewPanel();
     private final JTextField codeFixField = new JTextField(24);
     private final JList<String> barcodeCorrectList = new JList<>();
     private final JList<String> barcodeWrongList = new JList<>();
@@ -46,7 +46,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
     private void initPanel() {
         add(createButtonPanel(), BorderLayout.NORTH);
         add(createListPanel(), BorderLayout.WEST);
-        add(imageViewPanel, BorderLayout.CENTER);
+        add(barcodeImageViewPanel, BorderLayout.CENTER);
     }
 
     private JScrollPane initBarcodeListScrollPane(JList<String> alreadyCreatedJList, String borderTitle) {
@@ -69,7 +69,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
             }
 
             BarcodeImage data = barcodeImageMap.get(alreadyCreatedJList.getSelectedValue());
-            imageViewPanel.changeImage(data);
+            barcodeImageViewPanel.changeImage(data);
             codeFixField.setText(data.getCode());
         });
         scrollPane.setViewportView(alreadyCreatedJList);
@@ -116,7 +116,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
     private JButton createCodeFixConfirmButton() {
         JButton codeFixConfirmButton = new JButton("코드 수정");
         codeFixConfirmButton.addActionListener(e -> {
-            String currentCode = imageViewPanel.getCurrentCode();
+            String currentCode = barcodeImageViewPanel.getCurrentCode();
             String newCode = codeFixField.getText();
             BarcodeImage currentImage = barcodeImageMap.remove(currentCode);
             currentImage.setCode(newCode);
@@ -128,7 +128,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
 
     private JButton createRotateButton() {
         JButton rotateButton = new JButton("선택 이미지 회전");
-        rotateButton.addActionListener(e -> imageViewPanel.rotateClockwiseCurrentImage());
+        rotateButton.addActionListener(e -> barcodeImageViewPanel.rotateClockwiseCurrentImage());
         return rotateButton;
     }
 

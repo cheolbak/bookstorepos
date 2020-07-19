@@ -1,8 +1,12 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -12,10 +16,14 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class Bookinfo_Sell extends JPanel{
-	private JTextField addText;
+	private JTextField inputIsbn;
+	private SellBookInfo sellBookInfo;
+	ArrayList<SellBookInfo> sellBookInfoList = new ArrayList<>();
 
 	
 	public Bookinfo_Sell() {
+		addBook();
+
 		setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -27,34 +35,29 @@ public class Bookinfo_Sell extends JPanel{
 		addIsbnLabel.setBounds(14, 29, 62, 18);
 		panel.add(addIsbnLabel);
 		
-		addText = new JTextField();
-		addText.setBounds(63, 26, 200, 24);
-		panel.add(addText);
-		addText.setColumns(10);
+		inputIsbn = new JTextField();
+		inputIsbn.setBounds(63, 26, 200, 24);
+		panel.add(inputIsbn);
+		inputIsbn.setColumns(10);
 		
-		JButton addBtn = new JButton("추가");
+		JButton isbnAddBtn = new JButton("추가");
 
-		addBtn.addActionListener(new ActionListener() {
+
+
+		isbnAddBtn.setBounds(266, 25, 105, 27);
+		panel.add(isbnAddBtn);
+		
+		JButton pictureBtn = new JButton("사진 인식");
+
+		isbnAddBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
 			}
 		});
 
-		addBtn.setBounds(266, 25, 105, 27);
-		panel.add(addBtn);
-		
-		JButton picktureBtn = new JButton("사진인식");
-
-		addBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
-
-		picktureBtn.setBounds(377, 25, 105, 27);
-		panel.add(picktureBtn);
+		pictureBtn.setBounds(377, 25, 105, 27);
+		panel.add(pictureBtn);
 		
 		JPanel panel_1 = new JPanel();
 		TitledBorder tb=new TitledBorder(new LineBorder(Color.black),"책 정보");
@@ -122,14 +125,67 @@ public class Bookinfo_Sell extends JPanel{
 		JLabel saveMoneyValue = new JLabel("적립금");
 		saveMoneyValue.setBounds(140, 280, 160, 18);
 		panel_1.add(saveMoneyValue);
-		
 		JLabel presentStockValue = new JLabel("현재 재고량");
 		presentStockValue.setBounds(140, 320, 160, 18);
 		panel_1.add(presentStockValue);
 		
-		JLabel picktureValue = new JLabel("그림값");
-		picktureValue.setBounds(314, 40, 146, 178);
-		panel_1.add(picktureValue);
+		JLabel pictureValue = new JLabel("그림값");
+		pictureValue.setBounds(314, 40, 146, 178);
+		panel_1.add(pictureValue);
 
+		isbnAddBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String searchedIsbn = inputIsbn.getText();
+
+				for(SellBookInfo a : sellBookInfoList ){
+					if(a.getISBN().equals(searchedIsbn)) {
+						titleValue.setText(a.getTitle());
+						authorValue.setText(a.getAuthor());
+						publicValue.setText(a.getPublisher());
+						infoIsbnValue.setText(a.getISBN());
+						priceValue.setText(Integer.toString(a.getOriginPrice())+ "원");
+						sellPriceValue.setText(Integer.toString(a.getSellPrice())+ "원");
+						saveMoneyValue.setText(Integer.toString(a.getReserves())+ "원");
+						presentStockValue.setText(Integer.toString(a.getStock())+" 권");
+
+						break;
+					}
+				}
+			}
+		});
+
+	}
+
+	void addBook(){
+		SellBookInfo test1;
+		SellBookInfo test2;
+
+		test1 = SellBookInfo.builder()
+				.ISBN("12345")
+				.sellPrice(5000)
+				.author("이현권")
+				.stock(100)
+				.title("간다간다뿅간다")
+				.originPrice(6000)
+				.publisher("KITRY")
+				.reserves(500)
+				.build();
+
+		test2 = SellBookInfo.builder()
+				.ISBN("123456")
+				.sellPrice(6000)
+				.author("손경수")
+				.stock(10)
+				.title("연애의 기술")
+				.originPrice(7000)
+				.publisher("KITRY")
+				.reserves(500)
+				.build();
+
+
+
+		sellBookInfoList.add(test2);
+		sellBookInfoList.add(test1);
 	}
 }

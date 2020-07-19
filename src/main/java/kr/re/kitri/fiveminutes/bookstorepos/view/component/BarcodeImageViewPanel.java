@@ -6,7 +6,7 @@ import lombok.Getter;
 import javax.swing.*;
 import java.awt.*;
 
-public class ImageViewPanel extends JPanel {
+public class BarcodeImageViewPanel extends JPanel {
 
     private final JLabel imageLabel;
 
@@ -15,7 +15,7 @@ public class ImageViewPanel extends JPanel {
 
     private BarcodeImage currentImage;
 
-    public ImageViewPanel() {
+    public BarcodeImageViewPanel() {
         imageLabel = new JLabel();
         setLayout(new GridBagLayout());
         add(imageLabel);

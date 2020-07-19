@@ -23,6 +23,27 @@ public class NewBookCondition {
     @Builder.Default
     private final Category category = Category.ALL;
 
+    @Builder.Default
+    private final Sort sort = Sort.SALE_QUANTITY;
+
+    @RequiredArgsConstructor
+    public enum Sort {
+        SALE_QUANTITY("판매량순", "sale_qty"),
+        NEAR_DATE("신상품순", "near_date"),
+        SALE_PRICE_ASC("낮은가격순", "sale_pri_asc"),
+        SALE_PRICE_DESC("높은가격순", "sale_pri_desc");
+
+        private final String viewName;
+
+        @Getter
+        private final String requestName;
+
+        @Override
+        public String toString() {
+            return viewName;
+        }
+    }
+
     @Getter
     @RequiredArgsConstructor
     public enum Category {

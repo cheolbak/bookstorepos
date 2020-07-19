@@ -1,22 +1,19 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
+import kr.re.kitri.fiveminutes.bookstorepos.util.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.event.ActionListener;
 
-public class BookSearchDialogFrame extends JFrame {
+public class BookSearchDialogFrame extends JFrame implements DialogBookInfoReceiver {
 
     public BookSearchDialogFrame() throws HeadlessException {
         setTitle("책 검색");
@@ -25,23 +22,43 @@ public class BookSearchDialogFrame extends JFrame {
 
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 770);
+        setSize(670, 770);
         setLocationRelativeTo(null);
         setLocation(getX(), getY());
     }
 
     private void initPanel() {
-        add(createSearchInputPanel(), BorderLayout.NORTH);
-        add(createSearchResultPanel(), BorderLayout.CENTER);
-        add(createPaginationPanel(), BorderLayout.SOUTH);
+        DialogBookInfoListPanel infoListPanel = new DialogBookInfoListPanel(this);
+        PaginationPanel paginationPanel = new PaginationPanel(1);
+        add(createSearchInputPanel(paginationPanel, infoListPanel), BorderLayout.NORTH);
+        add(infoListPanel, BorderLayout.CENTER);
+        add(paginationPanel, BorderLayout.SOUTH);
     }
 
-    private JPanel createSearchInputPanel() {
+    private JPanel createSearchInputPanel(PaginationPanel paginationPanel, DialogBookInfoListPanel infoListPanel) {
         MarginTitledBorderPanel panel = new MarginTitledBorderPanel("검색");
 
-        panel.addSubPanel(createSearchScopeComboBox(), createStandardConstraints(10, 5));
-        panel.addSubPanel(createSearchInputTextField(), createTextFieldConstraints());
-        panel.addSubPanel(createSearchSubmitButton(), createStandardConstraints(5, 10));
+        JComboBox<BookSearchScope> scopeCombo = createSearchScopeComboBox();
+        JTextField searchField = new JTextField();
+        JButton submitButton = new JButton("검색");
+
+        ActionListener searchSubmitAction = e -> {
+            String query = searchField.getText();
+            Object scopeObj = scopeCombo.getSelectedItem();
+            if (!(scopeObj instanceof BookSearchScope)
+                    || query.isBlank()) {
+                return;
+            }
+            BookSearchScope scope = (BookSearchScope) scopeObj;
+            updatePanels(scope, query, paginationPanel, infoListPanel);
+        };
+
+        searchField.addActionListener(searchSubmitAction);
+        submitButton.addActionListener(searchSubmitAction);
+
+        panel.addSubPanel(scopeCombo, createStandardConstraints(10, 5));
+        panel.addSubPanel(searchField, createTextFieldConstraints());
+        panel.addSubPanel(submitButton, createStandardConstraints(5, 10));
 
         return panel;
     }
@@ -54,8 +71,8 @@ public class BookSearchDialogFrame extends JFrame {
     }
 
     private GridBagConstraints createTextFieldConstraints() {
-        GridBagConstraints c = createStandardConstraints(0, 0);
-        c.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints c = createStandardConstraints(10, 10);
+        c.fill = GridBagConstraints.BOTH;
         c.weightx = 0.1;
         return c;
     }
@@ -68,61 +85,23 @@ public class BookSearchDialogFrame extends JFrame {
         return box;
     }
 
-    private JTextField createSearchInputTextField() {
-        return new JTextField();
+    private void updatePanels(BookSearchScope searchScope, String query, PaginationPanel paginationPanel, DialogBookInfoListPanel infoListPanel) {
+        paginationPanel.setPageChangeListener(e -> {
+            SearchMeta innerMeta = BookInfoSearchRequester.requestBookSearch(searchScope, query, e.getCurrentPageNumber());
+            e.getPaginationPanel().setLastPage(innerMeta.getTotalCount() / 10 + 1);
+            infoListPanel.setDialogBookInfoList(innerMeta.getBookInfoList());
+            e.getPaginationPanel().updateUI();
+            infoListPanel.updateUI();
+        });
+        SearchMeta meta = BookInfoSearchRequester.requestBookSearch(searchScope, query, 1);
+        paginationPanel.setLastPage(meta.getTotalCount() / 10 + 1);
+        infoListPanel.setDialogBookInfoList(meta.getBookInfoList());
+        paginationPanel.updateUI();
+        infoListPanel.updateUI();
     }
 
-    private JButton createSearchSubmitButton() {
-        return new JButton("검색");
+    @Override
+    public void sendBookInfoToReceiver(DialogBookInfo info) {
+        // TODO: Action Add Stock Button
     }
-
-    private JPanel createSearchResultPanel() {
-        List<DialogBookInfo> dialogBookInfoList = new ArrayList<>();
-
-        try {
-            BufferedImage image = ImageIO.read(Paths.get(System.getProperty("user.home"), "Desktop", "9791190665216.jpg").toFile());
-
-            DialogBookInfo book1 = DialogBookInfo.builder()
-                    .isbn("9791190665216")
-                    .title("객체지향 사고 프로세스")
-                    .author("맷 와일스펠드")
-                    .publisher("제이펍")
-                    .price(24000)
-                    .releaseDate(LocalDate.of(2020, 7, 3))
-                    .bookCoverImage(image)
-                    .build();
-
-            DialogBookInfo book2 = DialogBookInfo.builder()
-                    .isbn("9791190665216")
-                    .title("객체지향 사고 프로세스")
-                    .author("맷 와일스펠드")
-                    .publisher("제이펍")
-                    .price(24000)
-                    .releaseDate(LocalDate.of(2020, 7, 3))
-                    .bookCoverImage(image)
-                    .build();
-
-            DialogBookInfo book3 = DialogBookInfo.builder()
-                    .isbn("9791190665216")
-                    .title("객체지향 사고 프로세스")
-                    .author("맷 와일스펠드")
-                    .publisher("제이펍")
-                    .price(24000)
-                    .releaseDate(LocalDate.of(2020, 7, 3))
-                    .bookCoverImage(image)
-                    .build();
-
-            dialogBookInfoList.add(book1);
-            dialogBookInfoList.add(book2);
-            dialogBookInfoList.add(book3);
-        }
-        catch (IOException ignore) { }
-
-        return new DialogBookInfoListPanel(dialogBookInfoList);
-    }
-
-    private PaginationPanel createPaginationPanel() {
-        return new PaginationPanel(10, e -> {});
-    }
-
 }

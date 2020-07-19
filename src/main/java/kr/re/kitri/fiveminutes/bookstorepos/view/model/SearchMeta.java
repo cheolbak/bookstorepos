@@ -10,8 +10,6 @@ import java.util.List;
 public class SearchMeta {
 
     private int totalCount;
-    private int pageableCount;
-    private boolean isEnd;
     private List<DialogBookInfo> bookInfoList;
 
 }
