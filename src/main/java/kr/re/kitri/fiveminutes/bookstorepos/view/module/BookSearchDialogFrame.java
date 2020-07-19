@@ -25,6 +25,7 @@ public class BookSearchDialogFrame extends JFrame implements DialogBookInfoRecei
         setSize(670, 770);
         setLocationRelativeTo(null);
         setLocation(getX(), getY());
+        setVisible(true);
     }
 
     private void initPanel() {

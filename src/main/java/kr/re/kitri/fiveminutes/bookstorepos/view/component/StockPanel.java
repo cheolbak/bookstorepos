@@ -14,6 +14,5 @@ public class StockPanel extends JPanel {
 		setLayout(new GridLayout());
 		add(p1);
 		add(p2);
-	
 	}
 }
