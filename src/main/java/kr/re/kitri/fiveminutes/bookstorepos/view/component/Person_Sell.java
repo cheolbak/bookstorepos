@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellUserInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -40,7 +41,7 @@ public class Person_Sell extends JPanel {
 		searchBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				new UserSearchFrame();
 			}
 		});
 
