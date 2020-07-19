@@ -45,7 +45,7 @@ public class BookCoverImageRequester {
         if (errLoadImgIn != null) {
             return ImageIO.read(errLoadImgIn);
         }
-        throw new IOException("Image Load Error");
+        throw new IOException("Image Load Error: target ISBN - " + isbn);
     }
 
     public static BufferedImage requestThumbnailBookCoverImage(String isbn, int maxWidth, int maxHeight) throws IOException {

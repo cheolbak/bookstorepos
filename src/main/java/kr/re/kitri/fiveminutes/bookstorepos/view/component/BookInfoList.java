@@ -2,22 +2,29 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.util.Util;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BookInfoList extends JList<BookInfo> implements DataRegister<BookInfo> {
 
     private final BookInfoListModel listModel;
 
+    @Setter
+    private changeListListener changeListListener = e -> {};
+
     public BookInfoList() {
         this.listModel = new BookInfoListModel();
 
+        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setCellRenderer(new BookInfoListCellRenderer());
         setModel(listModel);
     }
@@ -25,18 +32,28 @@ public class BookInfoList extends JList<BookInfo> implements DataRegister<BookIn
     @Override
     public void put(BookInfo info) {
         listModel.put(info);
+        changeListListener.change(listModel.getBookInfoMap());
+        updateUI();
     }
 
     public void removeAtSelected() {
-        if (getSelectedIndex() == -1) {
+        BookInfo value = getSelectedValue();
+        if (value == null) {
             return;
         }
-        BookInfo value = getSelectedValue();
         remove(value.getIsbn());
     }
 
     public void remove(String isbn) {
         listModel.remove(isbn);
+        changeListListener.change(listModel.getBookInfoMap());
+        updateUI();
+    }
+
+    public List<? extends BookInfo> getDataList(Class<? extends BookInfo> type) {
+        return listModel.getBookInfoMap().values().stream()
+                .map(type::cast)
+                .collect(Collectors.toList());
     }
 
     private static class BookInfoListCellRenderer implements ListCellRenderer<BookInfo> {
@@ -129,7 +146,10 @@ public class BookInfoList extends JList<BookInfo> implements DataRegister<BookIn
     } // StockRegisterListCellRenderer inner class End
 
     private static class BookInfoListModel implements ListModel<BookInfo> {
+
         private final List<String> isbnList;
+
+        @Getter
         private final Map<String, BookInfo> bookInfoMap;
 
         public BookInfoListModel() {
@@ -158,13 +178,13 @@ public class BookInfoList extends JList<BookInfo> implements DataRegister<BookIn
         }
 
         @Override
-        public void addListDataListener(ListDataListener l) {
-            // TODO: DB Connection Event to POS_Book Table Reference
-        }
+        public void addListDataListener(ListDataListener l) { }
 
         @Override
-        public void removeListDataListener(ListDataListener l) {
-
-        }
+        public void removeListDataListener(ListDataListener l) { }
     } // StockRegisterListModel inner class End
+
+    public interface changeListListener {
+        void change(Map<String, BookInfo> dataMap);
+    }
 }

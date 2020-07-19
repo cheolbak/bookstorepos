@@ -11,7 +11,7 @@ public class SellPanel extends JPanel{
 	private JPanel p3;
 
 	public SellPanel() {
-		p1=new ListPanel();
+		p1=new LegacyListPanel();
 		p2=new Bookinfo_Sell();
 		p3=new Person_Sell();
 		setLayout(new GridLayout());

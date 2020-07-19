@@ -195,7 +195,7 @@ public class Bookinfo_Stock extends JPanel {
 			}
 
 			public void returnToListPanel(Book book){
-				ListPanel p = stockPanel.getP1();
+				LegacyListPanel p = stockPanel.getP1();
 				DefaultListModel<String> m = p.getM();
 				JList<String>list = p.getList();
 

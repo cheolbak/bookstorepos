@@ -1,194 +1,135 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
-import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
-import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
-import lombok.Data;
-import lombok.ToString;
+
+import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
+import lombok.Setter;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
 
-@Data
 public class ListPanel extends JPanel {
-	private JTextField totalprice_Text;
-	private DefaultListModel<String> m;
-	private JList<String>list;
-	@ToString.Exclude
-	private StockPanel stockPanel;
 
-	// 판매 탭에서 처리
-	public ListPanel(){
-		setLayout(null);
+    private final BookInfoList bookInfoList;
+    private final String buttonText;
+    private final Class<? extends BookInfo> modelType;
 
-		JPanel panel = new JPanel();
-		panel.setBounds(51, 50, 405, 53);
-		add(panel);
-		panel.setLayout(null);
+    @Setter
+    private BookInfoViewPanelReceiver bookInfoViewPanelReceiver = bookInfo -> {};
 
-		JButton selectRemove = new JButton("선택삭제");
-		selectRemove.setBounds(286, 12, 105, 27);
-		panel.add(selectRemove);
+    @Setter
+    private AddButtonListener addButtonListener = infoList -> {};
 
-		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(51, 583, 405, 61);
-		add(panel_1);
+    public ListPanel(String buttonText, Class<? extends BookInfo> modelType) {
+        super(new BorderLayout());
+        this.buttonText = buttonText;
+        this.modelType = modelType;
+        this.bookInfoList = createBookInfoList();
 
-		JLabel totalprice_Label = new JLabel("총계 :");
-		panel_1.add(totalprice_Label);
+        setPreferredSize(new Dimension(500, 900));
+        setMaximumSize(new Dimension(500, Short.MAX_VALUE));
+        setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-		totalprice_Text = new JTextField();
-		panel_1.add(totalprice_Text);
-		totalprice_Text.setColumns(10);
+        JScrollPane scrollPane = new JScrollPane(bookInfoList);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-		JButton totalprice_Button = new JButton("결제");
-		panel_1.add(totalprice_Button);
-		totalprice_Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(totalprice_Text.getText().equals("")){
-					return;
-				}
-				int result = JOptionPane.showConfirmDialog(null,totalprice_Text.getText()+"원을 결제하시겠습니까?","결제 창",JOptionPane.YES_NO_OPTION);
-				if(result == JOptionPane.YES_OPTION){
+        add(createListControlPanel(), BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(createAddPanel(), BorderLayout.SOUTH);
 
-				}
-			}
-		});
+        // Test
+        java.util.List<String> isbnList = java.util.List.of("9791165074524", "9788959529377", "9788966189984");
+        List<BookInfo> infoData = BookInfoSearchRequester.requestBookSearchManyISBNs(isbnList);
+        infoData.stream().map(StockBookInfo::fromBookInfo).forEach(bookInfoList::put);
+        // End Test
+    }
 
-		m = new DefaultListModel<>();
-		list = new JList<>(m);
+    private JPanel createListControlPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.add(new JPanel(), createListControlMarginConstraints());
+        panel.add(createRemoveAtSelectedButton(), createListControlConstraints());
+        return panel;
+    }
 
-		JScrollPane scrollPane = new JScrollPane(list);
-		scrollPane.setBounds(51, 121, 398, 450);
-		add(scrollPane);
+    private JButton createRemoveAtSelectedButton() {
+        JButton button = new JButton("선택삭제");
+        button.addActionListener(e -> bookInfoList.removeAtSelected());
+        return button;
+    }
 
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    private GridBagConstraints createListControlConstraints() {
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
+        c.insets = new Insets(10, 10, 10, 10);
+        return c;
+    }
 
-		selectRemove.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int selected = list.getSelectedIndex();
-				if(selected == -1){
-					return;
-				}
-				String[] splitStr = m.get(selected).split("  ");
+    private GridBagConstraints createListControlMarginConstraints() {
+        GridBagConstraints c = createListControlConstraints();
+        c.weightx = 0.1;
+        return c;
+    }
 
-				int minusPrice = (int) ((100 - Integer.parseInt(splitStr[4])) * 0.01 * Integer.parseInt(splitStr[3]));
-				int totalPrice = Integer.parseInt(totalprice_Text.getText());
+    private BookInfoList createBookInfoList() {
+        BookInfoList list = new BookInfoList();
+        list.addListSelectionListener(e -> {
+            BookInfo value = list.getSelectedValue();
+            bookInfoViewPanelReceiver.sendBookInfoToViewPanel(value);
+        });
+        return list;
+    }
 
-				totalprice_Text.setText((totalPrice-minusPrice)+"");
-				m.remove(selected);
-			}
-		});
+    private JPanel createAddPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
 
-		list.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
+        JButton stockAddButton = new JButton(buttonText);
+        JTextField totalField = new JTextField();
+        totalField.setEditable(false);
+        totalField.setDragEnabled(true);
+        totalField.setText("0");
+        totalField.setHorizontalAlignment(JTextField.RIGHT);
 
-			}
+        bookInfoList.setChangeListListener(dataMap -> {
+            int sum = dataMap.values().stream().mapToInt(BookInfo::getPrice).sum();
+            NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
+            totalField.setText(numFormat.format(sum));
+        });
 
-			public void returnToBookinfo_Stock(Book book){
+        stockAddButton.addActionListener(e -> {
+            addButtonListener.action(bookInfoList.getDataList(modelType));
+        });
 
+        panel.add(new JLabel("총계 : "), createAddStockStandardConstraints());
+        panel.add(totalField, createTotalTextFieldConstraints());
+        panel.add(stockAddButton, createAddStockStandardConstraints());
+        return panel;
+    }
 
-			}
-		});
-	}
+    private GridBagConstraints createAddStockStandardConstraints() {
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
+        c.insets = new Insets(10, 10, 10, 10);
+        return c;
+    }
 
-	// 입고 탭
-	public ListPanel(StockPanel stockPanel) {
-		this.stockPanel = stockPanel;
-		setLayout(null);
-		
-		JPanel panel = new JPanel();
-		panel.setBounds(51, 50, 405, 53);
-		add(panel);
-		panel.setLayout(null);
-		
-		JButton selectRemove = new JButton("선택삭제");
-		selectRemove.setBounds(286, 12, 105, 27);
-		panel.add(selectRemove);
-				
-		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(51, 583, 405, 61);
-		add(panel_1);
-		
-		JLabel totalprice_Label = new JLabel("총계 :");
-		panel_1.add(totalprice_Label);
-		
-		totalprice_Text = new JTextField();
-		panel_1.add(totalprice_Text);
-		totalprice_Text.setColumns(10);
-		
-		JButton totalprice_Button = new JButton("결제");
-		panel_1.add(totalprice_Button);
-		totalprice_Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(totalprice_Text.getText().equals("")){
-					return;
-				}
-				int result = JOptionPane.showConfirmDialog(null,totalprice_Text.getText()+"원을 결제하시겠습니까?","결제 창",JOptionPane.YES_NO_OPTION);
-				if(result == JOptionPane.YES_OPTION){
+    private GridBagConstraints createTotalTextFieldConstraints() {
+        GridBagConstraints c = createAddStockStandardConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 7;
+        c.weightx = 0.1;
+        return c;
+    }
 
-				}
-			}
-		});
+    @FunctionalInterface
+    public interface AddButtonListener {
+        void action(List<? extends BookInfo> infoList);
+    }
 
-		m = new DefaultListModel<>();
-		list = new JList<>(m);
-		
-		JScrollPane scrollPane = new JScrollPane(list);
-		scrollPane.setBounds(51, 121, 398, 450);
-		add(scrollPane);
-
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-		selectRemove.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int selected = list.getSelectedIndex();
-				if(selected == -1){
-					return;
-				}
-				String[] splitStr = m.get(selected).split("  ");
-
-				int minusPrice = (int) ((100 - Integer.parseInt(splitStr[4])) * 0.01 * Integer.parseInt(splitStr[3]));
-				int totalPrice = Integer.parseInt(totalprice_Text.getText());
-
-				totalprice_Text.setText((totalPrice-minusPrice)+"");
-				m.remove(selected);
-			}
-		});
-
-		list.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				Bookinfo_Stock p = stockPanel.getP2();
-
-				int selected = list.getSelectedIndex();
-				if(selected == -1){
-					return;
-				}
-				String[] splitStr = m.get(selected).split("  ");
-				String isbn = splitStr[6];
-				Book book = new StockManagementService().searchBook(isbn);
-
-				p.getSubjectV_Label().setText("제목 " + book.getBookTitle());
-				p.getLblNewLabel_2_1().setText("저자 "+ book.getBookAuthor());
-				p.getLblNewLabel_2_2().setText("출판사 " + book.getBookPublisher());
-				p.getLblNewLabel_2_3().setText("ISBN" + book.getBookISBN());
-				p.getLblNewLabel_2_4().setText(book.getBookMSRP()+"원");
-				p.getLblNewLabel_2_5().setText("판매가 " + (100-book.getBookDiscountRate())*0.01*book.getBookMSRP()+"원");
-				p.getLblNewLabel_2_6().setText("적립금 " + book.getBookPointRate()*0.01*book.getBookMSRP()+"원");
-				p.getLblNewLabel_2_7().setText(book.getBookStock() + " 재고량");
-				p.getLblNewLabel_2_9().setText("추가 재고량");
-				p.getLblNewLabel_1_8().setText("그림 값");
-				p.getLblNewLabel_3().setText(book.getBookDiscountRate() + "% 할인");
-				p.getLblNewLabel_4().setText(book.getBookPointRate() + "% 적립");
-			}
-		});
-
-	}
+    @FunctionalInterface
+    public interface BookInfoViewPanelReceiver {
+        void sendBookInfoToViewPanel(BookInfo bookInfo);
+    }
 }

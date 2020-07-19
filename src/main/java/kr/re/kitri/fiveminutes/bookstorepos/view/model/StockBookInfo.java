@@ -1,13 +1,18 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.model;
 
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
+import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookCoverImageRequester;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.time.LocalDate;
 
 @Data
 @Builder
+@Slf4j
 public class StockBookInfo implements BookInfo {
 
     private String isbn;
@@ -43,6 +48,35 @@ public class StockBookInfo implements BookInfo {
                 .releaseDate(info.getReleaseDate())
                 .bookCoverImage(info.getBookCoverImage())
                 .price(info.getPrice())
+                .insertStock(insertStock)
+                .build();
+    }
+
+    public static StockBookInfo fromBookDomain(Book book) {
+        return fromBookDomain(book, 1);
+    }
+
+    public static StockBookInfo fromBookDomain(Book book, int insertStock) {
+        BufferedImage image;
+        try {
+            image = BookCoverImageRequester.requestBookCoverImage(book.getBookISBN());
+        }
+        catch (IOException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+            image = new BufferedImage(200, 300, BufferedImage.TYPE_INT_RGB);
+        }
+        return StockBookInfo.builder()
+                .isbn(book.getBookISBN())
+                .title(book.getBookTitle())
+                .author(book.getBookAuthor())
+                .publisher(book.getBookPublisher())
+                .releaseDate(book.getBookReleaseDate())
+                .bookCoverImage(image)
+                .salePercentPoint(book.getBookDiscountRate())
+                .pointSavePercentPoint(book.getBookPointRate())
+                .currentStock(book.getBookStock())
                 .insertStock(insertStock)
                 .build();
     }
