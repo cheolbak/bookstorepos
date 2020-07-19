@@ -92,7 +92,7 @@ public class DBPlug implements AutoCloseable {
             for (Object o : yaml.loadAll(inReader)) {
                 if (o instanceof QueryData) {
                     QueryData query = (QueryData) o;
-                    log.trace("{}", query);
+                    log.debug("{}", query);
                     map.put(query.getTag(), query);
                 }
             }
@@ -100,7 +100,7 @@ public class DBPlug implements AutoCloseable {
         catch (IOException e) {
             e.printStackTrace();
         }
-        return Map.copyOf(map);
+        return map;
     }
 
     private final Connection connection;
