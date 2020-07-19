@@ -21,6 +21,7 @@ public class Util {
                 : result.get(ChronoField.ALIGNED_WEEK_OF_MONTH);
     }
 
+    // 이미지 리사이징 참조: https://huskdoll.tistory.com/826
     public static BufferedImage resizeImage(BufferedImage originalImage, int maxWidth, int maxHeight) {
         int originalWidth = originalImage.getWidth();
         int originalHeight = originalImage.getHeight();

@@ -1,6 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
-import kr.re.kitri.fiveminutes.bookstorepos.util.BookInfoSearchRequester;
+import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;

@@ -1,4 +1,4 @@
-package kr.re.kitri.fiveminutes.bookstorepos.util;
+package kr.re.kitri.fiveminutes.bookstorepos.util.requester;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class BookInfoSearchRequester {
+
+    private BookInfoSearchRequester() { }
 
     public static List<DialogBookInfo> requestBookSearchManyISBNs(List<String> isbnList) {
         return isbnList.stream()

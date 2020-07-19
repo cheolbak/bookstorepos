@@ -1,6 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.model;
 
-import kr.re.kitri.fiveminutes.bookstorepos.util.DateUtilities;
+import kr.re.kitri.fiveminutes.bookstorepos.util.Util;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class NewBookCondition {
 
     // 일요일 기준 몇주차인지 계산
     @Builder.Default
-    private final int weekOfMonth = DateUtilities.currentWeekOfMonth(LocalDate.now(), DayOfWeek.SUNDAY);
+    private final int weekOfMonth = Util.currentWeekOfMonth(LocalDate.now(), DayOfWeek.MONDAY);
 
     @Builder.Default
     private final Category category = Category.ALL;

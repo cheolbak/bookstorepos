@@ -1,4 +1,4 @@
-package kr.re.kitri.fiveminutes.bookstorepos.util;
+package kr.re.kitri.fiveminutes.bookstorepos.util.requester;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition;

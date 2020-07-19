@@ -1,4 +1,4 @@
-package kr.re.kitri.fiveminutes.bookstorepos.util;
+package kr.re.kitri.fiveminutes.bookstorepos.util.requester;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -20,6 +20,8 @@ import java.util.Objects;
 
 @Slf4j
 public class BookCoverImageRequester {
+
+    private BookCoverImageRequester() { }
 
     private static final File TEMP_DIR =
             Paths.get(System.getProperty("java.io.tmpdir"), "BookStorePOSApp").toFile();

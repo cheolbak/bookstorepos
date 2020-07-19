@@ -1,5 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.util;
 
+import kr.re.kitri.fiveminutes.bookstorepos.util.requester.NewBookInfoRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
@@ -19,7 +20,7 @@ public class NewBookInfoRequesterTest {
     public void getNewBookList() {
         NewBookCondition condition = NewBookCondition.builder()
                 .yearMonth(YearMonth.now())
-                .weekOfMonth(DateUtilities.currentWeekOfMonth(LocalDate.now(), DayOfWeek.SUNDAY))
+                .weekOfMonth(Util.currentWeekOfMonth(LocalDate.now(), DayOfWeek.MONDAY))
                 .category(NewBookCondition.Category.COMICS)
                 .sort(NewBookCondition.Sort.SALE_QUANTITY)
                 .build();

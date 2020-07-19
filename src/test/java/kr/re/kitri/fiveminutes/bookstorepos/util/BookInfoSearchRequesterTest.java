@@ -1,5 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.util;
 
+import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 import lombok.extern.slf4j.Slf4j;

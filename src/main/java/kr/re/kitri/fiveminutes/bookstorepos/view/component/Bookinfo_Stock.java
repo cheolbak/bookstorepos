@@ -1,7 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
-import kr.re.kitri.fiveminutes.bookstorepos.service.StockAdd;
+import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BarcodeImageReadDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.NewBookListDialogFrame;
@@ -189,8 +189,7 @@ public class Bookinfo_Stock extends JPanel {
 					return;
 				}
 
-				StockAdd stockAdd = new StockAdd(isbn);
-				Book book = stockAdd.searchBook();
+				Book book = new StockManagementService().searchBook(isbn);
 
 				returnToListPanel(book);
 			}
