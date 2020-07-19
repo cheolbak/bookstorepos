@@ -1,6 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,11 +15,11 @@ import static kr.re.kitri.fiveminutes.bookstorepos.view.component.InfoLabelsPane
 
 public class DialogBookInfoPanel extends JPanel {
 
-    private final DialogBookInfo dialogBookInfo;
+    private final BookInfo bookInfo;
     private final AddStockClickListener addStockClickListener;
 
-    public DialogBookInfoPanel(DialogBookInfo dialogBookInfo, AddStockClickListener addStockClickListener) {
-        this.dialogBookInfo = dialogBookInfo;
+    public DialogBookInfoPanel(BookInfo bookInfo, AddStockClickListener addStockClickListener) {
+        this.bookInfo = bookInfo;
         this.addStockClickListener = addStockClickListener;
 
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -55,7 +55,7 @@ public class DialogBookInfoPanel extends JPanel {
 
     private JPanel createBookImagePanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        JLabel label = new JLabel(new ImageIcon(dialogBookInfo.getBookCoverImage()));
+        JLabel label = new JLabel(new ImageIcon(bookInfo.getBookCoverImage()));
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         panel.add(label);
         return panel;
@@ -63,12 +63,12 @@ public class DialogBookInfoPanel extends JPanel {
 
     private JPanel createBookInfoPanel() {
         List<Entry<JComponent>> entryList = Arrays.asList(
-                new Entry<>("제목", reduceTextAndCreateLabel(dialogBookInfo.getTitle())),
-                new Entry<>("저자", reduceTextAndCreateLabel(dialogBookInfo.getAuthor())),
-                new Entry<>("출판사", reduceTextAndCreateLabel(dialogBookInfo.getPublisher())),
-                new Entry<>("출시일", new JLabel(dialogBookInfo.getReleaseDate().toString())),
-                new Entry<>("정가", new JLabel(dialogBookInfo.getPrice() + "원")),
-                new Entry<>("ISBN", new JLabel(dialogBookInfo.getIsbn()))
+                new Entry<>("제목", reduceTextAndCreateLabel(bookInfo.getTitle())),
+                new Entry<>("저자", reduceTextAndCreateLabel(bookInfo.getAuthor())),
+                new Entry<>("출판사", reduceTextAndCreateLabel(bookInfo.getPublisher())),
+                new Entry<>("출시일", new JLabel(bookInfo.getReleaseDate().toString())),
+                new Entry<>("정가", new JLabel(bookInfo.getPrice() + "원")),
+                new Entry<>("ISBN", new JLabel(bookInfo.getIsbn()))
         );
 
         return new InfoLabelsPanel<>(entryList, 10, 16);
@@ -97,7 +97,7 @@ public class DialogBookInfoPanel extends JPanel {
                 Desktop desktop = Desktop.getDesktop();
                 if (desktop.isSupported(Desktop.Action.BROWSE)) {
                     String baseUrl = "http://www.kyobobook.co.kr/product/detailViewKor.laf?barcode=";
-                    URI uri = URI.create(baseUrl + dialogBookInfo.getIsbn());
+                    URI uri = URI.create(baseUrl + bookInfo.getIsbn());
                     try {
                         desktop.browse(uri);
                     }
@@ -110,7 +110,7 @@ public class DialogBookInfoPanel extends JPanel {
 
     private JButton createStockAddButton() {
         JButton button = new JButton("추가");
-        button.addActionListener(e -> addStockClickListener.click(new AddStockClickEvent(dialogBookInfo)));
+        button.addActionListener(e -> addStockClickListener.click(new AddStockClickEvent(bookInfo)));
         return button;
     }
 
@@ -122,6 +122,6 @@ public class DialogBookInfoPanel extends JPanel {
     @Getter
     @RequiredArgsConstructor
     public static class AddStockClickEvent {
-        private final DialogBookInfo currentBookInfo;
+        private final BookInfo currentBookInfo;
     }
 }

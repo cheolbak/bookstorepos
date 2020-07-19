@@ -10,6 +10,6 @@ import java.util.List;
 public class SearchMeta {
 
     private int totalCount;
-    private List<DialogBookInfo> bookInfoList;
+    private List<BookInfo> bookInfoList;
 
 }

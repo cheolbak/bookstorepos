@@ -5,8 +5,8 @@ import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPan
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 
 import javax.swing.*;
@@ -90,19 +90,19 @@ public class BookSearchDialogFrame extends JFrame implements DialogBookInfoRecei
         paginationPanel.setPageChangeListener(e -> {
             SearchMeta innerMeta = BookInfoSearchRequester.requestBookSearch(searchScope, query, e.getCurrentPageNumber());
             e.getPaginationPanel().setLastPage(innerMeta.getTotalCount() / 10 + 1);
-            infoListPanel.setDialogBookInfoList(innerMeta.getBookInfoList());
+            infoListPanel.setBookInfoList(innerMeta.getBookInfoList());
             e.getPaginationPanel().updateUI();
             infoListPanel.updateUI();
         });
         SearchMeta meta = BookInfoSearchRequester.requestBookSearch(searchScope, query, 1);
         paginationPanel.setLastPage(meta.getTotalCount() / 10 + 1);
-        infoListPanel.setDialogBookInfoList(meta.getBookInfoList());
+        infoListPanel.setBookInfoList(meta.getBookInfoList());
         paginationPanel.updateUI();
         infoListPanel.updateUI();
     }
 
     @Override
-    public void sendBookInfoToReceiver(DialogBookInfo info) {
+    public void sendBookInfoToReceiver(BookInfo info) {
         // TODO: Action Add Stock Button
     }
 }

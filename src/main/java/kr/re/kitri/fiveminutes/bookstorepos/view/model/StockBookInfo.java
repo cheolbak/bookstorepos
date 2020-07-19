@@ -30,19 +30,19 @@ public class StockBookInfo implements BookInfo {
     @Builder.Default
     private int insertStock = 1;
 
-    public static StockBookInfo fromDialogBookInfo(DialogBookInfo dialogInfo) {
-        return fromDialogBookInfo(dialogInfo, 1);
+    public static StockBookInfo fromBookInfo(BookInfo info) {
+        return fromBookInfo(info, 1);
     }
 
-    public static StockBookInfo fromDialogBookInfo(DialogBookInfo dialogInfo, int insertStock) {
+    public static StockBookInfo fromBookInfo(BookInfo info, int insertStock) {
         return StockBookInfo.builder()
-                .isbn(dialogInfo.getIsbn())
-                .title(dialogInfo.getTitle())
-                .author(dialogInfo.getAuthor())
-                .publisher(dialogInfo.getPublisher())
-                .releaseDate(dialogInfo.getReleaseDate())
-                .bookCoverImage(dialogInfo.getBookCoverImage())
-                .price(dialogInfo.getPrice())
+                .isbn(info.getIsbn())
+                .title(info.getTitle())
+                .author(info.getAuthor())
+                .publisher(info.getPublisher())
+                .releaseDate(info.getReleaseDate())
+                .bookCoverImage(info.getBookCoverImage())
+                .price(info.getPrice())
                 .insertStock(insertStock)
                 .build();
     }

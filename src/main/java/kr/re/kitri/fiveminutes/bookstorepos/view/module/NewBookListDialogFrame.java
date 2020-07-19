@@ -6,7 +6,7 @@ import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPan
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition.Sort;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
@@ -187,12 +187,12 @@ public class NewBookListDialogFrame extends JFrame implements DialogBookInfoRece
 
     private void updatePanel() {
         SearchMeta searchMeta = NewBookInfoRequester.requestRecommendNewBookEachPage(newBookCondition, 1);
-        dialogBookInfoListPanel.setDialogBookInfoList(searchMeta.getBookInfoList());
+        dialogBookInfoListPanel.setBookInfoList(searchMeta.getBookInfoList());
         dialogBookInfoListPanel.updateUI();
         paginationPanel.setLastPage(searchMeta.getTotalCount() / 10 + 1);
         paginationPanel.setPageChangeListener(e -> {
             SearchMeta meta = NewBookInfoRequester.requestRecommendNewBookEachPage(newBookCondition, e.getCurrentPageNumber());
-            dialogBookInfoListPanel.setDialogBookInfoList(meta.getBookInfoList());
+            dialogBookInfoListPanel.setBookInfoList(meta.getBookInfoList());
             dialogBookInfoListPanel.updateUI();
             e.getPaginationPanel().updateUI();
         });
@@ -217,7 +217,7 @@ public class NewBookListDialogFrame extends JFrame implements DialogBookInfoRece
     }
 
     @Override
-    public void sendBookInfoToReceiver(DialogBookInfo info) {
+    public void sendBookInfoToReceiver(BookInfo info) {
         JOptionPane.showConfirmDialog(this, info.getIsbn());
         // TODO: 재고 추가 액션
     }
