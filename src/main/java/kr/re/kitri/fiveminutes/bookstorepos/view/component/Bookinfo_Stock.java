@@ -64,7 +64,7 @@ public class Bookinfo_Stock extends JPanel {
 		picture_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				BarcodeImageReadDialogFrame f = new BarcodeImageReadDialogFrame();
+				BarcodeImageReadDialogFrame f = new BarcodeImageReadDialogFrame(null);
 				f.setVisible(true);
 			}
 		});
@@ -75,7 +75,7 @@ public class Bookinfo_Stock extends JPanel {
 		bookserch_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				BookSearchDialogFrame f = new BookSearchDialogFrame();
+				BookSearchDialogFrame f = new BookSearchDialogFrame(null);
 				f.setVisible(true);
 			}
 		});
@@ -86,7 +86,7 @@ public class Bookinfo_Stock extends JPanel {
 		newbook_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				NewBookListDialogFrame f = new NewBookListDialogFrame();
+				NewBookListDialogFrame f = new NewBookListDialogFrame(null);
 				f.setVisible(true);
 			}
 		});

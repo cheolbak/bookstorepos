@@ -1,10 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.*;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
@@ -13,9 +10,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class BookSearchDialogFrame extends JFrame implements DialogBookInfoReceiver {
+public class BookSearchDialogFrame extends JFrame implements BookInfoReceiver {
 
-    public BookSearchDialogFrame() throws HeadlessException {
+    private final BookInfoReceiver parentReceiver;
+
+    public BookSearchDialogFrame(BookInfoReceiver parentReceiver) throws HeadlessException {
+        this.parentReceiver = parentReceiver;
         setTitle("책 검색");
 
         initPanel();
@@ -103,6 +103,6 @@ public class BookSearchDialogFrame extends JFrame implements DialogBookInfoRecei
 
     @Override
     public void sendBookInfoToReceiver(BookInfo info) {
-        // TODO: Action Add Stock Button
+        parentReceiver.sendBookInfoToReceiver(info);
     }
 }

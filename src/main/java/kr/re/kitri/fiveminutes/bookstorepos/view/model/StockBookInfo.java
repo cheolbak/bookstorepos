@@ -74,6 +74,7 @@ public class StockBookInfo implements BookInfo {
                 .publisher(book.getBookPublisher())
                 .releaseDate(book.getBookReleaseDate())
                 .bookCoverImage(image)
+                .price(book.getBookMSRP())
                 .salePercentPoint(book.getBookDiscountRate())
                 .pointSavePercentPoint(book.getBookPointRate())
                 .currentStock(book.getBookStock())

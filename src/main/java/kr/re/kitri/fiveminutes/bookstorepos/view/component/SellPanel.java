@@ -1,20 +1,18 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import kr.re.kitri.fiveminutes.bookstorepos.util.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
+import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
 import lombok.Setter;
 
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 
 public class SellPanel extends JPanel{
 	private JPanel bookListPanel;
@@ -23,10 +21,10 @@ public class SellPanel extends JPanel{
 
 	SellBookInfo sellBookInfo;
 	ArrayList<SellBookInfo> sellBookInfoList = new ArrayList<>();
-	DialogBookInfo bookInfo;
+	BookInfo bookInfo;
 
 	@Setter
-	List<DialogBookInfo> bookInfoList;
+	List<BookInfo> bookInfoList;
 
 	public SellPanel() {
 		setLayout(null);

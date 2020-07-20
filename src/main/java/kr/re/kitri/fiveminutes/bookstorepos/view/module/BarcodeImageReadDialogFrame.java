@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.BarcodeImageViewPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.BookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BarcodeImage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,8 +27,10 @@ public class BarcodeImageReadDialogFrame extends JFrame {
     private final JList<String> barcodeCorrectList = new JList<>();
     private final JList<String> barcodeWrongList = new JList<>();
     private final ProgressMonitor proMonitor;
+    private final BookInfoReceiver bookInfoReceiver;
 
-    public BarcodeImageReadDialogFrame() throws HeadlessException {
+    public BarcodeImageReadDialogFrame(BookInfoReceiver bookInfoReceiver) throws HeadlessException {
+        this.bookInfoReceiver = bookInfoReceiver;
         setTitle("책 자동 등록");
 
         proMonitor = new ProgressMonitor(this,
@@ -41,6 +44,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
         setSize(900, 680);
         setLocationRelativeTo(null);
         setLocation(getX(), getY());
+        setVisible(true);
     }
 
     private void initPanel() {
