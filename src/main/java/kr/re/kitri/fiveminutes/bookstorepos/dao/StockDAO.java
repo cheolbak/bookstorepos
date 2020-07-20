@@ -17,6 +17,7 @@ public class StockDAO {
                         public void inject(PreparedStatement pstmt) throws SQLException {
                             pstmt.setInt(1,stock.getStockId());
                             pstmt.setString(2, stock.getBookISBN());
+                            pstmt.setInt(3, stock.getStockAmount());
                         }
                     });
         }

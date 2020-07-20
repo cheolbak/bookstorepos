@@ -1,8 +1,11 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
+import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.*;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.BookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
@@ -13,9 +16,11 @@ import java.awt.event.ActionListener;
 
 public class BookSearchDialogFrame extends JFrame implements BookInfoReceiver {
 
+    private final StockManagementService stockService;
     private final BookInfoReceiver parentReceiver;
 
-    public BookSearchDialogFrame(BookInfoReceiver parentReceiver) throws HeadlessException {
+    public BookSearchDialogFrame(StockManagementService stockService, BookInfoReceiver parentReceiver) throws HeadlessException {
+        this.stockService = stockService;
         this.parentReceiver = parentReceiver;
         setTitle("책 검색");
 
@@ -104,6 +109,8 @@ public class BookSearchDialogFrame extends JFrame implements BookInfoReceiver {
 
     @Override
     public void sendBookInfoToReceiver(BookInfo info) {
-        parentReceiver.sendBookInfoToReceiver(info);
+        if (stockService.isBookInDataBaseElseInsert(info)) {
+            parentReceiver.sendBookInfoToReceiver(info);
+        }
     }
 }
