@@ -72,25 +72,6 @@ public class BookDAO {
         return 0;
     }
 
-    public int updateAddStock(int stock, String isbn){
-        try(DBPlug dbPlug = new DBPlug()){
-            return dbPlug.executeUpdateFromQuery("book.update_AddStock",
-                    new DBPlug.InjectPreparedStatement() {
-                        @Override
-                        public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, stock);
-                            pstmt.setString(2, isbn);
-                        }
-                    });
-        }
-        catch (SQLException e){
-            if(log.isDebugEnabled()){
-                e.printStackTrace();
-            }
-        }
-        return 0;
-    }
-
     public Book select(String isbn){
         try(DBPlug dbPlug = new DBPlug()){
             return dbPlug.getMappedObjectFromExecuteQuery("book.select",
