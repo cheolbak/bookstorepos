@@ -26,19 +26,15 @@ public class Util {
         int originalWidth = originalImage.getWidth();
         int originalHeight = originalImage.getHeight();
 
-        double ratio = 1.;
+        double ratio = (double) maxWidth / (double) originalWidth;
 
-        if (originalWidth > maxWidth && (double) maxWidth / (double) originalWidth < ratio) {
-            ratio = (double) maxWidth / (double) originalWidth;
-        }
-        if (originalHeight > maxHeight && (double) maxHeight / (double) originalHeight < ratio) {
+        if ((double) maxHeight / (double) originalHeight < ratio) {
             ratio = (double) maxHeight / (double) originalHeight;
         }
 
         int resizedWidth = (int) (originalWidth * ratio);
         int resizedHeight = (int) (originalHeight * ratio);
         Image image = originalImage.getScaledInstance(resizedWidth, resizedHeight, Image.SCALE_SMOOTH);
-
         BufferedImage resizedImage = new BufferedImage(resizedWidth, resizedHeight, BufferedImage.TYPE_INT_RGB);
         Graphics g = resizedImage.getGraphics();
         g.drawImage(image, 0, 0, null);

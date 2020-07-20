@@ -1,8 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 import lombok.Setter;
 
 import javax.swing.*;
@@ -39,12 +37,6 @@ public class ListPanel extends JPanel {
         add(createListControlPanel(), BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(createAddPanel(), BorderLayout.SOUTH);
-
-        // Test
-        java.util.List<String> isbnList = java.util.List.of("9791165074524", "9788959529377", "9788966189984");
-        List<BookInfo> infoData = BookInfoSearchRequester.requestBookSearchManyISBNs(isbnList);
-        infoData.stream().map(StockBookInfo::fromBookInfo).forEach(bookInfoList::put);
-        // End Test
     }
 
     private JPanel createListControlPanel() {
@@ -96,6 +88,7 @@ public class ListPanel extends JPanel {
             int sum = dataMap.values().stream().mapToInt(BookInfo::getPrice).sum();
             NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
             totalField.setText(numFormat.format(sum));
+            bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
         });
 
         stockAddButton.addActionListener(e -> {
