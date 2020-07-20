@@ -1,21 +1,21 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
-import kr.re.kitri.fiveminutes.bookstorepos.util.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.*;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class BookSearchDialogFrame extends JFrame implements DialogBookInfoReceiver {
+public class BookSearchDialogFrame extends JFrame implements BookInfoReceiver {
 
-    public BookSearchDialogFrame() throws HeadlessException {
+    private final BookInfoReceiver parentReceiver;
+
+    public BookSearchDialogFrame(BookInfoReceiver parentReceiver) throws HeadlessException {
+        this.parentReceiver = parentReceiver;
         setTitle("책 검색");
 
         initPanel();
@@ -25,6 +25,7 @@ public class BookSearchDialogFrame extends JFrame implements DialogBookInfoRecei
         setSize(670, 770);
         setLocationRelativeTo(null);
         setLocation(getX(), getY());
+        setVisible(true);
     }
 
     private void initPanel() {
@@ -89,19 +90,19 @@ public class BookSearchDialogFrame extends JFrame implements DialogBookInfoRecei
         paginationPanel.setPageChangeListener(e -> {
             SearchMeta innerMeta = BookInfoSearchRequester.requestBookSearch(searchScope, query, e.getCurrentPageNumber());
             e.getPaginationPanel().setLastPage(innerMeta.getTotalCount() / 10 + 1);
-            infoListPanel.setDialogBookInfoList(innerMeta.getBookInfoList());
+            infoListPanel.setBookInfoList(innerMeta.getBookInfoList());
             e.getPaginationPanel().updateUI();
             infoListPanel.updateUI();
         });
         SearchMeta meta = BookInfoSearchRequester.requestBookSearch(searchScope, query, 1);
         paginationPanel.setLastPage(meta.getTotalCount() / 10 + 1);
-        infoListPanel.setDialogBookInfoList(meta.getBookInfoList());
+        infoListPanel.setBookInfoList(meta.getBookInfoList());
         paginationPanel.updateUI();
         infoListPanel.updateUI();
     }
 
     @Override
-    public void sendBookInfoToReceiver(DialogBookInfo info) {
-        // TODO: Action Add Stock Button
+    public void sendBookInfoToReceiver(BookInfo info) {
+        parentReceiver.sendBookInfoToReceiver(info);
     }
 }

@@ -60,11 +60,13 @@ public class BookDAO {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
                             pstmt.setString(1, isbn);
+                            log.info("inject isbn: {}", isbn);
                         }
                     },
                     new DBPlug.MappingResultSet<Book>() {
                         @Override
                         public Book mapping(ResultSet resultSet) throws SQLException {
+                            log.debug("resultSet Count: {}", resultSet.getRow());
                             Book book = new Book();
                             resultSet.next();
                             book.setBookTitle(resultSet.getString(1));

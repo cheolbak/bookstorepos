@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.model;
 
 import kr.re.kitri.fiveminutes.bookstorepos.util.BarcodeReader;
+import kr.re.kitri.fiveminutes.bookstorepos.util.Util;
 import lombok.Getter;
 
 import java.awt.*;
@@ -45,25 +46,7 @@ public class BarcodeImage {
         image = newImage;
     }
 
-    // 이미지 리사이징 참조: https://huskdoll.tistory.com/826
     private static BufferedImage resizingSquareImage(BufferedImage originalImage) {
-        int originalWidth = originalImage.getWidth();
-        int originalHeight = originalImage.getHeight();
-
-        double ratio = originalWidth > originalHeight
-                ? (double) 550 / (double) originalWidth
-                : (double) 550 / (double) originalHeight;
-
-        int resizedWidth = (int) (originalWidth * ratio);
-        int resizedHeight = (int) (originalHeight * ratio);
-
-        Image image = originalImage.getScaledInstance(resizedWidth, resizedHeight, Image.SCALE_SMOOTH);
-
-        BufferedImage resizedImage = new BufferedImage(resizedWidth, resizedHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics g = resizedImage.getGraphics();
-        g.drawImage(image, 0, 0, null);
-        g.dispose();
-
-        return resizedImage;
+        return Util.resizeImage(originalImage, 550, 550);
     }
 }

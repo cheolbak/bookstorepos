@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class DialogBookInfo {
+public class DefaultBookInfo implements BookInfo {
 
     @Builder.Default
     private String isbn = "ERROR";

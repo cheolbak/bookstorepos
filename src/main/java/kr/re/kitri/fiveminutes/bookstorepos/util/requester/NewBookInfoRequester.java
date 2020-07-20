@@ -1,6 +1,7 @@
-package kr.re.kitri.fiveminutes.bookstorepos.util;
+package kr.re.kitri.fiveminutes.bookstorepos.util.requester;
 
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.DefaultBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class NewBookInfoRequester {
         String fileName = "newbook_" + year + month + week + "_" + categoryCode + "_" + sortCode + ".html";
         File file = new File(TEMP_DIR, fileName);
 
-        List<DialogBookInfo> infoList = new ArrayList<>();
+        List<BookInfo> infoList = new ArrayList<>();
         SearchMeta.SearchMetaBuilder metaBuilder = SearchMeta.builder();
         try {
             // 이틀 이상 지났으면 새로 갱신
@@ -70,14 +71,14 @@ public class NewBookInfoRequester {
                     Elements cellList = row.select("td:gt(0)");
                     String isbn = cellList.get(0).text();
                     log.debug("getInfo: {}", isbn);
-                    DialogBookInfo info = DialogBookInfo.builder()
+                    DefaultBookInfo info = DefaultBookInfo.builder()
                             .isbn(isbn)
                             .title(cellList.get(1).text())
                             .author(cellList.get(2).text())
                             .publisher(cellList.get(3).text())
                             .releaseDate(LocalDate.parse(cellList.get(4).text(), parseFormat))
                             .price(NumberFormat.getInstance().parse(cellList.get(5).text().substring(1)).intValue())
-                            .bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn))
+                            .bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn, 125, 190))
                             .build();
                     infoList.add(info);
                 }

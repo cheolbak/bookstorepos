@@ -1,6 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import lombok.Setter;
 
 import javax.swing.*;
@@ -10,11 +10,11 @@ import java.util.List;
 public class DialogBookInfoListPanel extends JPanel {
 
     @Setter
-    private List<DialogBookInfo> dialogBookInfoList;
+    private List<BookInfo> bookInfoList;
 
-    private final DialogBookInfoReceiver parentFrame;
+    private final BookInfoReceiver parentFrame;
 
-    public DialogBookInfoListPanel(DialogBookInfoReceiver parentFrame) {
+    public DialogBookInfoListPanel(BookInfoReceiver parentFrame) {
         this.parentFrame = parentFrame;
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -39,7 +39,7 @@ public class DialogBookInfoListPanel extends JPanel {
     public JPanel createBookInfoListPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
 
-        if (dialogBookInfoList == null) {
+        if (bookInfoList == null) {
             return panel;
         }
 
@@ -47,8 +47,8 @@ public class DialogBookInfoListPanel extends JPanel {
                 e -> parentFrame.sendBookInfoToReceiver(e.getCurrentBookInfo());
 
         int count = 0;
-        for (DialogBookInfo dialogBookInfo : dialogBookInfoList) {
-            panel.add(new DialogBookInfoPanel(dialogBookInfo, listener), createBookInfoPanelConstraints(count));
+        for (BookInfo bookInfo : bookInfoList) {
+            panel.add(new DialogBookInfoPanel(bookInfo, listener), createBookInfoPanelConstraints(count));
             count += 1;
         }
 

@@ -150,4 +150,3 @@ query: >
   UPDATE pos_stock
   SET pos_stock_amount = pos_stock_amount + ?
   WHERE pos_stock_id = ?
----

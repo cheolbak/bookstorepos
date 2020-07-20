@@ -1,7 +1,8 @@
-package kr.re.kitri.fiveminutes.bookstorepos.util;
+package kr.re.kitri.fiveminutes.bookstorepos.util.requester;
 
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.DefaultBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -32,13 +33,15 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BookInfoSearchRequester {
 
-    public static List<DialogBookInfo> requestBookSearchManyISBNs(List<String> isbnList) {
+    private BookInfoSearchRequester() { }
+
+    public static List<BookInfo> requestBookSearchManyISBNs(List<String> isbnList) {
         return isbnList.stream()
                 .map(BookInfoSearchRequester::requestBookSearchScopeISBN)
                 .collect(Collectors.toList());
     }
 
-    public static DialogBookInfo requestBookSearchScopeISBN(String isbn) {
+    public static BookInfo requestBookSearchScopeISBN(String isbn) {
         return requestBookSearch(BookSearchScope.ISBN, isbn, 1).getBookInfoList().get(0);
     }
 
@@ -84,7 +87,7 @@ public class BookInfoSearchRequester {
         }
         return SearchMeta.builder()
                 .totalCount(0)
-                .bookInfoList(Collections.singletonList(DialogBookInfo.builder().build()))
+                .bookInfoList(Collections.singletonList(DefaultBookInfo.builder().build()))
                 .build();
     }
 
@@ -93,26 +96,21 @@ public class BookInfoSearchRequester {
         return ((Double) xPath.evaluate(doc, XPathConstants.NUMBER)).intValue();
     }
 
-    private static List<DialogBookInfo> parseXmlToList(Document doc) throws IOException, XPathExpressionException {
-        List<DialogBookInfo> bookList = new ArrayList<>();
+    private static List<BookInfo> parseXmlToList(Document doc) throws IOException, XPathExpressionException {
+        List<BookInfo> bookList = new ArrayList<>();
 
         XPathExpression xPath = XPathFactory.newInstance().newXPath().compile("//rss/channel/item");
         NodeList itemNodes = (NodeList) xPath.evaluate(doc, XPathConstants.NODESET);
-        log.debug("itemNodes.getLength(): {}", itemNodes.getLength());
         ItemInfoIterator: for (int i = 0; i < itemNodes.getLength(); i++) {
-            log.debug("iterator i: {}", i);
-            log.debug("getNodeName(): {}", itemNodes.item(i).getNodeName());
             if (!itemNodes.item(i).getNodeName().equals("item")) {
                 continue;
             }
             NodeList itemChildNodes = itemNodes.item(i).getChildNodes();
 
-            DialogBookInfo.DialogBookInfoBuilder builder = DialogBookInfo.builder();
+            DefaultBookInfo.DefaultBookInfoBuilder builder = DefaultBookInfo.builder();
             String isbn = "";
-            log.debug("itemChildNodes.getLength(): {}", itemChildNodes.getLength());
             for (int j = 0; j < itemChildNodes.getLength(); j++) {
                 Node item = itemChildNodes.item(j);
-                log.debug("item getNodeName: {}", item.getNodeName());
                 String nodeName = item.getNodeName();
                 switch (nodeName) {
                     case "title":
@@ -146,7 +144,7 @@ public class BookInfoSearchRequester {
                         break;
                 }
             }
-            builder.bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn));
+            builder.bookCoverImage(BookCoverImageRequester.requestThumbnailBookCoverImage(isbn, 125, 190));
 
             bookList.add(builder.build());
         }
