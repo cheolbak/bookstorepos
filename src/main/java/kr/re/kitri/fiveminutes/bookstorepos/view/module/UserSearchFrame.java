@@ -23,12 +23,13 @@ public class UserSearchFrame extends JFrame {
     private JLabel userPhone;
     private JLabel nowPoint;
     private JLabel memberGrade;
+    private JCheckBox userCheckBox;
     int row;
 
 
-    public UserSearchFrame(String userInfo,JLabel userNum,JLabel userName,JLabel userPhone,JLabel nowPoint,JLabel memeberGrade) {
+    public UserSearchFrame(String userInfo,JCheckBox userCheckBox,JLabel userNum,JLabel userName,JLabel userPhone,JLabel nowPoint,JLabel memeberGrade) {
         setTitle("회원검색");
-
+        this.userCheckBox=userCheckBox;
         this.userNum=userNum;
         this.userName=userName;
         this.userPhone=userPhone;
@@ -36,7 +37,6 @@ public class UserSearchFrame extends JFrame {
         this.memberGrade=memeberGrade;
         userTablePanel=createUserPanel();
         add(userTablePanel);
-        userTablePanel.setLocation(40,30);
         setSize(1300,900);
         setVisible(true);
         setDefaultCloseOperation(UserSearchFrame.DISPOSE_ON_CLOSE);
@@ -50,7 +50,17 @@ public class UserSearchFrame extends JFrame {
                 {(false), "4" , "GYUNG", "010-2232-2222","1000원", "VIP"},
         };
 
-        DefaultTableModel dtm = new DefaultTableModel(data,column);
+        //테이블 체크박스뺴고 수정 안되게 설정
+        DefaultTableModel dtm = new DefaultTableModel(data,column){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                if(row>=0 && column==0 ) {
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        };
 
         table = new JTable(dtm);
         table.setPreferredScrollableViewportSize(new Dimension(400,200));
@@ -88,6 +98,8 @@ public class UserSearchFrame extends JFrame {
                 return editor;
             }
         };
+
+        //테이블에 마우스클릭으로 로우 값 얻기
         table.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -144,11 +156,13 @@ public class UserSearchFrame extends JFrame {
         userTablePanel.setSize(1200,750);
 
         JButton confirmBtn = new JButton("확인");
+
+        //테이블에 마우스로 선택된 로우줄 과 체크박스의 값 확인으로 회원정보 변경
         confirmBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(table.getValueAt(row,0).equals(true)) {
-
+                    userCheckBox.setSelected(false);
                     userNum.setText((String)table.getValueAt(row,1));
                     userName.setText((String)table.getValueAt(row,2));
                     userPhone.setText((String)table.getValueAt(row,3));
@@ -164,8 +178,8 @@ public class UserSearchFrame extends JFrame {
         userTablePanel.add(scroll);
         userTablePanel.add(confirmBtn);
 
-        confirmBtn.setLocation(1100,0);
-        scroll.setLocation(0, 50);
+        confirmBtn.setLocation(1140,30);
+        scroll.setLocation(40, 80);
 
         return userTablePanel;
     }

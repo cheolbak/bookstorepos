@@ -33,7 +33,7 @@ public class SellPanel extends JPanel{
 
 	@Setter
 	List<DefaultBookInfo> bookInfoList;
-	JCheckBox userCheckbox;
+	public JCheckBox userCheckbox;
 	public JLabel userNum;
 	public JLabel userName;
 	public JLabel userPhone;
@@ -86,8 +86,8 @@ public class SellPanel extends JPanel{
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String userInfo = userSearchTextField.getText();
-				new UserSearchFrame(userInfo,userNum,userName,userPhone,nowPoint,memberGrade);
-				userCheckbox.setSelected(false);
+				new UserSearchFrame(userInfo,userCheckbox,userNum,userName,userPhone,nowPoint,memberGrade);
+
 
 			}
 		});
