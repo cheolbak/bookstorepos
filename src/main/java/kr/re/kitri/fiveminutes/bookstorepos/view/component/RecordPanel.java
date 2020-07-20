@@ -1,9 +1,13 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+
+import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_WEEKS;
 
 public class RecordPanel extends JPanel {
     JPanel chartPanel;
@@ -13,24 +17,15 @@ public class RecordPanel extends JPanel {
         setLayout(null);
         setSize(1600,900);
 
-        chartPanel=createChartPanel();
+        SellDataSet sellDataSet = new SellDataSet(SIX_WEEKS);
+        SellChartPanel sellChartPanel = new SellChartPanel(sellDataSet);
+        sellChartPanel.setSize(1200, 700);
         chartSetPanel=createChartSetPanel();
 
-        add(chartPanel);
         add(chartSetPanel);
+        add(sellChartPanel);
 
-        chartPanel.setLocation(10,30);
         chartSetPanel.setLocation(1220,30);
-    }
-
-    JPanel createChartPanel(){
-        JPanel chart = new JPanel();
-
-        chart.setLayout(null);
-        chart.setSize(1200,750);
-        chart.setBackground(Color.cyan);
-
-        return chart;
     }
 
     JPanel createChartSetPanel(){
