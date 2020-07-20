@@ -35,7 +35,7 @@ public class MemberManagePanel extends JPanel {
 
     //회원 관리 페이지 패널 생성자
     public MemberManagePanel() {
-        setSize(1600,900);
+//        setSize(1600,900);
         setLayout(null);
 
         memberTablePanel = creatMemberTable();
