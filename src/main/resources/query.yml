@@ -36,7 +36,13 @@ query: >
                          pos_book_stock)
   VALUES(?,?,?,?,?,?,?,?,?)
 ---
-tag: book.update_stock
+tag: book.update_add_stock
+query: >
+  UPDATE pos_book
+  SET pos_book_stock = pos_book_stock + ?
+  WHERE pos_book_isbn = ?
+---
+tag: book.update_subtract_stock
 query: >
   UPDATE pos_book
   SET pos_book_stock = pos_book_stock - ?
