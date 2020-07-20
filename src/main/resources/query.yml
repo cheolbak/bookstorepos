@@ -36,16 +36,16 @@ query: >
                          pos_book_stock)
   VALUES(?,?,?,?,?,?,?,?,?)
 ---
-tag: book.update_stock
-query: >
-  UPDATE pos_book
-  SET pos_book_stock = pos_book_stock - ?
-  WHERE pos_book_isbn = ?
----
-tag: book.update_AddStock
+tag: book.update_add_stock
 query: >
   UPDATE pos_book
   SET pos_book_stock = pos_book_stock + ?
+  WHERE pos_book_isbn = ?
+---
+tag: book.update_subtract_stock
+query: >
+  UPDATE pos_book
+  SET pos_book_stock = pos_book_stock - ?
   WHERE pos_book_isbn = ?
 ---
 tag: book.select_author
@@ -81,14 +81,14 @@ query: >
   SELECT pos_customer_id, pos_customer_name, pos_customer_tel, pos_customer_point,
   pos_customer_total_price
   FROM pos_customer
-  WHERE pos_customer_name = ?
+  WHERE pos_customer_name LIKE ?
 ---
 tag: customer.select_tel
 query: >
   SELECT pos_customer_id, pos_customer_name, pos_customer_tel, pos_customer_point,
   pos_customer_total_price
   FROM pos_customer
-  WHERE pos_customer_tel = ?
+  WHERE pos_customer_tel LIKE ?
 ---
 tag: customer.insert
 query: >

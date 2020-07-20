@@ -1,7 +1,11 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
+import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.BarcodeImageViewPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.BookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BarcodeImage;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
@@ -12,8 +16,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -26,8 +30,14 @@ public class BarcodeImageReadDialogFrame extends JFrame {
     private final JList<String> barcodeCorrectList = new JList<>();
     private final JList<String> barcodeWrongList = new JList<>();
     private final ProgressMonitor proMonitor;
+    private final StockManagementService stockService;
+    private final BookInfoReceiver bookInfoReceiver;
 
-    public BarcodeImageReadDialogFrame() throws HeadlessException {
+    private String[] barcodeCorrectListData = new String[0];
+
+    public BarcodeImageReadDialogFrame(StockManagementService stockService, BookInfoReceiver bookInfoReceiver) throws HeadlessException {
+        this.stockService = stockService;
+        this.bookInfoReceiver = bookInfoReceiver;
         setTitle("책 자동 등록");
 
         proMonitor = new ProgressMonitor(this,
@@ -41,6 +51,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
         setSize(900, 680);
         setLocationRelativeTo(null);
         setLocation(getX(), getY());
+        setVisible(true);
     }
 
     private void initPanel() {
@@ -105,11 +116,23 @@ public class BarcodeImageReadDialogFrame extends JFrame {
     }
 
     private JButton createAcceptButton() {
-        JButton acceptButton = new JButton("확인");
-        // TODO: 책 등록 창으로 데이터 전송 후 프레임 닫기
-        acceptButton.addActionListener(e ->
-                JOptionPane.showMessageDialog(this,
-                        "확인 버튼을 눌렀습니다."));
+        JButton acceptButton = new JButton("추가");
+        acceptButton.addActionListener(e -> {
+            final int NO = 1;
+            String message = "추가할 항목은 아래와 같습니다.\n"
+                                + String.join("\n", barcodeCorrectListData)
+                                + "\n추가하시겠습니까?";
+            int response = JOptionPane.showConfirmDialog(this, message, "확인 메시지",
+                                                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (response == NO) {
+                return;
+            }
+            for (String code : barcodeCorrectListData) {
+                StockBookInfo book = stockService.ifSelectElseThenSearchBook(code);
+                bookInfoReceiver.sendBookInfoToReceiver(book);
+            }
+            dispose();
+        });
         return acceptButton;
     }
 
@@ -242,6 +265,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
                 .filter(BarcodeImage::isValid)
                 .map(BarcodeImage::getCode)
                 .toArray(String[]::new);
+        barcodeCorrectListData = correctListData;
         barcodeCorrectList.setListData(correctListData);
 
         String[] wrongListData = barcodeImageMap.values().stream()

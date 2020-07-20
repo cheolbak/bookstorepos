@@ -12,9 +12,9 @@ public class DialogBookInfoListPanel extends JPanel {
     @Setter
     private List<BookInfo> bookInfoList;
 
-    private final DialogBookInfoReceiver parentFrame;
+    private final BookInfoReceiver parentFrame;
 
-    public DialogBookInfoListPanel(DialogBookInfoReceiver parentFrame) {
+    public DialogBookInfoListPanel(BookInfoReceiver parentFrame) {
         this.parentFrame = parentFrame;
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

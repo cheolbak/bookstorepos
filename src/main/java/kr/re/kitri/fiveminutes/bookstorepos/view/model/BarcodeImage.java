@@ -19,7 +19,7 @@ public class BarcodeImage {
     private static final String ISBN_REGEX = "^97[89][0-9]{10}";
 
     public BarcodeImage(BufferedImage image) {
-        this.code = BarcodeReader.read(image);
+        this.code = BarcodeReader.read(Util.resizeImage(image, 700, 700));
         this.image = resizingSquareImage(image);
         this.valid = code.matches(ISBN_REGEX);
     }

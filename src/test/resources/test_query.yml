@@ -1,8 +1,0 @@
----
-tag: test1
-query: >
-  SELECT 1 + 1 FROM DUAL
----
-tag: test2
-query: >
-  SELECT 2 + 2 FROM DUAL

@@ -1,6 +1,5 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 import lombok.Setter;
@@ -18,10 +17,14 @@ public class ListPanel extends JPanel {
     private final Class<? extends BookInfo> modelType;
 
     @Setter
+    private TotalFieldChangeListener totalFieldChangeListener = infoList -> "";
+
+    @Setter
     private BookInfoViewPanelReceiver bookInfoViewPanelReceiver = bookInfo -> {};
 
     @Setter
     private AddButtonListener addButtonListener = infoList -> {};
+    private JTextField totalField;
 
     public ListPanel(String buttonText, Class<? extends BookInfo> modelType) {
         super(new BorderLayout());
@@ -39,12 +42,6 @@ public class ListPanel extends JPanel {
         add(createListControlPanel(), BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(createAddPanel(), BorderLayout.SOUTH);
-
-        // Test
-        java.util.List<String> isbnList = java.util.List.of("9791165074524", "9788959529377", "9788966189984");
-        List<BookInfo> infoData = BookInfoSearchRequester.requestBookSearchManyISBNs(isbnList);
-        infoData.stream().map(StockBookInfo::fromBookInfo).forEach(bookInfoList::put);
-        // End Test
     }
 
     private JPanel createListControlPanel() {
@@ -86,16 +83,15 @@ public class ListPanel extends JPanel {
         JPanel panel = new JPanel(new GridBagLayout());
 
         JButton stockAddButton = new JButton(buttonText);
-        JTextField totalField = new JTextField();
+        totalField = new JTextField();
         totalField.setEditable(false);
         totalField.setDragEnabled(true);
         totalField.setText("0");
         totalField.setHorizontalAlignment(JTextField.RIGHT);
 
         bookInfoList.setChangeListListener(dataMap -> {
-            int sum = dataMap.values().stream().mapToInt(BookInfo::getPrice).sum();
-            NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
-            totalField.setText(numFormat.format(sum));
+            changeTotalField(totalFieldChangeListener);
+            bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
         });
 
         stockAddButton.addActionListener(e -> {
@@ -127,6 +123,14 @@ public class ListPanel extends JPanel {
         bookInfoList.put(bookInfo);
     }
 
+    public void changeTotalField() {
+        changeTotalField(totalFieldChangeListener);
+    }
+
+    public void changeTotalField(TotalFieldChangeListener l) {
+        totalField.setText(l.change(bookInfoList.getDataList(modelType)));
+    }
+
     @FunctionalInterface
     public interface AddButtonListener {
         void action(List<? extends BookInfo> infoList);
@@ -135,5 +139,10 @@ public class ListPanel extends JPanel {
     @FunctionalInterface
     public interface BookInfoViewPanelReceiver {
         void sendBookInfoToViewPanel(BookInfo bookInfo);
+    }
+
+    @FunctionalInterface
+    public interface TotalFieldChangeListener {
+        String change(List<? extends BookInfo> infoList);
     }
 }

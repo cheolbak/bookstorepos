@@ -34,13 +34,13 @@ public class BookDAO {
         return 0;
     }
 
-    public int updateStock(int stock, String isbn){
-        try(DBPlug dbPlug = new DBPlug()){
-            return dbPlug.executeUpdateFromQuery("book.update_stock",
+    public int updateAddStock(int addStock, String isbn) {
+        try (DBPlug dbPlug = new DBPlug()){
+            return dbPlug.executeUpdateFromQuery("book.update_add_stock",
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, stock);
+                            pstmt.setInt(1, addStock);
                             pstmt.setString(2, isbn);
                         }
                     });
@@ -53,13 +53,13 @@ public class BookDAO {
         return 0;
     }
 
-    public int updateAddStock(int stock, String isbn){
-        try(DBPlug dbPlug = new DBPlug()){
-            return dbPlug.executeUpdateFromQuery("book.update_AddStock",
+    public int updateSubtractStock(int subtractStock, String isbn){
+        try (DBPlug dbPlug = new DBPlug()){
+            return dbPlug.executeUpdateFromQuery("book.update_subtract_stock",
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, stock);
+                            pstmt.setInt(1, subtractStock);
                             pstmt.setString(2, isbn);
                         }
                     });

@@ -1,9 +1,10 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
+import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.Util;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.NewBookInfoRequester;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.BookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
@@ -24,15 +25,19 @@ import java.util.regex.Pattern;
 
 import static kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition.Category;
 
-public class NewBookListDialogFrame extends JFrame implements DialogBookInfoReceiver {
+public class NewBookListDialogFrame extends JFrame implements BookInfoReceiver {
 
     private static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy년");
+    private final StockManagementService stockService;
+    private final BookInfoReceiver bookInfoReceiver;
 
     private PaginationPanel paginationPanel;
     private NewBookCondition newBookCondition;
     private DialogBookInfoListPanel dialogBookInfoListPanel;
 
-    public NewBookListDialogFrame() throws HeadlessException {
+    public NewBookListDialogFrame(StockManagementService stockService, BookInfoReceiver bookInfoReceiver) throws HeadlessException {
+        this.stockService = stockService;
+        this.bookInfoReceiver = bookInfoReceiver;
         setTitle("교보문고 화제의 신상품");
 
         initPanel();
@@ -42,6 +47,7 @@ public class NewBookListDialogFrame extends JFrame implements DialogBookInfoRece
         setSize(670, 770);
         setLocationRelativeTo(null);
         setLocation(getX(), getY());
+        setVisible(true);
     }
 
     private void initPanel() {
@@ -218,7 +224,8 @@ public class NewBookListDialogFrame extends JFrame implements DialogBookInfoRece
 
     @Override
     public void sendBookInfoToReceiver(BookInfo info) {
-        JOptionPane.showConfirmDialog(this, info.getIsbn());
-        // TODO: 재고 추가 액션
+        if (stockService.isBookInDataBaseElseInsert(info)) {
+            bookInfoReceiver.sendBookInfoToReceiver(info);
+        }
     }
 }
