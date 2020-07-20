@@ -102,6 +102,7 @@ public class AuthDialogFrame extends JFrame {
             }
         });
 
+        getRootPane().setDefaultButton(submitButton);
         marginPanel.add(panel, BorderLayout.CENTER);
         return marginPanel;
     }
