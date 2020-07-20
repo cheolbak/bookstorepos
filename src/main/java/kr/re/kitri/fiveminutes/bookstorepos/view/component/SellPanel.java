@@ -1,9 +1,10 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import kr.re.kitri.fiveminutes.bookstorepos.util.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DialogBookInfo;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
+import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.DefaultBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 import lombok.Setter;
 
 import java.awt.*;
@@ -17,23 +18,35 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class SellPanel extends JPanel{
-	private JPanel bookListPanel;
+	private JPanel bookListPanel = new JPanel();
 	private JPanel bookInfoPanel;
 	private JPanel userInfoPanel;
+	private ListPanel bookListTestPanel;
+
 
 	SellBookInfo sellBookInfo;
 	ArrayList<SellBookInfo> sellBookInfoList = new ArrayList<>();
-	DialogBookInfo bookInfo;
+	BookInfo bookInfo;
 
 	@Setter
-	List<DialogBookInfo> bookInfoList;
+	List<DefaultBookInfo> bookInfoList;
 
 	public SellPanel() {
-		setLayout(null);
-		setSize(1600,800);
+		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
+
 		userInfoPanel = createMemberPanel();
 		bookInfoPanel = createBookInfoPanel();
-		bookListPanel = createBookListPanel();
+		bookListTestPanel = new ListPanel("판매", StockBookInfo.class);
+
+		add(bookListTestPanel);
+		add(bookInfoPanel);
+		add(userInfoPanel);
+		/*setLayout(null);
+		setSize(1600,900);
+		userInfoPanel = createMemberPanel();
+		bookInfoPanel = createBookInfoPanel();
+		bookListTestPanel = new ListPanel("판매", StockBookInfo.class);
+		//	bookListPanel = createBookListPanel();
 
 		add(userInfoPanel);
 		userInfoPanel.setLocation(1060,0);
@@ -41,8 +54,15 @@ public class SellPanel extends JPanel{
 		add(bookInfoPanel);
 		bookInfoPanel.setLocation(500,0);
 
+		bookListPanel.setSize(500,900);
+		bookListPanel.add(bookListTestPanel);
+
 		add(bookListPanel);
 		bookListPanel.setLocation(0,0);
+*//*
+		add(bookListTestPanel);
+		//bookListPaneltest.setLocation(0,0);
+*/
 	}
 
 	JPanel createMemberPanel(){
