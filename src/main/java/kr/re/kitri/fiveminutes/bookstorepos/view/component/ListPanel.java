@@ -123,6 +123,10 @@ public class ListPanel extends JPanel {
         return c;
     }
 
+    public void pushData(BookInfo bookInfo) {
+        bookInfoList.put(bookInfo);
+    }
+
     @FunctionalInterface
     public interface AddButtonListener {
         void action(List<? extends BookInfo> infoList);

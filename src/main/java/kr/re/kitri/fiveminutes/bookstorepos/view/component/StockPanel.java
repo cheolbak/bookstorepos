@@ -18,7 +18,7 @@ public class StockPanel extends JPanel {
 	public StockPanel(){
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
 //		p1=new ListPanel(this);
-		stockListPanel = new ListPanel("추가", StockBookInfo.class);
+		stockListPanel = new ListPanel("입고", StockBookInfo.class);
 		p2=new Bookinfo_Stock(this);
 		add(stockListPanel);
 		add(Box.createVerticalGlue());
