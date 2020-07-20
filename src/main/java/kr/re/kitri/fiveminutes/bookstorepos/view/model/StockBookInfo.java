@@ -81,5 +81,4 @@ public class StockBookInfo implements BookInfo {
                 .insertStock(insertStock)
                 .build();
     }
-
 }

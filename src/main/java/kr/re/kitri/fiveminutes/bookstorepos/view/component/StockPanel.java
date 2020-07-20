@@ -38,6 +38,4 @@ public class StockPanel extends JPanel {
 		rightPanel.add(infoViewPanel, BorderLayout.CENTER);
 		return rightPanel;
 	}
-
-
 }

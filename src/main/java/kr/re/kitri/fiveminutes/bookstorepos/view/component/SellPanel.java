@@ -1,9 +1,11 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
+import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
+import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DefaultBookInfo;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 import lombok.Setter;
@@ -11,28 +13,23 @@ import lombok.Setter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class SellPanel extends JPanel{
-	private JPanel bookListPanel = new JPanel();
+
 	private JPanel bookInfoPanel;
 	private JPanel userInfoPanel;
-	private ListPanel bookListTestPanel;
+	private ListPanel bookListPanel;
 
-
-	SellBookInfo sellBookInfo;
-	ArrayList<SellBookInfo> sellBookInfoList = new ArrayList<>();
-	BookInfo bookInfo;
+	SellManagementService sellService = new SellManagementService();
 
 	@Setter
 	List<DefaultBookInfo> bookInfoList;
+
 	JCheckBox userCheckbox;
 	public JLabel userNum;
 	public JLabel userName;
@@ -45,9 +42,9 @@ public class SellPanel extends JPanel{
 
 		userInfoPanel = createMemberPanel();
 		bookInfoPanel = createBookInfoPanel();
-		bookListTestPanel = new ListPanel("판매", StockBookInfo.class);
+		bookListPanel = new ListPanel("판매", StockBookInfo.class);
 
-		add(bookListTestPanel);
+		add(bookListPanel);
 		add(bookInfoPanel);
 		add(userInfoPanel);
 		/*setLayout(null);
@@ -185,11 +182,9 @@ public class SellPanel extends JPanel{
 		memberGrade.setLocation(140,200);
 		inputPointField.setLocation(140,240);
 
-
 		memberPanel.add(searchMemberPanel);
 		memberPanel.add(userCheckboxPanel);
 		memberPanel.add(memberInfoPanel);
-
 
 		searchMemberPanel.setLocation(35,50);
 		userCheckboxPanel.setLocation(35,135);
@@ -199,6 +194,16 @@ public class SellPanel extends JPanel{
 	}
 
 	JPanel createBookInfoPanel(){
+
+		BookInfoReceiver bookInfoReceiver = info -> {
+			if(info instanceof StockBookInfo){
+				bookListPanel.pushData(info);
+				return;
+			}
+			StockBookInfo stockBookInfo = StockBookInfo.fromBookInfo(info);
+			bookListPanel.pushData(stockBookInfo);
+		};
+
 		JPanel bookInfoPanel = new JPanel();
 		bookInfoPanel.setLayout(null);
 		bookInfoPanel.setSize(530,900);
@@ -259,9 +264,34 @@ public class SellPanel extends JPanel{
 		JLabel point = new JLabel();
 		JLabel nowStock = new JLabel();
 		JLabel bookImage = new JLabel();
-		//JPanel bookImagePanel = new JPanel();
 
-		//bookImagePanel.setLayout(null);
+		ActionListener listener = e -> {
+			if (!inputIsbnField.getText().matches("^97[89][0-9]{10}$")) {
+				return;
+			}
+			Book book = sellService.searchBook(inputIsbnField.getText());
+			StockBookInfo stockBookInfo = StockBookInfo.fromBookDomain(book);
+
+
+			Image img = stockBookInfo.getBookCoverImage();
+			Image resizeImage = img.getScaledInstance(200,300,Image.SCALE_SMOOTH);
+			ImageIcon imageIcon = new ImageIcon(resizeImage);
+
+			title.setText(stockBookInfo.getTitle());
+			author.setText(stockBookInfo.getAuthor());
+			publisher.setText(stockBookInfo.getPublisher());
+			isbn.setText(stockBookInfo.getIsbn());
+			originPrice.setText(Integer.toString(stockBookInfo.getPrice())+ "원");
+			sellPrice.setText(Integer.toString(stockBookInfo.getPrice())+ "원");
+			bookImage.setIcon(imageIcon);
+
+			bookInfoReceiver.sendBookInfoToReceiver(stockBookInfo);
+
+			inputIsbnField.setText("");
+		};
+
+		inputIsbnField.addActionListener(listener);
+		isbnAddBtn.addActionListener(listener);
 
 
 		// 책정보패널 레이블 위치 설정
@@ -307,90 +337,11 @@ public class SellPanel extends JPanel{
 		minBookInfoPanel.add(nowStock);
 		minBookInfoPanel.add(bookImage);
 
-
-		//버튼 리스너
-		isbnAddBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String searchedIsbn = inputIsbnField.getText();
-				bookInfo = BookInfoSearchRequester.requestBookSearchScopeISBN(searchedIsbn);
-				//ImageIcon imageIcon = new ImageIcon(bookInfo.getBookCoverImage());
-				Image img = bookInfo.getBookCoverImage();
-				Image resizeImage = img.getScaledInstance(200,300,Image.SCALE_SMOOTH);
-				ImageIcon imageIcon = new ImageIcon(resizeImage);
-
-				title.setText(bookInfo.getTitle());
-				author.setText(bookInfo.getAuthor());
-				publisher.setText(bookInfo.getPublisher());
-				isbn.setText(bookInfo.getIsbn());
-				originPrice.setText(Integer.toString(bookInfo.getPrice())+ "원");
-				sellPrice.setText(Integer.toString(bookInfo.getPrice())+ "원");
-				bookImage.setIcon(imageIcon);
-			}
-		});
-
 		bookInfoPanel.add(searchIsbnPanel);
 		bookInfoPanel.add(minBookInfoPanel);
 
 		return bookInfoPanel;
 	}
-
-	JPanel createBookListPanel(){
-		JPanel bookListPanel = new JPanel();
-		bookListPanel.setLayout(null);
-		bookListPanel.setSize(500,900);
-
-		JButton deleteBookBtn = new JButton("선택 삭제");
-		deleteBookBtn.setSize(105,30);
-		deleteBookBtn.setLocation(340,60);
-
-		bookListPanel.add(deleteBookBtn);
-
-		DefaultListModel<String> listModel = new DefaultListModel<>();
-		JList<String> booklist = new JList<>(listModel);
-
-		JScrollPane scrollPane = new JScrollPane(booklist);
-		TitledBorder bookListBorder = new TitledBorder(new LineBorder(Color.BLACK,0),"결제 목록");
-		scrollPane.setBorder(bookListBorder);
-
-		scrollPane.setSize(400,450);
-		scrollPane.setLocation(50,120);
-
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-		JPanel paymentPanel = new JPanel();
-		paymentPanel.setLayout(null);
-		paymentPanel.setSize(400,60);
-		paymentPanel.setLocation(50,580);
-
-		JLabel totalPriceLabel = new JLabel("총계: ");
-		JLabel sellPriceValueLabel = new JLabel();
-		JButton paymentBtn = new JButton("결제");
-
-		totalPriceLabel.setSize(30,30);
-		totalPriceLabel.setLocation(0,10);
-
-		sellPriceValueLabel.setSize(100,30);
-		sellPriceValueLabel.setLocation(40,10);
-
-		paymentBtn.setSize(60,20);
-		paymentBtn.setLocation(300,10);
-
-		paymentPanel.add(totalPriceLabel);
-		paymentPanel.add(sellPriceValueLabel);
-		paymentPanel.add(paymentBtn);
-
-
-		bookListPanel.add(deleteBookBtn);
-		bookListPanel.add(scrollPane);
-		bookListPanel.add(paymentPanel);
-
-		return bookListPanel;
-	}
-
-
-
-
 }
 
 
