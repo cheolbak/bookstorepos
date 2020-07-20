@@ -5,6 +5,7 @@ import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DefaultBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 import lombok.Setter;
 
 import java.awt.*;
@@ -12,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -30,6 +33,12 @@ public class SellPanel extends JPanel{
 
 	@Setter
 	List<DefaultBookInfo> bookInfoList;
+	JCheckBox userCheckbox;
+	public JLabel userNum;
+	public JLabel userName;
+	public JLabel userPhone;
+	public JLabel nowPoint;
+	public JLabel memberGrade;
 
 	public SellPanel() {
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
@@ -44,25 +53,11 @@ public class SellPanel extends JPanel{
 		/*setLayout(null);
 		setSize(1600,900);
 		userInfoPanel = createMemberPanel();
-		bookInfoPanel = createBookInfoPanel();
-		bookListTestPanel = new ListPanel("판매", StockBookInfo.class);
-		//	bookListPanel = createBookListPanel();
 
 		add(userInfoPanel);
 		userInfoPanel.setLocation(1060,0);
 
-		add(bookInfoPanel);
-		bookInfoPanel.setLocation(500,0);
-
-		bookListPanel.setSize(500,900);
-		bookListPanel.add(bookListTestPanel);
-
-		add(bookListPanel);
-		bookListPanel.setLocation(0,0);
-*//*
-		add(bookListTestPanel);
-		//bookListPaneltest.setLocation(0,0);
-*/
+		 */
 	}
 
 	JPanel createMemberPanel(){
@@ -88,7 +83,15 @@ public class SellPanel extends JPanel{
 		JComboBox memberSearchList = new JComboBox();
 		JTextField userSearchTextField = new JTextField();
 		JButton searchBtn = new JButton("확인");
-		JCheckBox userCheckbox = new JCheckBox("비회원 구매",true);
+		searchBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String userInfo = userSearchTextField.getText();
+				new UserSearchFrame(userInfo,userNum,userName,userPhone,nowPoint,memberGrade);
+				userCheckbox.setSelected(false);
+
+			}
+		});
+		userCheckbox = new JCheckBox("비회원 구매",true);
 
 		memberSearchList.addItem("전화번호");
 		memberSearchList.addItem("이름");
@@ -115,11 +118,11 @@ public class SellPanel extends JPanel{
 		JLabel nowPointLabel = new JLabel("현재 적립금:");
 		JLabel usingPointLabel = new JLabel("사용 적립금:");
 
-		JLabel userNum = new JLabel("0");
-		JLabel userName = new JLabel("비회원");
-		JLabel userPhone = new JLabel("0");
-		JLabel nowPoint = new JLabel("0");
-		JLabel memberGrade = new JLabel("비회원");
+		userNum = new JLabel("0:");
+		userName = new JLabel("비회원:");
+		userPhone = new JLabel("0");
+		nowPoint = new JLabel("0");
+		memberGrade = new JLabel("비회원");
 
 		JTextField inputPointField = new JTextField();
 
