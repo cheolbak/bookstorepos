@@ -11,7 +11,7 @@ CONNECT C##POS_USER/secret
 CREATE TABLE pos_book
 (
   pos_book_isbn          CHAR(13)      NOT NULL,
-  pos_book_title         VARCHAR2(150),
+  pos_book_title         VARCHAR2(255),
   pos_book_author        VARCHAR2(150),
   pos_book_publisher     VARCHAR2(150),
   pos_book_release_date  DATE         ,
@@ -80,14 +80,8 @@ START WITH 1
 INCREMENT BY 1;
 /
 
-CREATE OR REPLACE TRIGGER SEQ_TRG_pos_sell
-BEFORE INSERT ON pos_sell
-REFERENCING NEW AS NEW FOR EACH ROW
-BEGIN
-  SELECT SEQ_pos_sell.NEXTVAL
-  INTO: NEW.pos_sell_id
-  FROM DUAL;
-END;
+
+
 /
 
 CREATE TABLE pos_stock
