@@ -28,15 +28,13 @@ import static kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition.C
 public class NewBookListDialogFrame extends JFrame implements BookInfoReceiver {
 
     private static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy년");
-    private final StockManagementService stockService;
     private final BookInfoReceiver bookInfoReceiver;
 
     private PaginationPanel paginationPanel;
     private NewBookCondition newBookCondition;
     private DialogBookInfoListPanel dialogBookInfoListPanel;
 
-    public NewBookListDialogFrame(StockManagementService stockService, BookInfoReceiver bookInfoReceiver) throws HeadlessException {
-        this.stockService = stockService;
+    public NewBookListDialogFrame(BookInfoReceiver bookInfoReceiver) throws HeadlessException {
         this.bookInfoReceiver = bookInfoReceiver;
         setTitle("교보문고 화제의 신상품");
 
@@ -223,9 +221,7 @@ public class NewBookListDialogFrame extends JFrame implements BookInfoReceiver {
     }
 
     @Override
-    public void sendBookInfoToReceiver(BookInfo info) {
-        if (stockService.isBookInDataBaseElseInsert(info)) {
-            bookInfoReceiver.sendBookInfoToReceiver(info);
-        }
+    public void sendBookInfoToReceiver(String isbn) {
+        bookInfoReceiver.sendBookInfoToReceiver(isbn);
     }
 }

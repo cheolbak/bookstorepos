@@ -39,6 +39,7 @@ public class SellPanel extends JPanel{
 	public JLabel nowPoint;
 	public JLabel memberGrade;
 	int memberSearchnum=0;
+
 	public SellPanel() {
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
 
@@ -90,13 +91,13 @@ public class SellPanel extends JPanel{
 				if(memberSearchnum==0) {
 					String userInfo = userSearchTextField.getText();
 					//SellUserInfo sellUserInfo =userManagementService.UserSearchName(userInfo);
-					new UserSearchFrame(userInfo, userCheckbox, userNum, userName, userPhone, nowPoint, memberGrade);
+					new UserSearchFrame(SellPanel.this);
 				}
 				//이름으로 콤보 박스 해서 확인
 				else if(memberSearchnum==1){
 					String userInfo = userSearchTextField.getText();
 					//SellUserInfo sellUserInfo=userManagementService.UserSearchPhone(userInfo);
-					new UserSearchFrame(userInfo, userCheckbox, userNum, userName, userPhone, nowPoint, memberGrade);
+					new UserSearchFrame(SellPanel.this);
 				}
 
 			}
@@ -112,10 +113,7 @@ public class SellPanel extends JPanel{
 				memberSearchnum=memberSearchList.getSelectedIndex();
 			}
 		});
-//		String x=(String)memberSearchList.getItemAt(1);
-//		String y=(String)memberSearchList.getItemAt(0);
-//		System.out.println(y);
-//		System.out.println(x);
+
 
 		memberSearchList.setSize(120,25);
 		userSearchTextField.setSize(200,25);
@@ -221,13 +219,9 @@ public class SellPanel extends JPanel{
 
 	JPanel createBookInfoPanel(){
 
-		BookInfoReceiver bookInfoReceiver = info -> {
-			if(info instanceof StockBookInfo){
-				bookListPanel.pushData(info);
-				return;
-			}
-			StockBookInfo stockBookInfo = StockBookInfo.fromBookInfo(info);
-			bookListPanel.pushData(stockBookInfo);
+		BookInfoReceiver bookInfoReceiver = isbn -> {
+			// TODO: DB Connect and Pull Data
+			bookListPanel.pushData(BookInfoSearchRequester.requestBookSearchScopeISBN(isbn));
 		};
 
 		JPanel bookInfoPanel = new JPanel();
@@ -311,7 +305,7 @@ public class SellPanel extends JPanel{
 			sellPrice.setText(Integer.toString(stockBookInfo.getPrice())+ "원");
 			bookImage.setIcon(imageIcon);
 
-			bookInfoReceiver.sendBookInfoToReceiver(stockBookInfo);
+			bookInfoReceiver.sendBookInfoToReceiver(stockBookInfo.getIsbn());
 
 			inputIsbnField.setText("");
 		};
@@ -367,6 +361,17 @@ public class SellPanel extends JPanel{
 		bookInfoPanel.add(minBookInfoPanel);
 
 		return bookInfoPanel;
+	}
+
+	public void updateUserInfo(SellUserInfo info) {
+		// TODO: 유저 정보 갱신
+		userCheckbox.setSelected(false);
+		userNum.setText(String.valueOf(info.getUserNum()));
+		userName.setText(info.getUserName());
+		userPhone.setText(info.getUserPhoneNum());
+		nowPoint.setText(String.valueOf(info.getNowReserves()));
+		memberGrade.setText(info.getUserGrade());
+
 	}
 }
 

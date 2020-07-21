@@ -30,13 +30,11 @@ public class BarcodeImageReadDialogFrame extends JFrame {
     private final JList<String> barcodeCorrectList = new JList<>();
     private final JList<String> barcodeWrongList = new JList<>();
     private final ProgressMonitor proMonitor;
-    private final StockManagementService stockService;
     private final BookInfoReceiver bookInfoReceiver;
 
     private String[] barcodeCorrectListData = new String[0];
 
-    public BarcodeImageReadDialogFrame(StockManagementService stockService, BookInfoReceiver bookInfoReceiver) throws HeadlessException {
-        this.stockService = stockService;
+    public BarcodeImageReadDialogFrame(BookInfoReceiver bookInfoReceiver) throws HeadlessException {
         this.bookInfoReceiver = bookInfoReceiver;
         setTitle("책 자동 등록");
 
@@ -128,8 +126,7 @@ public class BarcodeImageReadDialogFrame extends JFrame {
                 return;
             }
             for (String code : barcodeCorrectListData) {
-                StockBookInfo book = stockService.ifSelectElseThenSearchBook(code);
-                bookInfoReceiver.sendBookInfoToReceiver(book);
+                bookInfoReceiver.sendBookInfoToReceiver(code);
             }
             dispose();
         });

@@ -1,5 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.SellPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellUserInfo;
 
 import java.awt.Color;
@@ -15,28 +16,15 @@ import javax.swing.table.DefaultTableModel;
 public class UserSearchFrame extends JFrame {
 
 
+    private final SellPanel sellPanel;
     private JPanel userTablePanel;
     private JTable table;
-    private JLabel userNum;
-    private JLabel userName;
-    private JLabel userPhone;
-    private JLabel nowPoint;
-    private JLabel memberGrade;
-    private JCheckBox userCheckBox;
-    private String userInfo;
-    private SellUserInfo sui;
     int row;
-    int checkBoxCount=0;
+    private SellUserInfo sellUserInfo;
 
-    public UserSearchFrame(String userInfo, JCheckBox userCheckBox, JLabel userNum, JLabel userName, JLabel userPhone, JLabel nowPoint, JLabel memeberGrade) {
+    public UserSearchFrame(SellPanel sellPanel) {
+        this.sellPanel = sellPanel;
         setTitle("회원검색");
-        this.userInfo=userInfo;
-        this.userCheckBox=userCheckBox;
-        this.userNum=userNum;
-        this.userName=userName;
-        this.userPhone=userPhone;
-        this.nowPoint=nowPoint;
-        this.memberGrade=memeberGrade;
         userTablePanel=createUserPanel();
         add(userTablePanel);
         setSize(1300,900);
@@ -46,14 +34,16 @@ public class UserSearchFrame extends JFrame {
 
     JPanel createUserPanel() {
         final Object[] column = {" ","회원번호","이름","전화번호","적립금","등급"};
-        Object data[][]  = {
-                {(false), "2" , "SU", "010-2232-2222","1000원", "VIP"},
-                {(false), "3" , "SON", "010-2232-2222","1000원", "VIP"},
-                {(false), "4" , "GYUNG", "010-2232-2222","1000원", "VIP"},
-        };
+//        Object data[][]  = {
+//                {(false), "2" , "SU", "010-2232-2222","1000원", "VIP"},
+//                {(false), "3" , "SON", "010-2232-2222","1000원", "VIP"},
+//                {(false), "4" , "GYUNG", "010-2232-2222","1000원", "VIP"},
+//        };
+        Object data2[]=sellUserInfo.getRowData();
+
 
         //테이블 체크박스뺴고 수정 안되게 설정
-        DefaultTableModel dtm = new DefaultTableModel(data,column){
+        DefaultTableModel dtm = new DefaultTableModel(column,0){
             @Override
             public boolean isCellEditable(int row, int column) {
                 if(row>=0 && column==0 ) {
@@ -64,36 +54,27 @@ public class UserSearchFrame extends JFrame {
             }
         };
 
+        dtm.addRow(data2);
         table = new JTable(dtm);
         table.setPreferredScrollableViewportSize(new Dimension(400,200));
         table.setFillsViewportHeight(true);
         table.setEnabled(true);
         table.setBackground(Color.white);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JCheckBox box = new JCheckBox();
         box.setHorizontalAlignment(JLabel.CENTER);
-        box.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange()==ItemEvent.SELECTED){
-                    checkBoxCount++;
-
-                    System.out.println(checkBoxCount);
-                }
-
-            }
-        });
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
         DefaultTableCellRenderer right = new DefaultTableCellRenderer();
 
         //체크박스 셀 랜더링
         DefaultTableCellRenderer boxRender = new DefaultTableCellRenderer(){
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JCheckBox comp = null;
                 if(column==0){
                     comp = new JCheckBox();
-                    comp.setSelected(((Boolean)value).booleanValue());
+                    comp.setSelected(isSelected);
                     comp.setHorizontalAlignment(SwingConstants.CENTER);
                 }
                 return comp;
@@ -105,37 +86,16 @@ public class UserSearchFrame extends JFrame {
         DefaultCellEditor boxEditor = new DefaultCellEditor(box) {
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
                 JCheckBox editor;
-                editor = (JCheckBox)super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                editor = (JCheckBox) super.getTableCellEditorComponent(table, value, isSelected, row, column);
                 return editor;
             }
         };
 
         //테이블에 마우스클릭으로 로우 값 얻기
-        table.addMouseListener(new MouseListener() {
+        table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 row=table.getSelectedRow();
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
             }
         });
         center.setHorizontalAlignment(JLabel.CENTER);
@@ -173,12 +133,16 @@ public class UserSearchFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(table.getValueAt(row,0).equals(true)) {
-                    userCheckBox.setSelected(false);
-                    userNum.setText((String)table.getValueAt(row,1));
-                    userName.setText((String)table.getValueAt(row,2));
-                    userPhone.setText((String)table.getValueAt(row,3));
-                    nowPoint.setText((String)table.getValueAt(row,4));
-                    memberGrade.setText((String)table.getValueAt(row,5));
+                    sellPanel.updateUserInfo(
+                            SellUserInfo.builder()
+                                .userNum(Integer.parseInt(table.getValueAt(row,1).toString()))
+                                .userName(table.getValueAt(row, 2).toString())
+                                .userPhoneNum(table.getValueAt(row, 3).toString())
+                                .nowReserves(Integer.parseInt(table.getValueAt(row, 4).toString()))
+                                .userGrade(table.getValueAt(row, 5).toString())
+                                .build());
+                    dispose();
+                }else{
                     dispose();
                 }
 

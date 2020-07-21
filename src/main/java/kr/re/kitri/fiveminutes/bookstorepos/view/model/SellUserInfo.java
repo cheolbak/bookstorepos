@@ -3,8 +3,6 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.model;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Customer;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 @Builder
