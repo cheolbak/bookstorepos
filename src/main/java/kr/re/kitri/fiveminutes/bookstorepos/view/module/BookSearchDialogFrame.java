@@ -16,11 +16,9 @@ import java.awt.event.ActionListener;
 
 public class BookSearchDialogFrame extends JFrame implements BookInfoReceiver {
 
-    private final StockManagementService stockService;
     private final BookInfoReceiver parentReceiver;
 
-    public BookSearchDialogFrame(StockManagementService stockService, BookInfoReceiver parentReceiver) throws HeadlessException {
-        this.stockService = stockService;
+    public BookSearchDialogFrame(BookInfoReceiver parentReceiver) throws HeadlessException {
         this.parentReceiver = parentReceiver;
         setTitle("책 검색");
 
@@ -108,9 +106,7 @@ public class BookSearchDialogFrame extends JFrame implements BookInfoReceiver {
     }
 
     @Override
-    public void sendBookInfoToReceiver(BookInfo info) {
-        if (stockService.isBookInDataBaseElseInsert(info)) {
-            parentReceiver.sendBookInfoToReceiver(info);
-        }
+    public void sendBookInfoToReceiver(String isbn) {
+        parentReceiver.sendBookInfoToReceiver(isbn);
     }
 }

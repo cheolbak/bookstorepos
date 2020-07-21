@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +42,42 @@ public class CustomerDAO {
                 e.printStackTrace();
             }
         }
-        return new Customer(0, "ERROR", "ERROR", 0, 0, LocalDateTime.now(), LocalDateTime.now());
+        return Customer.builder().build();
+    }
+
+    public List<Customer> selectAllPaging(int offset, int fetchRows) {
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.getMappedObjectFromExecuteQuery("customer.select_all_paging",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setInt(1, offset);
+                            pstmt.setInt(2, fetchRows);
+                        }
+                    },
+                    new DBPlug.MappingResultSet<List<Customer>>() {
+                        @Override
+                        public List<Customer> mapping(ResultSet resultSet) throws SQLException {
+                            List<Customer> customers = new ArrayList<>();
+                            while (resultSet.next()) {
+                                customers.add(Customer.builder()
+                                        .customerId(resultSet.getInt(1))
+                                        .customerName(resultSet.getString(2))
+                                        .customerTel(resultSet.getString(3))
+                                        .customerPoint(resultSet.getInt(4))
+                                        .customerTotalPrice(resultSet.getInt(5))
+                                        .build());
+                            }
+                            return customers;
+                        }
+                    });
+        }
+        catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return Collections.emptyList();
     }
 
     public List<Customer> selectNameQuery(String query) {
@@ -52,7 +86,7 @@ public class CustomerDAO {
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setString(1, "%" + query + "%");
+                            pstmt.setString(1, query);
                         }
                     },
                     new DBPlug.MappingResultSet<List<Customer>>() {
@@ -85,7 +119,7 @@ public class CustomerDAO {
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setString(1, "%" + query + "%");
+                            pstmt.setString(1, query);
                         }
                     },
                     new DBPlug.MappingResultSet<List<Customer>>() {

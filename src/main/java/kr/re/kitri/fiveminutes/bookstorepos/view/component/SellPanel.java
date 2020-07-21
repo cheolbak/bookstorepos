@@ -27,6 +27,9 @@ import javax.swing.border.TitledBorder;
 @Slf4j
 public class SellPanel extends JPanel{
 
+	private static final int COMBO_PHONE = 0;
+	private static final int COMBO_NAME = 1;
+
 	private JPanel bookInfoPanel;
 	private JPanel userInfoPanel;
 	private SellListPanel bookListPanel;
@@ -54,6 +57,14 @@ public class SellPanel extends JPanel{
 		add(bookListPanel);
 		add(bookInfoPanel);
 		add(userInfoPanel);
+		/*setLayout(null);
+		setSize(1600,900);
+		userInfoPanel = createMemberPanel();
+
+		add(userInfoPanel);
+		userInfoPanel.setLocation(1060,0);
+
+		 */
 	}
 
 	JPanel createMemberPanel(){
@@ -62,6 +73,7 @@ public class SellPanel extends JPanel{
 		 searchMemberPanel : 회원 검색 패널
 		 memberInfoPanel : 회원 정보 패널
 		  * */
+
 		JPanel memberPanel = new JPanel();
 		memberPanel.setLayout(null);
 		memberPanel.setSize(500,900);
@@ -81,18 +93,22 @@ public class SellPanel extends JPanel{
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//전화번호로 콤보박스 해서 확인
-				UserManagementService userManagementService =new UserManagementService();
 
-				if(memberSearchnum==0) {
+
+				if(memberSearchnum==COMBO_PHONE) {
+					UserManagementService userManagementService =new UserManagementService();
 					String userInfo = userSearchTextField.getText();
-					//SellUserInfo sellUserInfo =userManagementService.UserSearchName(userInfo);
-					new UserSearchFrame(SellPanel.this);
+					System.out.println(userInfo);
+					Object[][] data =userManagementService.searchUserPhone(userInfo);
+
+					new UserSearchFrame(data,SellPanel.this);
 				}
 				//이름으로 콤보 박스 해서 확인
-				else if(memberSearchnum==1){
+				else if(memberSearchnum==COMBO_NAME){
+					UserManagementService userManagementService =new UserManagementService();
 					String userInfo = userSearchTextField.getText();
-					//SellUserInfo sellUserInfo=userManagementService.UserSearchPhone(userInfo);
-					new UserSearchFrame(SellPanel.this);
+					Object[][] data=userManagementService.searchUserName(userInfo);
+					new UserSearchFrame(data,SellPanel.this);
 				}
 
 			}
@@ -108,10 +124,7 @@ public class SellPanel extends JPanel{
 				memberSearchnum=memberSearchList.getSelectedIndex();
 			}
 		});
-//		String x=(String)memberSearchList.getItemAt(1);
-//		String y=(String)memberSearchList.getItemAt(0);
-//		System.out.println(y);
-//		System.out.println(x);
+
 
 		memberSearchList.setSize(120,25);
 		userSearchTextField.setSize(200,25);
@@ -314,6 +327,7 @@ public class SellPanel extends JPanel{
 		inputIsbnField.addActionListener(listener);
 		isbnAddBtn.addActionListener(listener);
 
+
 		// 책정보패널 레이블 위치 설정
 		titleLabel.setBounds(20,40,60,18);
 		authorLabel.setBounds(20, 80, 62, 18);
@@ -365,6 +379,14 @@ public class SellPanel extends JPanel{
 
 	public void updateUserInfo(SellUserInfo info) {
 		// TODO: 유저 정보 갱신
+		userCheckbox.setSelected(false);
+		userNum.setText(String.valueOf(info.getUserNum()));
+		userName.setText(info.getUserName());
+		userPhone.setText(info.getUserPhoneNum());
+		nowPoint.setText(String.valueOf(info.getNowReserves()));
+		memberGrade.setText(info.getUserGrade());
+
+
 	}
 }
 

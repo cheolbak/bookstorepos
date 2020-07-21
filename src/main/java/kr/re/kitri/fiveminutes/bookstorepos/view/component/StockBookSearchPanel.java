@@ -33,8 +33,7 @@ public class StockBookSearchPanel extends JPanel {
             if (!isbnField.getText().matches("^97[89][0-9]{10}$")) {
                 return;
             }
-            StockBookInfo book = stockService.ifSelectElseThenSearchBook(isbnField.getText());
-            bookInfoReceiver.sendBookInfoToReceiver(book);
+            bookInfoReceiver.sendBookInfoToReceiver(isbnField.getText());
             isbnField.setText("");
         };
 
@@ -52,19 +51,19 @@ public class StockBookSearchPanel extends JPanel {
 
     private JButton createReadBarcodeButton() {
         JButton button = new JButton("사진 인식");
-        button.addActionListener(e -> new BarcodeImageReadDialogFrame(stockService, bookInfoReceiver));
+        button.addActionListener(e -> new BarcodeImageReadDialogFrame(bookInfoReceiver));
         return button;
     }
 
     private JButton createSearchBookButton() {
         JButton button = new JButton("책 검색");
-        button.addActionListener(e -> new BookSearchDialogFrame(stockService, bookInfoReceiver));
+        button.addActionListener(e -> new BookSearchDialogFrame(bookInfoReceiver));
         return button;
     }
 
     private JButton createShowNewBookButton() {
         JButton button = new JButton("새로운 책");
-        button.addActionListener(e -> new NewBookListDialogFrame(stockService, bookInfoReceiver));
+        button.addActionListener(e -> new NewBookListDialogFrame(bookInfoReceiver));
         return button;
     }
 

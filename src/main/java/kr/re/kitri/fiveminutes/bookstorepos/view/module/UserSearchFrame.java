@@ -19,13 +19,13 @@ public class UserSearchFrame extends JFrame {
     private final SellPanel sellPanel;
     private JPanel userTablePanel;
     private JTable table;
-    private String userInfo;
-    private SellUserInfo sui;
     int row;
-    int checkBoxCount=0;
+    private Object[][] data;
 
-    public UserSearchFrame(SellPanel sellPanel) {
+
+    public UserSearchFrame(Object[][] data,SellPanel sellPanel) {
         this.sellPanel = sellPanel;
+        this.data=data;
         setTitle("회원검색");
         userTablePanel=createUserPanel();
         add(userTablePanel);
@@ -36,14 +36,9 @@ public class UserSearchFrame extends JFrame {
 
     JPanel createUserPanel() {
         final Object[] column = {" ","회원번호","이름","전화번호","적립금","등급"};
-        Object data[][]  = {
-                {(false), "2" , "SU", "010-2232-2222","1000원", "VIP"},
-                {(false), "3" , "SON", "010-2232-2222","1000원", "VIP"},
-                {(false), "4" , "GYUNG", "010-2232-2222","1000원", "VIP"},
-        };
 
         //테이블 체크박스뺴고 수정 안되게 설정
-        DefaultTableModel dtm = new DefaultTableModel(data,column){
+        DefaultTableModel dtm = new DefaultTableModel(data, column){
             @Override
             public boolean isCellEditable(int row, int column) {
                 if(row>=0 && column==0 ) {
@@ -140,6 +135,9 @@ public class UserSearchFrame extends JFrame {
                                 .nowReserves(Integer.parseInt(table.getValueAt(row, 4).toString()))
                                 .userGrade(table.getValueAt(row, 5).toString())
                                 .build());
+                    dispose();
+                }
+                else{
                     dispose();
                 }
 
