@@ -1,12 +1,11 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellUserInfo;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -24,11 +23,14 @@ public class UserSearchFrame extends JFrame {
     private JLabel nowPoint;
     private JLabel memberGrade;
     private JCheckBox userCheckBox;
+    private String userInfo;
+    private SellUserInfo sui;
     int row;
+    int checkBoxCount=0;
 
-
-    public UserSearchFrame(String userInfo,JCheckBox userCheckBox,JLabel userNum,JLabel userName,JLabel userPhone,JLabel nowPoint,JLabel memeberGrade) {
+    public UserSearchFrame(String userInfo, JCheckBox userCheckBox, JLabel userNum, JLabel userName, JLabel userPhone, JLabel nowPoint, JLabel memeberGrade) {
         setTitle("회원검색");
+        this.userInfo=userInfo;
         this.userCheckBox=userCheckBox;
         this.userNum=userNum;
         this.userName=userName;
@@ -44,7 +46,7 @@ public class UserSearchFrame extends JFrame {
 
     JPanel createUserPanel() {
         final Object[] column = {" ","회원번호","이름","전화번호","적립금","등급"};
-        Object data[][]  = {{(false), "1" , "LEE", "010-2232-2222","1000원", "VIP"},
+        Object data[][]  = {
                 {(false), "2" , "SU", "010-2232-2222","1000원", "VIP"},
                 {(false), "3" , "SON", "010-2232-2222","1000원", "VIP"},
                 {(false), "4" , "GYUNG", "010-2232-2222","1000원", "VIP"},
@@ -70,8 +72,17 @@ public class UserSearchFrame extends JFrame {
 
         JCheckBox box = new JCheckBox();
         box.setHorizontalAlignment(JLabel.CENTER);
+        box.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange()==ItemEvent.SELECTED){
+                    checkBoxCount++;
 
+                    System.out.println(checkBoxCount);
+                }
 
+            }
+        });
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
         DefaultTableCellRenderer right = new DefaultTableCellRenderer();
 

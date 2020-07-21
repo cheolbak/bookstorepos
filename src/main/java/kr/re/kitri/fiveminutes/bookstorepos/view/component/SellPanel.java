@@ -3,11 +3,9 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
 import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
+import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.DefaultBookInfo;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 import lombok.Setter;
 
@@ -40,7 +38,7 @@ public class SellPanel extends JPanel{
 	public JLabel userPhone;
 	public JLabel nowPoint;
 	public JLabel memberGrade;
-
+	int memberSearchnum=0;
 	public SellPanel() {
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
 
@@ -86,9 +84,20 @@ public class SellPanel extends JPanel{
 		JButton searchBtn = new JButton("확인");
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String userInfo = userSearchTextField.getText();
-				new UserSearchFrame(userInfo,userCheckbox,userNum,userName,userPhone,nowPoint,memberGrade);
+				//전화번호로 콤보박스 해서 확인
+				UserManagementService userManagementService =new UserManagementService();
 
+				if(memberSearchnum==0) {
+					String userInfo = userSearchTextField.getText();
+					//SellUserInfo sellUserInfo =userManagementService.UserSearchName(userInfo);
+					new UserSearchFrame(userInfo, userCheckbox, userNum, userName, userPhone, nowPoint, memberGrade);
+				}
+				//이름으로 콤보 박스 해서 확인
+				else if(memberSearchnum==1){
+					String userInfo = userSearchTextField.getText();
+					//SellUserInfo sellUserInfo=userManagementService.UserSearchPhone(userInfo);
+					new UserSearchFrame(userInfo, userCheckbox, userNum, userName, userPhone, nowPoint, memberGrade);
+				}
 
 			}
 		});
@@ -96,6 +105,17 @@ public class SellPanel extends JPanel{
 
 		memberSearchList.addItem("전화번호");
 		memberSearchList.addItem("이름");
+		//콤보 박스 선택
+		memberSearchList.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				memberSearchnum=memberSearchList.getSelectedIndex();
+			}
+		});
+//		String x=(String)memberSearchList.getItemAt(1);
+//		String y=(String)memberSearchList.getItemAt(0);
+//		System.out.println(y);
+//		System.out.println(x);
 
 		memberSearchList.setSize(120,25);
 		userSearchTextField.setSize(200,25);
@@ -127,18 +147,18 @@ public class SellPanel extends JPanel{
 
 		JTextField inputPointField = new JTextField();
 
-		userNumLabel.setSize(60,20);
-		userNameLabel.setSize(60,20);
-		memberGradeLabel.setSize(60,20);
-		userPhoneLabel.setSize(60,20);
-		nowPointLabel.setSize(60,20);
-		usingPointLabel.setSize(60,20);
+		userNumLabel.setSize(80,20);
+		userNameLabel.setSize(80,20);
+		memberGradeLabel.setSize(80,20);
+		userPhoneLabel.setSize(80,20);
+		nowPointLabel.setSize(80,20);
+		usingPointLabel.setSize(80,20);
 
-		userNum.setSize(50,20);
-		userName.setSize(50,20);
-		userPhone.setSize(50,20);
-		nowPoint.setSize(50,20);
-		memberGrade.setSize(50,20);
+		userNum.setSize(170,20);
+		userName.setSize(170,20);
+		userPhone.setSize(170,20);
+		nowPoint.setSize(170,20);
+		memberGrade.setSize(170,20);
 
 		inputPointField.setSize(170,25);
 		inputPointField.setEnabled(false);
