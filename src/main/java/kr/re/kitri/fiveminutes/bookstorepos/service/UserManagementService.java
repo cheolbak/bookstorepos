@@ -2,7 +2,9 @@ package kr.re.kitri.fiveminutes.bookstorepos.service;
 
 import kr.re.kitri.fiveminutes.bookstorepos.dao.CustomerDAO;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellUserInfo;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class UserManagementService {
 
     private final CustomerDAO customerDAO = new CustomerDAO();
@@ -15,6 +17,7 @@ public class UserManagementService {
     }
 
     public Object[][] searchUserPhone(String phone){
+        log.debug("searchUserPhone: {}", phone);
         return customerDAO.selectTelQuery(phone).stream()
                 .map(SellUserInfo::fromCustomerDomain)
                 .map(SellUserInfo::getRowData)

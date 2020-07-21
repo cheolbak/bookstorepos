@@ -10,8 +10,7 @@ import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 import lombok.Setter;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -22,6 +21,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class SellPanel extends JPanel{
+
+	private static final int COMBO_PHONE = 0;
+	private static final int COMBO_NAME = 1;
 
 	private JPanel bookInfoPanel;
 	private JPanel userInfoPanel;
@@ -86,23 +88,29 @@ public class SellPanel extends JPanel{
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//전화번호로 콤보박스 해서 확인
-				UserManagementService userManagementService =new UserManagementService();
 
-				if(memberSearchnum==0) {
+
+				if(memberSearchnum==COMBO_PHONE) {
+					UserManagementService userManagementService =new UserManagementService();
 					String userInfo = userSearchTextField.getText();
-					//SellUserInfo sellUserInfo =userManagementService.UserSearchName(userInfo);
-					new UserSearchFrame(SellPanel.this);
+					System.out.println(userInfo);
+					Object[][] data =userManagementService.searchUserPhone(userInfo);
+
+					new UserSearchFrame(data,SellPanel.this);
 				}
 				//이름으로 콤보 박스 해서 확인
-				else if(memberSearchnum==1){
+				else if(memberSearchnum==COMBO_NAME){
+					UserManagementService userManagementService =new UserManagementService();
 					String userInfo = userSearchTextField.getText();
-					//SellUserInfo sellUserInfo=userManagementService.UserSearchPhone(userInfo);
-					new UserSearchFrame(SellPanel.this);
+					Object[][] data=userManagementService.searchUserName(userInfo);
+					new UserSearchFrame(data,SellPanel.this);
 				}
 
 			}
 		});
 		userCheckbox = new JCheckBox("비회원 구매",true);
+
+
 
 		memberSearchList.addItem("전화번호");
 		memberSearchList.addItem("이름");
@@ -371,6 +379,7 @@ public class SellPanel extends JPanel{
 		userPhone.setText(info.getUserPhoneNum());
 		nowPoint.setText(String.valueOf(info.getNowReserves()));
 		memberGrade.setText(info.getUserGrade());
+
 
 	}
 }

@@ -86,7 +86,7 @@ public class CustomerDAO {
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setString(1, "%" + query + "%");
+                            pstmt.setString(1, query);
                         }
                     },
                     new DBPlug.MappingResultSet<List<Customer>>() {
@@ -119,7 +119,7 @@ public class CustomerDAO {
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setString(1, "%" + query + "%");
+                            pstmt.setString(1, query);
                         }
                     },
                     new DBPlug.MappingResultSet<List<Customer>>() {
