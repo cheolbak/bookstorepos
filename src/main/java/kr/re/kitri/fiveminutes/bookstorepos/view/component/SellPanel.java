@@ -229,13 +229,8 @@ public class SellPanel extends JPanel{
 
 	JPanel createBookInfoPanel(){
 
-		BookInfoReceiver bookInfoReceiver = info -> {
-			if(info instanceof SellBookInfo){
-				bookListPanel.pushData(info);
-				return;
-			}
-			SellBookInfo sellBookInfo = SellBookInfo.fromBookInfo(info);
-			bookListPanel.pushData(sellBookInfo);
+		BookInfoReceiver bookInfoReceiver = isbn -> {
+			bookListPanel.pushData(BookInfoSearchRequester.requestBookSearchScopeISBN(isbn));
 		};
 
 		JPanel bookInfoPanel = new JPanel();
@@ -320,7 +315,7 @@ public class SellPanel extends JPanel{
 			point.setText(Integer.toString(sellBookInfo.getPoint()));
 			nowStock.setText(Integer.toString(sellBookInfo.getStock()));
 			bookImage.setIcon(imageIcon);
-			bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo);
+			bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
 			inputIsbnField.setText("");
 		};
 
