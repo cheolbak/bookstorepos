@@ -80,7 +80,7 @@ tag: customer.select_all_paging
 query: >
   SELECT pos_customer_id, pos_customer_name, pos_customer_tel, pos_customer_point, pos_customer_total_price
   FROM pos_customer
-  ORDER BY pos_customer_create_date DESC
+  ORDER BY pos_customer_id DESC
   OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
 ---
 tag: customer.select_count

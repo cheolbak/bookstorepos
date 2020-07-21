@@ -27,7 +27,7 @@ public class UserManagementService {
     }
 
     public Object[][] selectAllPaging(int page) {
-        return customerDAO.selectAllPaging((page - 1) * 25, 25).stream()
+        return customerDAO.selectAllPaging((page - 1) * 20, 20).stream()
                 .map(SellUserInfo::fromCustomerDomain)
                 .map(SellUserInfo::getRowData)
                 .toArray(Object[][]::new);
@@ -46,5 +46,13 @@ public class UserManagementService {
 
 
         return pointResult == 1 && totalResult==1;
+    }
+
+    public void deleteCustomer(int id) {
+        customerDAO.deleteCustomer(id);
+    }
+
+    public int getCustomerCount() {
+        return customerDAO.selectCount();
     }
 }
