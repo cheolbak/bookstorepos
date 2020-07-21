@@ -90,13 +90,13 @@ public class SellPanel extends JPanel{
 				if(memberSearchnum==0) {
 					String userInfo = userSearchTextField.getText();
 					//SellUserInfo sellUserInfo =userManagementService.UserSearchName(userInfo);
-					new UserSearchFrame(userInfo, userCheckbox, userNum, userName, userPhone, nowPoint, memberGrade);
+					new UserSearchFrame(SellPanel.this);
 				}
 				//이름으로 콤보 박스 해서 확인
 				else if(memberSearchnum==1){
 					String userInfo = userSearchTextField.getText();
 					//SellUserInfo sellUserInfo=userManagementService.UserSearchPhone(userInfo);
-					new UserSearchFrame(userInfo, userCheckbox, userNum, userName, userPhone, nowPoint, memberGrade);
+					new UserSearchFrame(SellPanel.this);
 				}
 
 			}
@@ -367,6 +367,10 @@ public class SellPanel extends JPanel{
 		bookInfoPanel.add(minBookInfoPanel);
 
 		return bookInfoPanel;
+	}
+
+	public void updateUserInfo(SellUserInfo info) {
+		// TODO: 유저 정보 갱신
 	}
 }
 
