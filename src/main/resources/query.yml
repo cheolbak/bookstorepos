@@ -145,6 +145,13 @@ query: >
   SET pos_sell_used_point = pos_sell_used_point + ?
   WHERE pos_sell_id = ?
 ---
+tag: sell.selectSell
+query: >
+  SELECT pos_sell_id, pos_book_isbn, pos_customer_id, pos_sell_count,
+  pos_sell_date
+  FROM pos_sell
+  WHERE pos_sell_id = ?
+---
 tag: stock.insert
 query: >
   INSERT INTO pos_stock(pos_stock_id,
