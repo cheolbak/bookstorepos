@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
 import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
@@ -8,10 +9,12 @@ import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequest
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -21,6 +24,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+@Slf4j
 public class SellPanel extends JPanel{
 
 	private JPanel bookInfoPanel;
@@ -39,12 +43,13 @@ public class SellPanel extends JPanel{
 	public JLabel nowPoint;
 	public JLabel memberGrade;
 	int memberSearchnum=0;
+
 	public SellPanel() {
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
 
 		userInfoPanel = createMemberPanel();
 		bookInfoPanel = createBookInfoPanel();
-		bookListPanel = new SellListPanel("판매", SellBookInfo.class);
+		bookListPanel = new SellListPanel("판매", SellBookInfo.class,userNum);
 
 		add(bookListPanel);
 		add(bookInfoPanel);
@@ -128,22 +133,22 @@ public class SellPanel extends JPanel{
 		JLabel memberGradeLabel = new JLabel("등급: ");
 		JLabel userPhoneLabel = new JLabel("전화번호:");
 		JLabel nowPointLabel = new JLabel("현재 적립금:");
-		JLabel usingPointLabel = new JLabel("사용 적립금:");
+//		JLabel usingPointLabel = new JLabel("사용 적립금:");
 
-		userNum = new JLabel("0:");
-		userName = new JLabel("비회원:");
+		userNum = new JLabel("0");
+		userName = new JLabel("비회원");
 		userPhone = new JLabel("0");
 		nowPoint = new JLabel("0");
 		memberGrade = new JLabel("비회원");
 
-		JTextField inputPointField = new JTextField();
+//		JTextField inputPointField = new JTextField();
 
 		userNumLabel.setSize(80,20);
 		userNameLabel.setSize(80,20);
 		memberGradeLabel.setSize(80,20);
 		userPhoneLabel.setSize(80,20);
 		nowPointLabel.setSize(80,20);
-		usingPointLabel.setSize(80,20);
+//		usingPointLabel.setSize(80,20);
 
 		userNum.setSize(170,20);
 		userName.setSize(170,20);
@@ -151,8 +156,8 @@ public class SellPanel extends JPanel{
 		nowPoint.setSize(170,20);
 		memberGrade.setSize(170,20);
 
-		inputPointField.setSize(170,25);
-		inputPointField.setEnabled(false);
+//		inputPointField.setSize(170,25);
+//		inputPointField.setEnabled(false);
 
 		//회원 검색 패널
 		searchMemberPanel.add(memberSearchList);
@@ -173,14 +178,14 @@ public class SellPanel extends JPanel{
 		memberInfoPanel.add(userNameLabel);
 		memberInfoPanel.add(userPhoneLabel);
 		memberInfoPanel.add(nowPointLabel);
-		memberInfoPanel.add(usingPointLabel);
+//		memberInfoPanel.add(usingPointLabel);
 		memberInfoPanel.add(memberGradeLabel);
 
 		memberInfoPanel.add(userNum);
 		memberInfoPanel.add(userName);
 		memberInfoPanel.add(userPhone);
 		memberInfoPanel.add(nowPoint);
-		memberInfoPanel.add(inputPointField);
+//		memberInfoPanel.add(inputPointField);
 		memberInfoPanel.add(memberGrade);
 
 		userNameLabel.setLocation(20,80);
@@ -188,15 +193,14 @@ public class SellPanel extends JPanel{
 		userPhoneLabel.setLocation(20,120);
 		nowPointLabel.setLocation(20,160);
 		memberGradeLabel.setLocation(20,200);
-		usingPointLabel.setLocation(20,240);
+//		usingPointLabel.setLocation(20,240);
 
 		userNum.setLocation(140,40);
 		userName.setLocation(140,80);
 		userPhone.setLocation(140,120);
 		nowPoint.setLocation(140,160);
 		memberGrade.setLocation(140,200);
-		inputPointField.setLocation(140,240);
-
+//		inputPointField.setLocation(140,240);
 
 		memberPanel.add(searchMemberPanel);
 		memberPanel.add(userCheckboxPanel);

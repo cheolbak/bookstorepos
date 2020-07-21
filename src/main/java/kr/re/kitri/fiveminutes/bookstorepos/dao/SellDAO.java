@@ -19,6 +19,8 @@ public class SellDAO {
                             pstmt.setInt(1, sell.getSellId());
                             pstmt.setString(2, sell.getBookISBN());
                             pstmt.setInt(3, sell.getCustomerId());
+                            pstmt.setInt(4,sell.getSellPrice());
+                            pstmt.setInt(5,sell.getUsedPoint());
                         }
                     });
         }
@@ -86,6 +88,4 @@ public class SellDAO {
         }
         return 0;
     }
-
-
 }

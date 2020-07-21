@@ -36,7 +36,7 @@ public class SellBookInfo implements BookInfo {
     @Builder.Default
     private int pointSavePercentPoint = 5;
 
-    private int sellCount = 0;
+    private int sellCount = 1;
 
     private BufferedImage bookCoverImage;
 

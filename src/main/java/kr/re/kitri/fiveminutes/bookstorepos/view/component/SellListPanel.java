@@ -1,5 +1,8 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
+import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
+import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
 import lombok.Setter;
@@ -12,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,6 +25,10 @@ public class SellListPanel extends JPanel {
     private final SellBookInfoList bookInfoList;
     private final String buttonText;
     private final Class<? extends BookInfo> modelType;
+    JLabel userNum;
+
+    SellManagementService sellManagementService;
+    UserManagementService userManagementService;
 
     @Setter
     private BookInfoViewPanelReceiver bookInfoViewPanelReceiver = bookInfo -> {};
@@ -28,11 +36,15 @@ public class SellListPanel extends JPanel {
     @Setter
     private AddButtonListener addButtonListener = infoList -> {};
 
-    public SellListPanel(String buttonText, Class<? extends BookInfo> modelType) {
+    public SellListPanel(String buttonText, Class<? extends BookInfo> modelType, JLabel userNum) {
         super(new BorderLayout());
         this.buttonText = buttonText;
         this.modelType = modelType;
         this.bookInfoList = createBookInfoList();
+
+        this.userNum=userNum;
+        sellManagementService = new SellManagementService();
+        userManagementService = new UserManagementService();
 
         setPreferredSize(new Dimension(500, 900));
         setMaximumSize(new Dimension(500, Short.MAX_VALUE));
@@ -121,14 +133,14 @@ public class SellListPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
-
                 int point = Integer.parseInt(usingPointTextField.getText());
-
                 int sellPrice;
-
                 try {
                     sellPrice = numFormat.parse(sellPriceTextField.getText()).intValue();
                     totalPriceTextField.setText(numFormat.format(sellPrice-point));
+                    int userId = Integer.parseInt(userNum.getText());
+                    userManagementService.updateCustomerInfo(userId,sellPrice,point);
+
                 } catch (ParseException parseException) {
                     if(log.isDebugEnabled())
                         parseException.printStackTrace();
@@ -138,7 +150,26 @@ public class SellListPanel extends JPanel {
 
         sellButton.addActionListener(e -> {
             addButtonListener.action(bookInfoList.getDataList(modelType));
+        });
 
+        setAddButtonListener(infoList -> {
+            double count = infoList.size()*1.0;
+            int usedPoint = Integer.parseInt(usingPointTextField.getText());
+            for (BookInfo bookInfo : infoList) {
+                if (bookInfo instanceof SellBookInfo) {
+                    System.out.println(bookInfo.getTitle());
+
+                    Sell s = Sell.builder()
+                            .bookISBN(bookInfo.getIsbn())
+                            .customerId(Integer.parseInt(userNum.getText()))
+                            .sellCount(((SellBookInfo) bookInfo).getSellCount())
+                            .sellPrice(((SellBookInfo) bookInfo).getSellPrice())
+                            .usedPoint((int)(usedPoint/count))
+                            .build();
+                    sellManagementService.pushSellInfo(s);
+                    sellManagementService.subStock(bookInfo);
+                }
+            }
         });
 
         panel.add(new JLabel("판매 금액: "), createAddStockStandardConstraints(1));
@@ -180,6 +211,7 @@ public class SellListPanel extends JPanel {
     public void pushData(BookInfo bookInfo) {
         bookInfoList.put(bookInfo);
     }
+
 
     @FunctionalInterface
     public interface AddButtonListener {

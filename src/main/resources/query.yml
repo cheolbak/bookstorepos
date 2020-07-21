@@ -124,8 +124,10 @@ tag: sell.insert
 query: >
   INSERT INTO pos_sell(pos_sell_id,
                        pos_book_isbn,
-                       pos_customer_id)
-  VALUES(?, ?, ?)
+                       pos_customer_id,
+                       pos_sell_price,
+                       pos_sell_used_point)
+  VALUES(?, ?, ?, ?, ?)
 ---
 tag: sell.update_count
 query: >
