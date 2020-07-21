@@ -1,61 +1,35 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-import com.sun.jdi.BooleanValue;
-
 public class MemberManagePanel extends JPanel {
-    private JTable table;
-    private JScrollPane scrollTable;
-    private JPanel memberTablePanel;
-    private JPanel alterMemberPanel;
 
     //회원 관리 페이지 패널 생성자
     public MemberManagePanel() {
-//        setSize(1600,900);
-        setLayout(null);
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        memberTablePanel = creatMemberTable();
-        alterMemberPanel = createAlterMemberPanel();
-
-        add(memberTablePanel);
-        add(alterMemberPanel);
-
-        memberTablePanel.setLocation(10,30);
-        alterMemberPanel.setLocation(1220,30);
+        add(createMemberTablePanel());
+        add(createAlterMemberPanel());
     }
 
     // 회원관리 페이지 테이블 생성 함수
-    JPanel creatMemberTable() {
+    private JPanel createMemberTablePanel() {
         final Object[] column = {" ","회원번호","이름","전화번호","적립금","등급"};
         Object data[][]  = {{(false), "1" , "LEE", "010-2232-2222", "1000원", "VIP"}};
 
         DefaultTableModel dtm = new DefaultTableModel(data,column);
 
-        table = new JTable(dtm);
+        JTable table = new JTable(dtm);
         table.setPreferredScrollableViewportSize(new Dimension(400,200));
         table.setFillsViewportHeight(true);
         table.setEnabled(true);
@@ -75,7 +49,7 @@ public class MemberManagePanel extends JPanel {
                 JCheckBox comp = null;
                 if(column==0){
                     comp = new JCheckBox();
-                    comp.setSelected(((Boolean)value).booleanValue());
+                    comp.setSelected((Boolean) value);
                     comp.setHorizontalAlignment(SwingConstants.CENTER);
                 }
                 return comp;
@@ -107,33 +81,30 @@ public class MemberManagePanel extends JPanel {
 
 
         JScrollPane scroll = new JScrollPane(table);
-        JScrollBar scrollbar = new JScrollBar();
 
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        JPanel memberTablePanel = new JPanel(new BorderLayout());
 
+        memberTablePanel.setPreferredSize(new Dimension(850, Short.MAX_VALUE));
 
-        scroll.setSize(1200,750);
-
-        JPanel memberTablePanel = new JPanel();
-
-        memberTablePanel.setLayout(null);
-        memberTablePanel.setSize(1200,750);
-
-        JButton deleteBtn = new JButton("선택삭제");
-        deleteBtn.setSize(100,50);
-
-        memberTablePanel.add(scroll);
-        memberTablePanel.add(deleteBtn);
-
-        deleteBtn.setLocation(1100,0);
-        scroll.setLocation(0, 50);
+        memberTablePanel.add(createTableControlButtonPanel(), BorderLayout.NORTH);
+        memberTablePanel.add(scroll, BorderLayout.CENTER);
+        memberTablePanel.add(new PaginationPanel(1), BorderLayout.SOUTH);
 
         return memberTablePanel;
     }
 
+    private JPanel createTableControlButtonPanel() {
+        JPanel margin = new JPanel(new BorderLayout());
+        margin.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton deleteBtn = new JButton("선택삭제");
+        panel.add(deleteBtn);
+        margin.add(panel, BorderLayout.CENTER);
+        return margin;
+    }
+
     //회원 추가 패널 생성 함수
-    JPanel createAlterMemberPanel() {
+    private JPanel createAlterMemberPanel() {
         JPanel alterMemberPanel = new JPanel();
         JTabbedPane addTab = new JTabbedPane();
 
