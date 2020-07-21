@@ -8,7 +8,6 @@ import javax.swing.*;
 
 public class BookStorePOSApplication {
     public static void main(String[] args) {
-        //SwingUtilities.invokeLater(TFrame::new);
         //SwingUtilities.invokeLater(AuthDialogFrame::new);
         SwingUtilities.invokeLater(MainFrame::new);
     }
