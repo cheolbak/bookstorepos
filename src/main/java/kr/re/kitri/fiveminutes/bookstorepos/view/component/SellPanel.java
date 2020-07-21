@@ -39,6 +39,7 @@ public class SellPanel extends JPanel{
 	public JLabel nowPoint;
 	public JLabel memberGrade;
 	int memberSearchnum=0;
+
 	public SellPanel() {
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
 
@@ -112,10 +113,7 @@ public class SellPanel extends JPanel{
 				memberSearchnum=memberSearchList.getSelectedIndex();
 			}
 		});
-//		String x=(String)memberSearchList.getItemAt(1);
-//		String y=(String)memberSearchList.getItemAt(0);
-//		System.out.println(y);
-//		System.out.println(x);
+
 
 		memberSearchList.setSize(120,25);
 		userSearchTextField.setSize(200,25);
@@ -371,6 +369,13 @@ public class SellPanel extends JPanel{
 
 	public void updateUserInfo(SellUserInfo info) {
 		// TODO: 유저 정보 갱신
+		userCheckbox.setSelected(false);
+		userNum.setText(String.valueOf(info.getUserNum()));
+		userName.setText(info.getUserName());
+		userPhone.setText(info.getUserPhoneNum());
+		nowPoint.setText(String.valueOf(info.getNowReserves()));
+		memberGrade.setText(info.getUserGrade());
+
 	}
 }
 
