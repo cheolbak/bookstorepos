@@ -1,10 +1,14 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.dao.CustomerDAO;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -127,6 +131,13 @@ public class MemberManagePanel extends JPanel {
         inputPhone.setSize(290,50);
 
         JButton addButton = new JButton("추가");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CustomerDAO customerDAO = new CustomerDAO();
+
+            }
+        });
         addButton.setSize(100,30);
 
         searchPanel.add(userName);

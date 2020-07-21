@@ -1,11 +1,8 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-import kr.re.kitri.fiveminutes.bookstorepos.dao.BookDAO;
-import kr.re.kitri.fiveminutes.bookstorepos.dao.CustomerDAO;
-import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
-import kr.re.kitri.fiveminutes.bookstorepos.domain.Customer;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -17,11 +14,12 @@ import java.awt.event.ActionListener;
 import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_MONTHS;
 import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_WEEKS;
 
-public class RecordPanel extends JPanel {
+public class RecordPanel extends JPanel implements BookInfoReceiver {
     JPanel chartSetPanel;
     JPanel sellChartPanel;
     JPanel sellChartPanel2;
     SellDataSet sellDataSet;
+    JTextField inputBookname;
 
     public RecordPanel(){
         setLayout(null);
@@ -59,7 +57,7 @@ public class RecordPanel extends JPanel {
         JLabel bookName = new JLabel("책");
         JLabel memberName = new JLabel("회원");
 
-        JTextField inputBookname = new JTextField();
+        inputBookname = new JTextField();
         JTextField inputMemberName = new JTextField();
 
         String[] periodArray = {"최근 6주", "최근 6달"};
@@ -83,39 +81,21 @@ public class RecordPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-            }
-        });
-        JButton bookSearchBtn = new JButton("검색");
+        }
+    });
+    JButton bookSearchBtn = new JButton("검색");
         bookSearchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = inputBookname.getText();
-                if(name.equals("")){
-                    return;
-                }
-                BookDAO bookDAO = new BookDAO();
-                Book book = bookDAO.selectTitle(name);
-                if(book.getBookTitle().equals("ERROR")){
-                    return;
-                }
-
+                new BookSearchDialogFrame(RecordPanel.this);
             }
         });
 
-        JButton memberSearchBtn = new JButton("검색");
+    JButton memberSearchBtn = new JButton("검색");
         memberSearchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = inputMemberName.getText();
-                if(name.equals("")){
-                    return;
-                }
-                CustomerDAO customerDAO = new CustomerDAO();
-                Customer customer = customerDAO.selectNameQuery(name);
-                if(customer.getCustomerName().equals("ERROR")){
-                    return;
-                }
-
+                // new UserSearchFrame();
             }
         });
 
@@ -165,5 +145,10 @@ public class RecordPanel extends JPanel {
         completeBtn.setLocation(150,550);
 
         return chartSetPanel;
+    }
+
+    @Override
+    public void sendBookInfoToReceiver(String isbn) {
+        RecordPanel.this.inputBookname.setText(isbn);
     }
 }

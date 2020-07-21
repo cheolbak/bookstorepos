@@ -2,10 +2,7 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
 import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.BookInfoReceiver;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.*;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
