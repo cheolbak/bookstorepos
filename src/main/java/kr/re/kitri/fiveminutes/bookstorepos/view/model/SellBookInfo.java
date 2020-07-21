@@ -53,6 +53,8 @@ public class SellBookInfo implements BookInfo {
                 .releaseDate(info.getReleaseDate())
                 .bookCoverImage(info.getBookCoverImage())
                 .price(info.getPrice())
+                .sellPrice((int)(info.getPrice() * (90 / 100.0)))
+                .point((int)(info.getPrice()*(10 / 100.0)))
                 .sellCount(sellCount)
                 .build();
     }

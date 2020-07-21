@@ -230,7 +230,7 @@ public class SellPanel extends JPanel{
 	JPanel createBookInfoPanel(){
 
 		BookInfoReceiver bookInfoReceiver = isbn -> {
-			bookListPanel.pushData(BookInfoSearchRequester.requestBookSearchScopeISBN(isbn));
+			bookListPanel.pushData(SellBookInfo.fromBookInfo(BookInfoSearchRequester.requestBookSearchScopeISBN(isbn)));
 		};
 
 		JPanel bookInfoPanel = new JPanel();
