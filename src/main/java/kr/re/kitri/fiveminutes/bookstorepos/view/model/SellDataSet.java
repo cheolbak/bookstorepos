@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 import java.util.Set;

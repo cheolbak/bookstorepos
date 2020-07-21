@@ -2,6 +2,8 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
+import lombok.Data;
+import lombok.Setter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -26,7 +28,8 @@ public class SellChartPanel extends JPanel {
         chartPanel.setBackground(Color.WHITE);
         chartPanel.setMaximumDrawWidth(500);
         chartPanel.setMaximumDrawHeight(500);
-
+        chartPanel.setVisible(true);
+        chartPanel.setLayout(null);
         add(chartPanel);
     }
 

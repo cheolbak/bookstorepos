@@ -1,35 +1,58 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.dao.BookDAO;
+import kr.re.kitri.fiveminutes.bookstorepos.dao.CustomerDAO;
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Customer;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_MONTHS;
 import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_WEEKS;
 
 public class RecordPanel extends JPanel {
-    JPanel chartPanel;
     JPanel chartSetPanel;
+    JPanel sellChartPanel;
+    JPanel sellChartPanel2;
+    SellDataSet sellDataSet;
 
     public RecordPanel(){
         setLayout(null);
         setSize(1600,900);
 
-        SellDataSet sellDataSet = new SellDataSet(SIX_WEEKS);
-        SellChartPanel sellChartPanel = new SellChartPanel(sellDataSet);
-        sellChartPanel.setSize(1200, 700);
+        sellChartPanel=createSellChartPanel(SIX_WEEKS);
+        sellChartPanel2=createSellChartPanel(SIX_MONTHS);
         chartSetPanel=createChartSetPanel();
+        sellChartPanel2.setVisible(false);
 
         add(chartSetPanel);
         add(sellChartPanel);
+        add(sellChartPanel2);
 
+        sellChartPanel.setLocation(10,30);
+        sellChartPanel2.setLocation(10,30);
         chartSetPanel.setLocation(1220,30);
+
+        setVisible(true);
+    }
+
+    JPanel createSellChartPanel(SellChartSection section){
+        sellDataSet = new SellDataSet(section);
+        JPanel tempChartPanel = new SellChartPanel(sellDataSet);
+        tempChartPanel.setSize(1200, 700);
+
+        return tempChartPanel;
     }
 
     JPanel createChartSetPanel(){
-        JPanel chartSetPanel = new JPanel();
+        chartSetPanel = new JPanel();
         TitledBorder tBorder= new TitledBorder(new LineBorder(Color.BLACK),"조건");
 
         JLabel period = new JLabel("기간");
@@ -41,11 +64,60 @@ public class RecordPanel extends JPanel {
 
         String[] periodArray = {"최근 6주", "최근 6달"};
         JComboBox periodComboBox = new JComboBox(periodArray);
+        periodComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String cb = ((JComboBox) e.getSource()).getSelectedItem().toString();
+                if(cb.equals("최근 6달")){
+                    sellChartPanel.setVisible(false);
+                    sellChartPanel2.setVisible(true);
+                } else{
+                    sellChartPanel.setVisible(true);
+                    sellChartPanel2.setVisible(false);
+                }
+            }
+        });
 
         JButton completeBtn = new JButton("확인");
-        JButton bookSearchBtn = new JButton("검색");
-        JButton memberSearchBtn = new JButton("검색");
+        completeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+            }
+        });
+        JButton bookSearchBtn = new JButton("검색");
+        bookSearchBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = inputBookname.getText();
+                if(name.equals("")){
+                    return;
+                }
+                BookDAO bookDAO = new BookDAO();
+                Book book = bookDAO.selectTitle(name);
+                if(book.getBookTitle().equals("ERROR")){
+                    return;
+                }
+
+            }
+        });
+
+        JButton memberSearchBtn = new JButton("검색");
+        memberSearchBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = inputMemberName.getText();
+                if(name.equals("")){
+                    return;
+                }
+                CustomerDAO customerDAO = new CustomerDAO();
+                Customer customer = customerDAO.selectNameQuery(name);
+                if(customer.getCustomerName().equals("ERROR")){
+                    return;
+                }
+
+            }
+        });
 
         chartSetPanel.setSize(350,750);
         chartSetPanel.setLayout(null);
