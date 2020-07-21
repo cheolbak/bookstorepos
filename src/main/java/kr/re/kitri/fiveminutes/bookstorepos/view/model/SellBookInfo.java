@@ -3,6 +3,8 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.model;
 
 
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
+import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookCoverImageRequester;
 import lombok.Builder;
 import lombok.Data;
@@ -34,13 +36,36 @@ public class SellBookInfo implements BookInfo {
     @Builder.Default
     private int pointSavePercentPoint = 5;
 
+    private int sellCount = 1;
+
     private BufferedImage bookCoverImage;
 
+    public static SellBookInfo fromBookInfo(BookInfo info){
+        return fromBookInfo(info,1);
+    }
 
-    public static SellBookInfo fromBookDomain(Book book) {
+    public static SellBookInfo fromBookInfo(BookInfo info, int sellCount){
+        return SellBookInfo.builder()
+                .isbn(info.getIsbn())
+                .title(info.getTitle())
+                .author(info.getAuthor())
+                .publisher(info.getPublisher())
+                .releaseDate(info.getReleaseDate())
+                .bookCoverImage(info.getBookCoverImage())
+                .price(info.getPrice())
+                .sellCount(sellCount)
+                .build();
+    }
+
+    public  static SellBookInfo fromBookDomain(Book book){
+        return fromBookDomain(book,1);
+    }
+
+
+    public static SellBookInfo fromBookDomain(Book book, int sellCount) {
         BufferedImage image;
-        int discountedPrice = book.getBookMSRP() - book.getBookMSRP()*(book.getBookDiscountRate()/100);
-        int savedPoint = book.getBookMSRP()*(book.getBookPointRate()/100);
+        int discountedPrice =(int)(book.getBookMSRP() - book.getBookMSRP()*(book.getBookDiscountRate()/100.0));
+        int savedPoint = (int)(book.getBookMSRP()*(book.getBookPointRate()/100.0));
         try {
             image = BookCoverImageRequester.requestBookCoverImage(book.getBookISBN());
         }
@@ -63,6 +88,7 @@ public class SellBookInfo implements BookInfo {
                 .salePercentPoint(book.getBookDiscountRate())
                 .pointSavePercentPoint(book.getBookPointRate())
                 .stock(book.getBookStock())
+                .sellCount(sellCount)
                 .build();
     }
 }

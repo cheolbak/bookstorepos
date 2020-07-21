@@ -80,7 +80,7 @@ tag: customer.select_all_paging
 query: >
   SELECT pos_customer_id, pos_customer_name, pos_customer_tel, pos_customer_point, pos_customer_total_price
   FROM pos_customer
-  ORDER BY pos_customer_create_date DESC
+  ORDER BY pos_customer_id DESC
   OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
 ---
 tag: customer.select_count
@@ -93,14 +93,14 @@ query: >
   SELECT pos_customer_id, pos_customer_name, pos_customer_tel, pos_customer_point,
   pos_customer_total_price
   FROM pos_customer
-  WHERE pos_customer_name LIKE ?
+  WHERE pos_customer_name LIKE '%' || ? || '%'
 ---
 tag: customer.select_tel
 query: >
   SELECT pos_customer_id, pos_customer_name, pos_customer_tel, pos_customer_point,
   pos_customer_total_price
   FROM pos_customer
-  WHERE pos_customer_tel LIKE ?
+  WHERE pos_customer_tel LIKE '%' || ? || '%'
 ---
 tag: customer.insert
 query: >
@@ -136,8 +136,10 @@ tag: sell.insert
 query: >
   INSERT INTO pos_sell(pos_sell_id,
                        pos_book_isbn,
-                       pos_customer_id)
-  VALUES(?, ?, ?)
+                       pos_customer_id,
+                       pos_sell_price,
+                       pos_sell_used_point)
+  VALUES(?, ?, ?, ?, ?)
 ---
 tag: sell.update_count
 query: >

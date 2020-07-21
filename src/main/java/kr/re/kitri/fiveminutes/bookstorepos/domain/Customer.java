@@ -34,4 +34,5 @@ public class Customer {
     @Builder.Default
     private LocalDateTime modifyDate = LocalDateTime.now();
 
+
 }

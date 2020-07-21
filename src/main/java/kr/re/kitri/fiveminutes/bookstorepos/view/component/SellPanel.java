@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
 import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
@@ -8,10 +9,12 @@ import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequest
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -21,11 +24,15 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+@Slf4j
 public class SellPanel extends JPanel{
+
+	private static final int COMBO_PHONE = 0;
+	private static final int COMBO_NAME = 1;
 
 	private JPanel bookInfoPanel;
 	private JPanel userInfoPanel;
-	private ListPanel bookListPanel;
+	private SellListPanel bookListPanel;
 
 	SellManagementService sellService = new SellManagementService();
 
@@ -45,7 +52,7 @@ public class SellPanel extends JPanel{
 
 		userInfoPanel = createMemberPanel();
 		bookInfoPanel = createBookInfoPanel();
-		bookListPanel = new ListPanel("판매", StockBookInfo.class);
+		bookListPanel = new SellListPanel("판매", SellBookInfo.class,userNum);
 
 		add(bookListPanel);
 		add(bookInfoPanel);
@@ -86,18 +93,22 @@ public class SellPanel extends JPanel{
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//전화번호로 콤보박스 해서 확인
-				UserManagementService userManagementService =new UserManagementService();
 
-				if(memberSearchnum==0) {
+
+				if(memberSearchnum==COMBO_PHONE) {
+					UserManagementService userManagementService =new UserManagementService();
 					String userInfo = userSearchTextField.getText();
-					//SellUserInfo sellUserInfo =userManagementService.UserSearchName(userInfo);
-					new UserSearchFrame(SellPanel.this);
+					System.out.println(userInfo);
+					Object[][] data =userManagementService.searchUserPhone(userInfo);
+
+					new UserSearchFrame(data,SellPanel.this);
 				}
 				//이름으로 콤보 박스 해서 확인
-				else if(memberSearchnum==1){
+				else if(memberSearchnum==COMBO_NAME){
+					UserManagementService userManagementService =new UserManagementService();
 					String userInfo = userSearchTextField.getText();
-					//SellUserInfo sellUserInfo=userManagementService.UserSearchPhone(userInfo);
-					new UserSearchFrame(SellPanel.this);
+					Object[][] data=userManagementService.searchUserName(userInfo);
+					new UserSearchFrame(data,SellPanel.this);
 				}
 
 			}
@@ -135,22 +146,22 @@ public class SellPanel extends JPanel{
 		JLabel memberGradeLabel = new JLabel("등급: ");
 		JLabel userPhoneLabel = new JLabel("전화번호:");
 		JLabel nowPointLabel = new JLabel("현재 적립금:");
-		JLabel usingPointLabel = new JLabel("사용 적립금:");
+//		JLabel usingPointLabel = new JLabel("사용 적립금:");
 
-		userNum = new JLabel("0:");
-		userName = new JLabel("비회원:");
+		userNum = new JLabel("0");
+		userName = new JLabel("비회원");
 		userPhone = new JLabel("0");
 		nowPoint = new JLabel("0");
 		memberGrade = new JLabel("비회원");
 
-		JTextField inputPointField = new JTextField();
+//		JTextField inputPointField = new JTextField();
 
 		userNumLabel.setSize(80,20);
 		userNameLabel.setSize(80,20);
 		memberGradeLabel.setSize(80,20);
 		userPhoneLabel.setSize(80,20);
 		nowPointLabel.setSize(80,20);
-		usingPointLabel.setSize(80,20);
+//		usingPointLabel.setSize(80,20);
 
 		userNum.setSize(170,20);
 		userName.setSize(170,20);
@@ -158,8 +169,8 @@ public class SellPanel extends JPanel{
 		nowPoint.setSize(170,20);
 		memberGrade.setSize(170,20);
 
-		inputPointField.setSize(170,25);
-		inputPointField.setEnabled(false);
+//		inputPointField.setSize(170,25);
+//		inputPointField.setEnabled(false);
 
 		//회원 검색 패널
 		searchMemberPanel.add(memberSearchList);
@@ -180,14 +191,14 @@ public class SellPanel extends JPanel{
 		memberInfoPanel.add(userNameLabel);
 		memberInfoPanel.add(userPhoneLabel);
 		memberInfoPanel.add(nowPointLabel);
-		memberInfoPanel.add(usingPointLabel);
+//		memberInfoPanel.add(usingPointLabel);
 		memberInfoPanel.add(memberGradeLabel);
 
 		memberInfoPanel.add(userNum);
 		memberInfoPanel.add(userName);
 		memberInfoPanel.add(userPhone);
 		memberInfoPanel.add(nowPoint);
-		memberInfoPanel.add(inputPointField);
+//		memberInfoPanel.add(inputPointField);
 		memberInfoPanel.add(memberGrade);
 
 		userNameLabel.setLocation(20,80);
@@ -195,15 +206,14 @@ public class SellPanel extends JPanel{
 		userPhoneLabel.setLocation(20,120);
 		nowPointLabel.setLocation(20,160);
 		memberGradeLabel.setLocation(20,200);
-		usingPointLabel.setLocation(20,240);
+//		usingPointLabel.setLocation(20,240);
 
 		userNum.setLocation(140,40);
 		userName.setLocation(140,80);
 		userPhone.setLocation(140,120);
 		nowPoint.setLocation(140,160);
 		memberGrade.setLocation(140,200);
-		inputPointField.setLocation(140,240);
-
+//		inputPointField.setLocation(140,240);
 
 		memberPanel.add(searchMemberPanel);
 		memberPanel.add(userCheckboxPanel);
@@ -220,7 +230,6 @@ public class SellPanel extends JPanel{
 	JPanel createBookInfoPanel(){
 
 		BookInfoReceiver bookInfoReceiver = isbn -> {
-			// TODO: DB Connect and Pull Data
 			bookListPanel.pushData(BookInfoSearchRequester.requestBookSearchScopeISBN(isbn));
 		};
 
@@ -290,23 +299,23 @@ public class SellPanel extends JPanel{
 				return;
 			}
 			Book book = sellService.searchBook(inputIsbnField.getText());
-			StockBookInfo stockBookInfo = StockBookInfo.fromBookDomain(book);
+			SellBookInfo sellBookInfo = SellBookInfo.fromBookDomain(book);
 
 
-			Image img = stockBookInfo.getBookCoverImage();
+			Image img = sellBookInfo.getBookCoverImage();
 			Image resizeImage = img.getScaledInstance(200,300,Image.SCALE_SMOOTH);
 			ImageIcon imageIcon = new ImageIcon(resizeImage);
 
-			title.setText(stockBookInfo.getTitle());
-			author.setText(stockBookInfo.getAuthor());
-			publisher.setText(stockBookInfo.getPublisher());
-			isbn.setText(stockBookInfo.getIsbn());
-			originPrice.setText(Integer.toString(stockBookInfo.getPrice())+ "원");
-			sellPrice.setText(Integer.toString(stockBookInfo.getPrice())+ "원");
+			title.setText(sellBookInfo.getTitle());
+			author.setText(sellBookInfo.getAuthor());
+			publisher.setText(sellBookInfo.getPublisher());
+			isbn.setText(sellBookInfo.getIsbn());
+			originPrice.setText(Integer.toString(sellBookInfo.getPrice())+ "원");
+			sellPrice.setText(Integer.toString(sellBookInfo.getSellPrice())+ "원");
+			point.setText(Integer.toString(sellBookInfo.getPoint()));
+			nowStock.setText(Integer.toString(sellBookInfo.getStock()));
 			bookImage.setIcon(imageIcon);
-
-			bookInfoReceiver.sendBookInfoToReceiver(stockBookInfo.getIsbn());
-
+			bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
 			inputIsbnField.setText("");
 		};
 
@@ -325,15 +334,15 @@ public class SellPanel extends JPanel{
 		nowStockLabel.setBounds(20, 320, 94, 18);
 
 		//책정보 밸류 위치 설정
-		title.setBounds(70,40,160,20);
-		author.setBounds(70,80,160,20);
-		publisher.setBounds(70,120,160,20);
-		isbn.setBounds(70,160,160,20);
-		originPrice.setBounds(70,200,160,20);
-		sellPrice.setBounds(70,240,160,20);
-		point.setBounds(70,280,160,20);
-		nowStock.setBounds(70,320,160,20);
-		bookImage.setBounds(250,40,200,300);
+		title.setBounds(90,40,160,20);
+		author.setBounds(90,80,160,20);
+		publisher.setBounds(90,120,160,20);
+		isbn.setBounds(90,160,160,20);
+		originPrice.setBounds(90,200,160,20);
+		sellPrice.setBounds(90,240,160,20);
+		point.setBounds(90,280,160,20);
+		nowStock.setBounds(90,320,160,20);
+		bookImage.setBounds(270,40,200,300);
 		//bookImagePanel.setBounds(250,40,200,300);
 
 
@@ -371,6 +380,7 @@ public class SellPanel extends JPanel{
 		userPhone.setText(info.getUserPhoneNum());
 		nowPoint.setText(String.valueOf(info.getNowReserves()));
 		memberGrade.setText(info.getUserGrade());
+
 
 	}
 }

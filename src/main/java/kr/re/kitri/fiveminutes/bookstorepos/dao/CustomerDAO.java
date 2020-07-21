@@ -80,13 +80,32 @@ public class CustomerDAO {
         return Collections.emptyList();
     }
 
+    public int selectCount() {
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.getMappedObjectFromExecuteQuery("customer.select_count", pstmt -> {},
+                    new DBPlug.MappingResultSet<Integer>() {
+                        @Override
+                        public Integer mapping(ResultSet resultSet) throws SQLException {
+                            resultSet.next();
+                            return resultSet.getInt(1);
+                        }
+                    });
+        }
+        catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
     public List<Customer> selectNameQuery(String query) {
         try (DBPlug dbPlug = new DBPlug()) {
             return dbPlug.getMappedObjectFromExecuteQuery("customer.select_name",
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setString(1, "%" + query + "%");
+                            pstmt.setString(1, query);
                         }
                     },
                     new DBPlug.MappingResultSet<List<Customer>>() {
@@ -119,7 +138,7 @@ public class CustomerDAO {
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setString(1, "%" + query + "%");
+                            pstmt.setString(1, query);
                         }
                     },
                     new DBPlug.MappingResultSet<List<Customer>>() {

@@ -41,6 +41,7 @@ public class StockPanel extends JPanel implements ChangeBookInfoListener {
 
 		stockListPanel.setTotalFieldChangeListener(this::totalFieldChange);
 		stockListPanel.setBookInfoViewPanelReceiver(infoViewPanel);
+
 		stockListPanel.setAddButtonListener(infoList -> {
 			infoList.stream().filter(bookInfo -> bookInfo instanceof StockBookInfo)
 					.forEach(bookInfo -> stockService.pushStock((StockBookInfo) bookInfo));

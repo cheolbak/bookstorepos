@@ -1,15 +1,12 @@
 package kr.re.kitri.fiveminutes.bookstorepos.dao;
 
-import kr.re.kitri.fiveminutes.bookstorepos.domain.POSEntry;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
 import kr.re.kitri.fiveminutes.bookstorepos.util.db.DBPlug;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Slf4j
 public class SellDAO {
@@ -22,6 +19,8 @@ public class SellDAO {
                             pstmt.setInt(1, sell.getSellId());
                             pstmt.setString(2, sell.getBookISBN());
                             pstmt.setInt(3, sell.getCustomerId());
+                            pstmt.setInt(4,sell.getSellPrice());
+                            pstmt.setInt(5,sell.getUsedPoint());
                         }
                     });
         }
@@ -89,35 +88,4 @@ public class SellDAO {
         }
         return 0;
     }
-
-    public Sell selectSell(int id) {
-        try (DBPlug dbPlug = new DBPlug()) {
-            return dbPlug.getMappedObjectFromExecuteQuery("sell.selectSell",
-                    new DBPlug.InjectPreparedStatement() {
-                        @Override
-                        public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, id);
-                        }
-                    },
-                    new DBPlug.MappingResultSet<Sell>() {
-                        @Override
-                        public Sell mapping(ResultSet resultSet) throws SQLException {
-                            Sell sell = new Sell();
-                            resultSet.next();
-                            sell.setSellId(resultSet.getInt(1));
-                            sell.setBookISBN(resultSet.getString(2));
-                            sell.setCustomerId(resultSet.getInt(3));
-                            sell.setSellCount(resultSet.getInt(4));
-                            sell.setSellDate(resultSet.getTimestamp(5).toLocalDateTime());
-                            return sell;
-                        }
-                    });
-        } catch (SQLException e) {
-            if (log.isDebugEnabled()) {
-                e.printStackTrace();
-            }
-        }
-        return new Sell(0,"ERROR",0,0,LocalDateTime.now());
-    }
-
 }
