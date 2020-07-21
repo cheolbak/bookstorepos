@@ -4,6 +4,7 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.model;
 
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
+import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookCoverImageRequester;
 import lombok.Builder;
 import lombok.Data;

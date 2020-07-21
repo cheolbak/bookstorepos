@@ -27,7 +27,7 @@ public class SellPanel extends JPanel{
 
 	private JPanel bookInfoPanel;
 	private JPanel userInfoPanel;
-	private ListPanel bookListPanel;
+	private SellListPanel bookListPanel;
 
 	SellManagementService sellService = new SellManagementService();
 
@@ -46,7 +46,7 @@ public class SellPanel extends JPanel{
 
 		userInfoPanel = createMemberPanel();
 		bookInfoPanel = createBookInfoPanel();
-		bookListPanel = new ListPanel("판매", StockBookInfo.class);
+		bookListPanel = new SellListPanel("판매", SellBookInfo.class);
 
 		add(bookListPanel);
 		add(bookInfoPanel);
