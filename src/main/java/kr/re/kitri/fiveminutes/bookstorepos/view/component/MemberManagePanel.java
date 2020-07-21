@@ -1,6 +1,5 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -24,7 +23,7 @@ public class MemberManagePanel extends JPanel {
     }
 
     // 회원관리 페이지 테이블 생성 함수
-    JPanel createMemberTablePanel() {
+    private JPanel createMemberTablePanel() {
         final Object[] column = {" ","회원번호","이름","전화번호","적립금","등급"};
         Object data[][]  = {{(false), "1" , "LEE", "010-2232-2222", "1000원", "VIP"}};
 
@@ -50,7 +49,7 @@ public class MemberManagePanel extends JPanel {
                 JCheckBox comp = null;
                 if(column==0){
                     comp = new JCheckBox();
-                    comp.setSelected(((Boolean)value).booleanValue());
+                    comp.setSelected((Boolean) value);
                     comp.setHorizontalAlignment(SwingConstants.CENTER);
                 }
                 return comp;
@@ -105,7 +104,7 @@ public class MemberManagePanel extends JPanel {
     }
 
     //회원 추가 패널 생성 함수
-    JPanel createAlterMemberPanel() {
+    private JPanel createAlterMemberPanel() {
         JPanel alterMemberPanel = new JPanel();
         JTabbedPane addTab = new JTabbedPane();
 

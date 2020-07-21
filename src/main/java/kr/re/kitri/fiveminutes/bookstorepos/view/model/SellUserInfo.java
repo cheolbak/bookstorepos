@@ -18,6 +18,17 @@ public class SellUserInfo {
     private int usingReserves; // 사용할 적립금
     private String userGrade;
 
+    public Object[] getRowData() {
+        return new Object[] {
+                Boolean.FALSE,
+                Integer.toString(getUserNum()),
+                getUserName(),
+                getUserPhoneNum(),
+                getNowReserves(),
+                getUserGrade()
+        };
+    }
+
     public static SellUserInfo fromCustomerDomain(Customer customer) {
         String userGrade = getUserGrade(customer.getCustomerTotalPrice());
 
