@@ -39,7 +39,7 @@ public class UserManagementService {
         int totalPrice = customer.getCustomerTotalPrice();
 
         point = point - usedPoint;
-        totalPrice = totalPrice-totalCost;
+        totalPrice = totalPrice+totalCost;
 
         int pointResult = customerDAO.updatePoint(num, point);
         int totalResult = customerDAO.updateTotal(num,totalPrice);

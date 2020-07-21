@@ -139,6 +139,9 @@ public class SellListPanel extends JPanel {
                     sellPrice = numFormat.parse(sellPriceTextField.getText()).intValue();
                     totalPriceTextField.setText(numFormat.format(sellPrice-point));
                     int userId = Integer.parseInt(userNum.getText());
+                    //int userId = 7;
+                    System.out.println("=============================");
+                    System.out.println(userId);
                     userManagementService.updateCustomerInfo(userId,sellPrice,point);
 
                 } catch (ParseException parseException) {
@@ -161,6 +164,7 @@ public class SellListPanel extends JPanel {
 
                     Sell s = Sell.builder()
                             .bookISBN(bookInfo.getIsbn())
+                            //.customerId(7)
                             .customerId(Integer.parseInt(userNum.getText()))
                             .sellCount(((SellBookInfo) bookInfo).getSellCount())
                             .sellPrice(((SellBookInfo) bookInfo).getSellPrice())
