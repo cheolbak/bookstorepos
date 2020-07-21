@@ -219,13 +219,9 @@ public class SellPanel extends JPanel{
 
 	JPanel createBookInfoPanel(){
 
-		BookInfoReceiver bookInfoReceiver = info -> {
-			if(info instanceof StockBookInfo){
-				bookListPanel.pushData(info);
-				return;
-			}
-			StockBookInfo stockBookInfo = StockBookInfo.fromBookInfo(info);
-			bookListPanel.pushData(stockBookInfo);
+		BookInfoReceiver bookInfoReceiver = isbn -> {
+			// TODO: DB Connect and Pull Data
+			bookListPanel.pushData(BookInfoSearchRequester.requestBookSearchScopeISBN(isbn));
 		};
 
 		JPanel bookInfoPanel = new JPanel();
@@ -309,7 +305,7 @@ public class SellPanel extends JPanel{
 			sellPrice.setText(Integer.toString(stockBookInfo.getPrice())+ "원");
 			bookImage.setIcon(imageIcon);
 
-			bookInfoReceiver.sendBookInfoToReceiver(stockBookInfo);
+			bookInfoReceiver.sendBookInfoToReceiver(stockBookInfo.getIsbn());
 
 			inputIsbnField.setText("");
 		};

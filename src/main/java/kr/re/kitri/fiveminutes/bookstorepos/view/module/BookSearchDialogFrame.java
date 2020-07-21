@@ -106,7 +106,7 @@ public class BookSearchDialogFrame extends JFrame implements BookInfoReceiver {
     }
 
     @Override
-    public void sendBookInfoToReceiver(BookInfo info) {
-        parentReceiver.sendBookInfoToReceiver(info);
+    public void sendBookInfoToReceiver(String isbn) {
+        parentReceiver.sendBookInfoToReceiver(isbn);
     }
 }
