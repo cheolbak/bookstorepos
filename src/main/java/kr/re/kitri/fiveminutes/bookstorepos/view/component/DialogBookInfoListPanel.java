@@ -44,7 +44,7 @@ public class DialogBookInfoListPanel extends JPanel {
         }
 
         DialogBookInfoPanel.AddStockClickListener listener =
-                e -> parentFrame.sendBookInfoToReceiver(e.getCurrentBookInfo());
+                e -> parentFrame.sendBookInfoToReceiver(e.getCurrentBookInfo().getIsbn());
 
         int count = 0;
         for (BookInfo bookInfo : bookInfoList) {

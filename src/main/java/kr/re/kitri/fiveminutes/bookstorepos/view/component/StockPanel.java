@@ -34,12 +34,8 @@ public class StockPanel extends JPanel implements ChangeBookInfoListener {
 		StockBookInfoViewPanel infoViewPanel = new StockBookInfoViewPanel(this);
 		StockBookSearchPanel searchPanel = new StockBookSearchPanel(stockService);
 
-		searchPanel.setBookInfoReceiver(bookInfo -> {
-			if (bookInfo instanceof StockBookInfo) {
-				stockListPanel.pushData(bookInfo);
-				return;
-			}
-			StockBookInfo stockBookInfo = StockBookInfo.fromBookInfo(bookInfo);
+		searchPanel.setBookInfoReceiver(isbn -> {
+			StockBookInfo stockBookInfo = stockService.ifSelectElseThenSearchBook(isbn);
 			stockListPanel.pushData(stockBookInfo);
 		});
 
