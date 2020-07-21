@@ -126,15 +126,20 @@ public class MemberManagePanel extends JPanel {
         inputName.setSize(290,50);
         inputPhone.setSize(290,50);
 
+        JButton addButton = new JButton("추가");
+        addButton.setSize(100,30);
+
         searchPanel.add(userName);
         searchPanel.add(phoneNum);
         searchPanel.add(inputPhone);
         searchPanel.add(inputName);
+        searchPanel.add(addButton);
 
         userName.setLocation(30,50);
         phoneNum.setLocation(30,300);
         inputName.setLocation(30, 110);
         inputPhone.setLocation(30, 360);
+        addButton.setLocation(130,500);
 
         addTab.add("추가",searchPanel);
 
