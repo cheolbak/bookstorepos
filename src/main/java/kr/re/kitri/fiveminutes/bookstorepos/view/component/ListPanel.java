@@ -1,6 +1,7 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 import lombok.Setter;
 
 import javax.swing.*;
@@ -16,10 +17,14 @@ public class ListPanel extends JPanel {
     private final Class<? extends BookInfo> modelType;
 
     @Setter
+    private TotalFieldChangeListener totalFieldChangeListener = infoList -> "";
+
+    @Setter
     private BookInfoViewPanelReceiver bookInfoViewPanelReceiver = bookInfo -> {};
 
     @Setter
     private AddButtonListener addButtonListener = infoList -> {};
+    private JTextField totalField;
 
     public ListPanel(String buttonText, Class<? extends BookInfo> modelType) {
         super(new BorderLayout());
@@ -78,16 +83,14 @@ public class ListPanel extends JPanel {
         JPanel panel = new JPanel(new GridBagLayout());
 
         JButton stockAddButton = new JButton(buttonText);
-        JTextField totalField = new JTextField();
+        totalField = new JTextField();
         totalField.setEditable(false);
         totalField.setDragEnabled(true);
         totalField.setText("0");
         totalField.setHorizontalAlignment(JTextField.RIGHT);
 
         bookInfoList.setChangeListListener(dataMap -> {
-            int sum = dataMap.values().stream().mapToInt(BookInfo::getPrice).sum();
-            NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
-            totalField.setText(numFormat.format(sum));
+            changeTotalField(totalFieldChangeListener);
             bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
         });
 
@@ -120,6 +123,14 @@ public class ListPanel extends JPanel {
         bookInfoList.put(bookInfo);
     }
 
+    public void changeTotalField() {
+        changeTotalField(totalFieldChangeListener);
+    }
+
+    public void changeTotalField(TotalFieldChangeListener l) {
+        totalField.setText(l.change(bookInfoList.getDataList(modelType)));
+    }
+
     @FunctionalInterface
     public interface AddButtonListener {
         void action(List<? extends BookInfo> infoList);
@@ -128,5 +139,10 @@ public class ListPanel extends JPanel {
     @FunctionalInterface
     public interface BookInfoViewPanelReceiver {
         void sendBookInfoToViewPanel(BookInfo bookInfo);
+    }
+
+    @FunctionalInterface
+    public interface TotalFieldChangeListener {
+        String change(List<? extends BookInfo> infoList);
     }
 }
