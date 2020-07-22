@@ -17,7 +17,7 @@ public class StockManagementService {
     private final StockDAO stockDAO = new StockDAO();
 
     public StockBookInfo ifSelectElseThenSearchBook(String isbn){
-        Book book = bookDAO.select(isbn);
+        Book book = bookDAO.selectOne(isbn);
 
         if(book.getBookISBN().equals("ERROR")){
             BookInfo dialogBook = BookInfoSearchRequester.requestBookSearchScopeISBN(isbn);
@@ -27,19 +27,10 @@ public class StockManagementService {
         return StockBookInfo.fromBookDomain(book);
     }
 
-    public boolean isBookInDataBaseElseInsert(BookInfo checkBook) {
-        Book book = bookDAO.select(checkBook.getIsbn());
-        if (book.getBookISBN().equals("ERROR")) {
-            int i = bookDAO.insertBook(Book.fromViewBookInfo(checkBook));
-            return i == 1;
-        }
-        return true;
-    }
-
-    public boolean pushStock(StockBookInfo stockBookInfo) {
+    public void pushStock(StockBookInfo stockBookInfo) {
         int stockResult = stockDAO.insertStock(Stock.fromStockBookInfo(stockBookInfo));
         int bookResult = bookDAO.updateAddStock(stockBookInfo.getInsertStock(), stockBookInfo.getIsbn());
-        return stockResult == 1 && bookResult == 1;
+        log.debug("stockService.pushStock() result: {}", stockResult == 1 && bookResult == 1);
     }
 }
 

@@ -15,9 +15,8 @@ public class StockDAO {
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1,stock.getStockId());
-                            pstmt.setString(2, stock.getBookISBN());
-                            pstmt.setInt(3, stock.getStockAmount());
+                            pstmt.setString(1, stock.getBookISBN());
+                            pstmt.setInt(2, stock.getStockAmount());
                         }
                     });
         }

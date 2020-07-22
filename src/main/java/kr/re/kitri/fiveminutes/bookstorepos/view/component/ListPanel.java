@@ -1,20 +1,16 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 public class ListPanel extends JPanel {
 
     private final BookInfoList bookInfoList;
     private final String buttonText;
-    private final Class<? extends BookInfo> modelType;
 
     @Setter
     private TotalFieldChangeListener totalFieldChangeListener = infoList -> "";
@@ -26,10 +22,9 @@ public class ListPanel extends JPanel {
     private AddButtonListener addButtonListener = infoList -> {};
     private JTextField totalField;
 
-    public ListPanel(String buttonText, Class<? extends BookInfo> modelType) {
+    public ListPanel(String buttonText) {
         super(new BorderLayout());
         this.buttonText = buttonText;
-        this.modelType = modelType;
         this.bookInfoList = createBookInfoList();
 
         setPreferredSize(new Dimension(500, 900));
@@ -91,11 +86,13 @@ public class ListPanel extends JPanel {
 
         bookInfoList.setChangeListListener(dataMap -> {
             changeTotalField(totalFieldChangeListener);
-            bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
+            if (bookInfoList.getSelectedIndex() != -1) {
+                bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
+            }
         });
 
         stockAddButton.addActionListener(e -> {
-            addButtonListener.action(bookInfoList.getDataList(modelType));
+            addButtonListener.action(bookInfoList.getDataList());
         });
 
         panel.add(new JLabel("총계 : "), createAddStockStandardConstraints());
@@ -123,12 +120,12 @@ public class ListPanel extends JPanel {
         bookInfoList.put(bookInfo);
     }
 
-    public void changeTotalField() {
-        changeTotalField(totalFieldChangeListener);
+    public void changeTotalField(TotalFieldChangeListener l) {
+        totalField.setText(l.change(bookInfoList.getDataList()));
     }
 
-    public void changeTotalField(TotalFieldChangeListener l) {
-        totalField.setText(l.change(bookInfoList.getDataList(modelType)));
+    public void clear() {
+        bookInfoList.clear();
     }
 
     @FunctionalInterface

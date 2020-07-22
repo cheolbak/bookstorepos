@@ -1,13 +1,11 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
-import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.Util;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.NewBookInfoRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.BookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.NewBookCondition.Sort;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
@@ -19,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -191,6 +190,15 @@ public class NewBookListDialogFrame extends JFrame implements BookInfoReceiver {
 
     private void updatePanel() {
         SearchMeta searchMeta = NewBookInfoRequester.requestRecommendNewBookEachPage(newBookCondition, 1);
+        if (searchMeta.getTotalCount() == 0) {
+            dialogBookInfoListPanel.setBookInfoList(Collections.emptyList());
+            paginationPanel.setLastPage(1);
+            paginationPanel.setPageChangeListener(e -> {});
+            dialogBookInfoListPanel.updateUI();
+            paginationPanel.updateUI();
+            JOptionPane.showMessageDialog(this, "검색 된 내용이 없습니다.\n다른 조건을 시도해보세요.", "오류", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         dialogBookInfoListPanel.setBookInfoList(searchMeta.getBookInfoList());
         dialogBookInfoListPanel.updateUI();
         paginationPanel.setLastPage(searchMeta.getTotalCount() / 10 + 1);

@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 
-public class UserSearchFrame extends JFrame {
+public class CustomerSearchDialogFrame extends JFrame {
 
 
     private final SellPanel sellPanel;
@@ -23,7 +23,7 @@ public class UserSearchFrame extends JFrame {
     private Object[][] data;
 
 
-    public UserSearchFrame(Object[][] data,SellPanel sellPanel) {
+    public CustomerSearchDialogFrame(Object[][] data, SellPanel sellPanel) {
         this.sellPanel = sellPanel;
         this.data=data;
         setTitle("회원검색");
@@ -31,7 +31,7 @@ public class UserSearchFrame extends JFrame {
         add(userTablePanel);
         setSize(1300,900);
         setVisible(true);
-        setDefaultCloseOperation(UserSearchFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     JPanel createUserPanel() {
@@ -41,11 +41,7 @@ public class UserSearchFrame extends JFrame {
         DefaultTableModel dtm = new DefaultTableModel(data, column){
             @Override
             public boolean isCellEditable(int row, int column) {
-                if(row>=0 && column==0 ) {
-                    return true;
-                }else{
-                    return false;
-                }
+                return row >= 0 && column == 0;
             }
         };
 
@@ -85,13 +81,6 @@ public class UserSearchFrame extends JFrame {
             }
         };
 
-        //테이블에 마우스클릭으로 로우 값 얻기
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                row=table.getSelectedRow();
-            }
-        });
         center.setHorizontalAlignment(JLabel.CENTER);
         right.setHorizontalAlignment(JLabel.RIGHT);
         boxRender.setHorizontalAlignment(JLabel.CENTER);
@@ -137,9 +126,7 @@ public class UserSearchFrame extends JFrame {
                                 .build());
                     dispose();
                 }
-                else{
-                    dispose();
-                }
+                dispose();
 
             }
         });

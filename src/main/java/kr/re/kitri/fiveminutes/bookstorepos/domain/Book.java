@@ -15,12 +15,23 @@ import java.time.LocalDateTime;
 @Builder
 public class Book {
 
-    private String bookISBN;
-    private String bookTitle;
-    private String bookAuthor;
-    private String bookPublisher;
-    private LocalDate bookReleaseDate;
-    private int bookMSRP;
+    @Builder.Default
+    private String bookISBN = "ERROR";
+
+    @Builder.Default
+    private String bookTitle = "ERROR";
+
+    @Builder.Default
+    private String bookAuthor = "ERROR";
+
+    @Builder.Default
+    private String bookPublisher = "ERROR";
+
+    @Builder.Default
+    private LocalDate bookReleaseDate = LocalDate.EPOCH;
+
+    @Builder.Default
+    private int bookMSRP = 0;
 
     @Builder.Default
     private int bookDiscountRate = 10;

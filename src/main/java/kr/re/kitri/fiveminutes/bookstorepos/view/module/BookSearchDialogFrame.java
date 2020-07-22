@@ -1,9 +1,10 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
-import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.component.*;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.BookInfoReceiver;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.DialogBookInfoListPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.MarginTitledBorderPanel;
+import kr.re.kitri.fiveminutes.bookstorepos.view.component.PaginationPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookSearchScope;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SearchMeta;
 
@@ -100,6 +101,9 @@ public class BookSearchDialogFrame extends JFrame implements BookInfoReceiver {
         infoListPanel.setBookInfoList(meta.getBookInfoList());
         paginationPanel.updateUI();
         infoListPanel.updateUI();
+        if (meta.getTotalCount() == 0) {
+            JOptionPane.showMessageDialog(this, "검색된 내용이 없습니다.", "오류", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @Override
