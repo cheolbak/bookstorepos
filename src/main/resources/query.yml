@@ -190,6 +190,12 @@ query: >
   FROM pos_sell
   WHERE pos_sell_id = ?
 ---
+tag: sell.select_date_range_sum
+query: >
+  SELECT SUM(pos_sell_count)
+  FROM pos_sell
+  WHERE pos_sell_date BETWEEN ? AND ?
+---
 tag: stock.insert
 query: >
   INSERT INTO pos_stock(pos_book_isbn, pos_stock_amount)

@@ -2,11 +2,16 @@ package kr.re.kitri.fiveminutes.bookstorepos.dao;
 
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
 import kr.re.kitri.fiveminutes.bookstorepos.util.db.DBPlug;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 public class SellDAO {
@@ -83,6 +88,34 @@ public class SellDAO {
         }
         catch (SQLException e){
             if(log.isDebugEnabled()){
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    public int selectDateRangeSum(LocalDateTime start, LocalDateTime end) {
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.getMappedObjectFromExecuteQuery("sell.select_date_range_sum",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setTimestamp(1, Timestamp.valueOf(start));
+                            pstmt.setTimestamp(2, Timestamp.valueOf(end));
+                        }
+                    },
+                    new DBPlug.MappingResultSet<Integer>() {
+                        @Override
+                        public Integer mapping(ResultSet resultSet) throws SQLException {
+                            if (resultSet.next()) {
+                                return resultSet.getInt(1);
+                            }
+                            return 0;
+                        }
+                    });
+        }
+        catch (SQLException e) {
+            if (log.isDebugEnabled()) {
                 e.printStackTrace();
             }
         }
