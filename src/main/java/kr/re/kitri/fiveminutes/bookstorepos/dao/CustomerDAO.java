@@ -184,6 +184,24 @@ public class CustomerDAO {
         return 0;
     }
 
+    public int insertAdd(String name,String tel) {
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.executeUpdateFromQuery("customer.insert_add",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setString(1, name);
+                            pstmt.setString(2, tel);
+                        }
+                    });
+        } catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
     public int updatePoint(int id, int point) {
         try (DBPlug dbPlug = new DBPlug()) {
             return dbPlug.executeUpdateFromQuery("customer.update_point",

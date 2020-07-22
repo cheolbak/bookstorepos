@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -19,6 +21,8 @@ public class CustomerManagementPanel extends JPanel {
     private final DefaultTableModel model;
     private final Object[] column;
 
+    private JTable table;
+    private PaginationPanel pagePanel;
     //회원 관리 페이지 패널 생성자
     public CustomerManagementPanel() {
         column = new Object[]{" ","회원번호","이름","전화번호","적립금","등급"};
@@ -27,12 +31,14 @@ public class CustomerManagementPanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         add(createMemberTablePanel());
-        add(createAlterMemberPanel());
+        add(createAlterMemberPanel(table,pagePanel));
     }
 
     // 회원관리 페이지 테이블 생성 함수
     private JPanel createMemberTablePanel() {
-        JTable table = new JTable(model);
+        //JTable table = new JTable(model);
+        table=new JTable(model);
+
         table.setFillsViewportHeight(true);
         table.setEnabled(true);
         table.setRowHeight(33);
@@ -46,7 +52,8 @@ public class CustomerManagementPanel extends JPanel {
 
         memberTablePanel.setPreferredSize(new Dimension(850, Short.MAX_VALUE));
 
-        PaginationPanel pagePanel = createTablePaginationPanel(table);
+        //PaginationPanel pagePanel = createTablePaginationPanel(table);
+        pagePanel=createTablePaginationPanel(table);
 
         memberTablePanel.add(createTableControlButtonPanel(table, pagePanel), BorderLayout.NORTH);
         memberTablePanel.add(scroll, BorderLayout.CENTER);
@@ -140,7 +147,7 @@ public class CustomerManagementPanel extends JPanel {
     }
 
     //회원 추가 패널 생성 함수
-    private JPanel createAlterMemberPanel() {
+    private JPanel createAlterMemberPanel(JTable table, PaginationPanel pagePanel) {
         JPanel alterMemberPanel = new JPanel();
         JTabbedPane addTab = new JTabbedPane();
 
@@ -149,6 +156,20 @@ public class CustomerManagementPanel extends JPanel {
         JLabel phoneNum = new JLabel("전화번호");
         JTextField inputName = new JTextField(20);
         JTextField inputPhone = new JTextField(20);
+        JButton addBtn=new JButton("추가");
+
+        addBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                customerService.insertCustomer(inputName.getText(),inputPhone.getText());
+                pagePanel.setLastPage(customerService.getCustomerCount() / 20 + 1);
+                pagePanel.updateUI();
+                updateTable(table, 1);
+                inputName.setText("");
+                inputPhone.setText("");
+
+            }
+        });
 
         alterMemberPanel.setSize(350,750);
         searchPanel.setSize(350,750);
@@ -162,15 +183,19 @@ public class CustomerManagementPanel extends JPanel {
         inputName.setSize(290,50);
         inputPhone.setSize(290,50);
 
+        addBtn.setSize(100,50);
+
         searchPanel.add(userName);
         searchPanel.add(phoneNum);
         searchPanel.add(inputPhone);
         searchPanel.add(inputName);
+        searchPanel.add(addBtn);
 
         userName.setLocation(30,50);
         phoneNum.setLocation(30,300);
         inputName.setLocation(30, 110);
         inputPhone.setLocation(30, 360);
+        addBtn.setLocation(220,700);
 
         addTab.add("추가",searchPanel);
 

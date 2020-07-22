@@ -55,4 +55,9 @@ public class UserManagementService {
     public int getCustomerCount() {
         return customerDAO.selectCount();
     }
+
+    public void insertCustomer(String name, String tel){
+        customerDAO.insertAdd(name,tel);
+    }
+
 }
