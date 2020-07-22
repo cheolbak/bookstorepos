@@ -34,15 +34,10 @@ public class UserManagementService {
     }
 
     public boolean updateCustomerInfo(int num, int totalCost, int usedPoint,int savedPoint){
-        Customer customer= customerDAO.selectId(num);
-        int point = customer.getCustomerPoint();
-        int totalPrice = customer.getCustomerTotalPrice();
 
-        point = point - usedPoint+savedPoint;
-        totalPrice = totalPrice+totalCost;
-
+        int point = savedPoint-usedPoint;
         int pointResult = customerDAO.updatePoint(num, point);
-        int totalResult = customerDAO.updateTotal(num,totalPrice);
+        int totalResult = customerDAO.updateTotal(num,totalCost);
 
 
         return pointResult == 1 && totalResult==1;

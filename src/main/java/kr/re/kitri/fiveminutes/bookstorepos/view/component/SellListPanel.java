@@ -146,7 +146,7 @@ public class SellListPanel extends JPanel {
             NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
             List<Sell> sellList = new ArrayList<>();
             double count = infoList.size()*1.0;
-            int usedPoint = Integer.parseInt(usingPointTextField.getText());
+            int usingPoint = Integer.parseInt(usingPointTextField.getText());
             int userId = Integer.parseInt(sellPanel.userNum.getText());
             int sellPrice;
 
@@ -154,12 +154,14 @@ public class SellListPanel extends JPanel {
                sellPrice  = numFormat.parse(sellPriceTextField.getText()).intValue();
 
                 //고객 적립금 <> 사용 적립금 비교
-                if(usedPoint < userManagementService.getCustomerPoint(userId)){
+                if(usingPoint > userManagementService.getCustomerPoint(userId)){
                     JOptionPane.showMessageDialog(this, "보유 적립금이 부족합니다.", "오류", JOptionPane.WARNING_MESSAGE);
+                    usingPointTextField.setText("0");
                 }
                 //구매 가격 <> 사용 적립금 비교
-                else if(usedPoint > sellPrice){
+                else if(usingPoint > sellPrice){
                     JOptionPane.showMessageDialog(this, "사용 적립금이 구입 금액을 초과했습니다.", "오류", JOptionPane.WARNING_MESSAGE);
+                    usingPointTextField.setText("0");
                 }
                 else {
                     int savedPoint = 0;
@@ -172,15 +174,15 @@ public class SellListPanel extends JPanel {
                                     .customerId(userId)
                                     .sellCount(((SellBookInfo) bookInfo).getSellCount())
                                     .sellPrice(((SellBookInfo) bookInfo).getSellPrice())
-                                    .usedPoint((int) (usedPoint / count))
+                                    .usedPoint((int) (usingPoint / count))
                                     .build();
                             sellList.add(s);
                             sellManagementService.pushSellInfo(s);
                             sellManagementService.subStock(bookInfo);
                         }
                     }
-                    totalPriceTextField.setText(numFormat.format(sellPrice - usedPoint));
-                    userManagementService.updateCustomerInfo(userId, sellPrice, usedPoint, savedPoint);
+                    totalPriceTextField.setText(numFormat.format(sellPrice - usingPoint));
+                    userManagementService.updateCustomerInfo(userId, sellPrice, usingPoint, savedPoint);
                     bookInfoList.removeAll();
                 }
             } catch (ParseException parseException) {

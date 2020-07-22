@@ -44,7 +44,6 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 	public JLabel nowPoint;
 	public JLabel memberGrade;
 	int memberSearchnum=0;
-	JTextField inputIsbnField;
 
 	public JLabel title;
 	public JLabel author;
@@ -175,31 +174,25 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		JLabel memberGradeLabel = new JLabel("등급: ");
 		JLabel userPhoneLabel = new JLabel("전화번호:");
 		JLabel nowPointLabel = new JLabel("현재 적립금:");
-//		JLabel usingPointLabel = new JLabel("사용 적립금:");
 
-		userNum = new JLabel("0");
+		userNum = new JLabel("1");
 		userName = new JLabel("비회원");
 		userPhone = new JLabel("0");
 		nowPoint = new JLabel("0");
 		memberGrade = new JLabel("비회원");
 
-//		JTextField inputPointField = new JTextField();
 
 		userNumLabel.setSize(80,20);
 		userNameLabel.setSize(80,20);
 		memberGradeLabel.setSize(80,20);
 		userPhoneLabel.setSize(80,20);
 		nowPointLabel.setSize(80,20);
-//		usingPointLabel.setSize(80,20);
 
 		userNum.setSize(170,20);
 		userName.setSize(170,20);
 		userPhone.setSize(170,20);
 		nowPoint.setSize(170,20);
 		memberGrade.setSize(170,20);
-
-//		inputPointField.setSize(170,25);
-//		inputPointField.setEnabled(false);
 
 		//회원 검색 패널
 		searchMemberPanel.add(memberSearchList);
@@ -220,14 +213,12 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		memberInfoPanel.add(userNameLabel);
 		memberInfoPanel.add(userPhoneLabel);
 		memberInfoPanel.add(nowPointLabel);
-//		memberInfoPanel.add(usingPointLabel);
 		memberInfoPanel.add(memberGradeLabel);
 
 		memberInfoPanel.add(userNum);
 		memberInfoPanel.add(userName);
 		memberInfoPanel.add(userPhone);
 		memberInfoPanel.add(nowPoint);
-//		memberInfoPanel.add(inputPointField);
 		memberInfoPanel.add(memberGrade);
 
 		userNameLabel.setLocation(20,80);
@@ -235,14 +226,13 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		userPhoneLabel.setLocation(20,120);
 		nowPointLabel.setLocation(20,160);
 		memberGradeLabel.setLocation(20,200);
-//		usingPointLabel.setLocation(20,240);
 
 		userNum.setLocation(140,40);
 		userName.setLocation(140,80);
 		userPhone.setLocation(140,120);
 		nowPoint.setLocation(140,160);
 		memberGrade.setLocation(140,200);
-//		inputPointField.setLocation(140,240);
+
 
 		memberPanel.add(searchMemberPanel);
 		memberPanel.add(userCheckboxPanel);
@@ -275,13 +265,16 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		JLabel isbnLabel = new JLabel("ISBN: ");
 		inputIsbnField = new JTextField();
 		JButton isbnAddBtn = new JButton("추가");
+
 		JButton imageCognitionBtn = new JButton("사진 인식");
+
+		/*
 		imageCognitionBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new BarcodeImageReadDialogFrame(SellPanel.this);
 			}
-		});
+		});*/
 
 		imageCognitionBtn.addActionListener(e -> new BarcodeImageReadDialogFrame(bookInfoReceiver));
 
@@ -413,8 +406,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		memberGrade.setText(info.getUserGrade());
 	}
 
-	}
-	public void updateBookInfo(SellBookInfo sellBookInfo){
+	public void updateBookInfo(SellBookInfo sellBookInfo) {
 		Image img = sellBookInfo.getBookCoverImage();
 		Image resizeImage = img.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
 		ImageIcon imageIcon = new ImageIcon(resizeImage);
@@ -432,6 +424,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		bookImage.setIcon(imageIcon);
 		bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
 		inputIsbnField.setText("");
+	}
 	@Override
 	public void sendBookInfoToReceiver(String isbn) {
 		SellPanel.this.inputIsbnField.setText(isbn);
