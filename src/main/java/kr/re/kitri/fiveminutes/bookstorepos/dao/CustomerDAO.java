@@ -165,15 +165,34 @@ public class CustomerDAO {
         return Collections.emptyList();
     }
 
+    public int selectFindMaxID(){
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.getMappedObjectFromExecuteQuery("customer.selectFindMaxID", pstmt -> {},
+                    new DBPlug.MappingResultSet<Integer>() {
+                        @Override
+                        public Integer mapping(ResultSet resultSet) throws SQLException {
+                            resultSet.next();
+                            return resultSet.getInt(1);
+                        }
+                    });
+        }
+        catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
+
     public int insertCustomer(Customer customer) {
         try (DBPlug dbPlug = new DBPlug()) {
             return dbPlug.executeUpdateFromQuery("customer.insert",
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, customer.getCustomerId());
-                            pstmt.setString(2, customer.getCustomerName());
-                            pstmt.setString(3, customer.getCustomerTel());
+                           // pstmt.setInt(1, customer.getCustomerId());
+                            pstmt.setString(1, customer.getCustomerName());
+                            pstmt.setString(2, customer.getCustomerTel());
                         }
                     });
         } catch (SQLException e) {
@@ -228,6 +247,41 @@ public class CustomerDAO {
                         public void inject(PreparedStatement pstmt) throws SQLException {
                             pstmt.setString(1, tel);
                             pstmt.setInt(2, id);
+                        }
+                    });
+        } catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+    public int updateName(int id, String name) {
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.executeUpdateFromQuery("customer.update_name",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setString(1, name);
+                            pstmt.setInt(2, id);
+                        }
+                    });
+        } catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+    public int updateUser(int id, String name, String tel) {
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.executeUpdateFromQuery("customer.update_name",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setString(1, name);
+                            pstmt.setString(2, tel);
+                            pstmt.setInt(3, id);
                         }
                     });
         } catch (SQLException e) {

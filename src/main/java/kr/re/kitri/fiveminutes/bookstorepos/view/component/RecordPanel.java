@@ -1,56 +1,80 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.service.SellChartService;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerManagementFrame;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class RecordPanel extends JPanel {
-    JPanel chartPanel;
+public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoReceiver
+{
     JPanel chartSetPanel;
+    SellChartPanel sellChartPanel;
+    JTextField inputBookName;
+    JTextField inputMemberName;
+    private final SellChartService chartService;
 
     public RecordPanel(){
-        setLayout(null);
-        setSize(1600,900);
+        chartService = new SellChartService();
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
-        chartPanel=createChartPanel();
-        chartSetPanel=createChartSetPanel();
+        sellChartPanel = new SellChartPanel();
+        chartSetPanel = createChartSetPanel();
 
-        add(chartPanel);
+        add(sellChartPanel);
         add(chartSetPanel);
 
-        chartPanel.setLocation(10,30);
-        chartSetPanel.setLocation(1220,30);
+        setVisible(true);
     }
 
-    JPanel createChartPanel(){
-        JPanel chart = new JPanel();
-
-        chart.setLayout(null);
-        chart.setSize(1200,750);
-        chart.setBackground(Color.cyan);
-
-        return chart;
-    }
-
-    JPanel createChartSetPanel(){
-        JPanel chartSetPanel = new JPanel();
+    private JPanel createChartSetPanel(){
+        chartSetPanel = new JPanel();
         TitledBorder tBorder= new TitledBorder(new LineBorder(Color.BLACK),"조건");
 
         JLabel period = new JLabel("기간");
         JLabel bookName = new JLabel("책");
         JLabel memberName = new JLabel("회원");
 
-        JTextField inputBookname = new JTextField();
-        JTextField inputMemberName = new JTextField();
+        inputBookName = new JTextField();
+        inputMemberName = new JTextField();
 
-        String[] periodArray = {"최근 6주", "최근 6달"};
-        JComboBox periodComboBox = new JComboBox(periodArray);
+        JComboBox<SellChartSection> periodComboBox = new JComboBox<>(SellChartSection.values());
 
         JButton completeBtn = new JButton("확인");
+        completeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object itemObj = periodComboBox.getSelectedItem();
+                if (!(itemObj instanceof SellChartSection)) {
+                    return;
+                }
+                SellChartSection section = (SellChartSection) itemObj;
+                SellDataSet sellDataSet = chartService.requestSellChartDataSet(section, inputBookName.getText(), 0);
+                sellChartPanel.updateChart(sellDataSet);
+            }
+        });
         JButton bookSearchBtn = new JButton("검색");
-        JButton memberSearchBtn = new JButton("검색");
+        bookSearchBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new BookSearchDialogFrame(RecordPanel.this);
+            }
+        });
 
+        JButton memberSearchBtn = new JButton("검색");
+        memberSearchBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CustomerManagementFrame(RecordPanel.this);
+            }
+        });
 
         chartSetPanel.setSize(350,750);
         chartSetPanel.setLayout(null);
@@ -62,7 +86,7 @@ public class RecordPanel extends JPanel {
         memberName.setSize(30,50);
 
         //텍스트박스 크기 설정
-        inputBookname.setSize(200,40);
+        inputBookName.setSize(200,40);
         inputMemberName.setSize(200,40);
 
         //체크박스 크기설정
@@ -77,7 +101,7 @@ public class RecordPanel extends JPanel {
         chartSetPanel.add(bookName);
         chartSetPanel.add(memberName);
         chartSetPanel.add(inputMemberName);
-        chartSetPanel.add(inputBookname);
+        chartSetPanel.add(inputBookName);
         chartSetPanel.add(periodComboBox);
         chartSetPanel.add(completeBtn);
         chartSetPanel.add(bookSearchBtn);
@@ -88,7 +112,7 @@ public class RecordPanel extends JPanel {
         periodComboBox.setLocation(110,100);
 
         bookName.setLocation(30,250);
-        inputBookname.setLocation(70,250);
+        inputBookName.setLocation(70,250);
         bookSearchBtn.setLocation(280,255);
 
         memberName.setLocation(30,450);
@@ -98,5 +122,15 @@ public class RecordPanel extends JPanel {
         completeBtn.setLocation(150,550);
 
         return chartSetPanel;
+    }
+
+    @Override
+    public void sendBookInfoToReceiver(String isbn) {
+        this.inputBookName.setText(isbn);
+    }
+
+    @Override
+    public void sendIdInfoToReceiver(String id) {
+        this.inputMemberName.setText(id);
     }
 }

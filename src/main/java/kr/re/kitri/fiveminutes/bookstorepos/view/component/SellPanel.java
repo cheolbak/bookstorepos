@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.SQLOutput;
 import java.util.List;
 
@@ -21,7 +23,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 @Slf4j
-public class SellPanel extends JPanel{
+public class SellPanel extends JPanel implements BookInfoReceiver {
 
 	private static final int COMBO_PHONE = 0;
 	private static final int COMBO_NAME = 1;
@@ -42,6 +44,7 @@ public class SellPanel extends JPanel{
 	public JLabel nowPoint;
 	public JLabel memberGrade;
 	int memberSearchnum=0;
+	JTextField inputIsbnField;
 
 	public JLabel title;
 	public JLabel author;
@@ -128,6 +131,18 @@ public class SellPanel extends JPanel{
 			}
 		});
 		userCheckbox = new JCheckBox("비회원 구매",true);
+		userCheckbox.setEnabled(false);
+		userCheckbox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				userNum.setText("0");
+				userName.setText("비회원");
+				userPhone.setText("0");
+				nowPoint.setText("0");
+				memberGrade.setText("비회원");
+
+			}
+		});
 
 		memberSearchList.addItem("전화번호");
 		memberSearchList.addItem("이름");
@@ -261,6 +276,12 @@ public class SellPanel extends JPanel{
 		inputIsbnField = new JTextField();
 		JButton isbnAddBtn = new JButton("추가");
 		JButton imageCognitionBtn = new JButton("사진 인식");
+		imageCognitionBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new BarcodeImageReadDialogFrame(SellPanel.this);
+			}
+		});
 
 		imageCognitionBtn.addActionListener(e -> new BarcodeImageReadDialogFrame(bookInfoReceiver));
 
@@ -310,17 +331,7 @@ public class SellPanel extends JPanel{
 		point = new JLabel();
 		nowStock = new JLabel();
 		bookImage = new JLabel();
-		/*
-		JLabel title = new JLabel(" ");
-		JLabel author = new JLabel();
-		JLabel publisher = new JLabel();
-		JLabel isbn = new JLabel();
-		JLabel originPrice = new JLabel();
-		JLabel sellPrice = new JLabel();
-		JLabel point = new JLabel();
-		JLabel nowStock = new JLabel();
-		JLabel bookImage = new JLabel();
-		*/
+
 
 		ActionListener listener = e -> {
 			if (!inputIsbnField.getText().matches("^97[89][0-9]{10}$")) {
@@ -334,23 +345,6 @@ public class SellPanel extends JPanel{
 			}
 
 			else {
-				/*Image img = sellBookInfo.getBookCoverImage();
-				Image resizeImage = img.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
-				ImageIcon imageIcon = new ImageIcon(resizeImage);
-
-				title.setText(sellBookInfo.getTitle());
-				author.setText(sellBookInfo.getAuthor());
-				publisher.setText(sellBookInfo.getPublisher());
-				isbn.setText(sellBookInfo.getIsbn());
-				originPrice.setText(sellBookInfo.getPrice() + "원");
-				sellPrice.setText(sellBookInfo.getSellPrice() + "원");
-				point.setText(Integer.toString(sellBookInfo.getPoint()));
-				nowStock.setText(Integer.toString(sellBookInfo.getStock()));
-				bookImage.setIcon(imageIcon);
-				bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
-				inputIsbnField.setText("");*/
-				//System.out.println(sellBookInfo.getTitle());
-				//title.getText();
 				updateBookInfo(sellBookInfo);
 			}
 		};
@@ -411,6 +405,7 @@ public class SellPanel extends JPanel{
 	public void updateUserInfo(SellUserInfo info) {
 		// TODO: 유저 정보 갱신
 		userCheckbox.setSelected(false);
+		userCheckbox.setEnabled(true);
 		userNum.setText(String.valueOf(info.getUserNum()));
 		userName.setText(info.getUserName());
 		userPhone.setText(info.getUserPhoneNum());
@@ -418,6 +413,7 @@ public class SellPanel extends JPanel{
 		memberGrade.setText(info.getUserGrade());
 	}
 
+	}
 	public void updateBookInfo(SellBookInfo sellBookInfo){
 		Image img = sellBookInfo.getBookCoverImage();
 		Image resizeImage = img.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
@@ -436,6 +432,9 @@ public class SellPanel extends JPanel{
 		bookImage.setIcon(imageIcon);
 		bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
 		inputIsbnField.setText("");
+	@Override
+	public void sendBookInfoToReceiver(String isbn) {
+		SellPanel.this.inputIsbnField.setText(isbn);
 	}
 }
 
