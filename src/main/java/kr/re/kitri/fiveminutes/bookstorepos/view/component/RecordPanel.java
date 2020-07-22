@@ -4,7 +4,6 @@ import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerManagementFrame;
-import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
