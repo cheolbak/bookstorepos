@@ -44,6 +44,7 @@ public class BookInfoList extends JList<BookInfo> implements DataRegister<BookIn
         remove(value.getIsbn());
     }
 
+
     public void remove(String isbn) {
         listModel.remove(isbn);
         changeListListener.change(listModel.getBookInfoMap());

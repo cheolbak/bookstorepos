@@ -140,7 +140,6 @@ public class UserSearchFrame extends JFrame {
                 else{
                     dispose();
                 }
-
             }
         });
         confirmBtn.setSize(100,50);

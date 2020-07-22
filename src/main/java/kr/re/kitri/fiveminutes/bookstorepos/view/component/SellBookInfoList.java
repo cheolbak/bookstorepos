@@ -51,6 +51,13 @@ public class SellBookInfoList extends JList<BookInfo> implements DataRegister<Bo
         updateUI();
     }
 
+    public void removeAll(){
+        listModel.removeAll();
+        System.out.println(listModel.getBookInfoMap().isEmpty());
+        changeListListener.change(listModel.getBookInfoMap());
+        updateUI();
+    }
+
     public List<? extends BookInfo> getDataList(Class<? extends BookInfo> type) {
         return listModel.getBookInfoMap().values().stream()
                 .map(type::cast)
@@ -166,6 +173,9 @@ public class SellBookInfoList extends JList<BookInfo> implements DataRegister<Bo
         }
 
         public void put(BookInfo info) {
+            if(bookInfoMap.containsKey(info.getIsbn())){
+                return;
+            }
             isbnList.add(info.getIsbn());
             bookInfoMap.put(info.getIsbn(), info);
         }
@@ -173,6 +183,11 @@ public class SellBookInfoList extends JList<BookInfo> implements DataRegister<Bo
         public void remove(String isbn) {
             isbnList.remove(isbn);
             bookInfoMap.remove(isbn);
+        }
+
+        public void removeAll(){
+            isbnList.clear();
+            bookInfoMap.clear();
         }
 
         @Override
