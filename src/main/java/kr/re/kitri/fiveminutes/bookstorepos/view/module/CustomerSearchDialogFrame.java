@@ -19,6 +19,7 @@ public class CustomerSearchDialogFrame extends JFrame {
     private final SellPanel sellPanel;
     private JPanel userTablePanel;
     private JTable table;
+    int row;
     private Object[][] data;
 
 
@@ -114,8 +115,7 @@ public class CustomerSearchDialogFrame extends JFrame {
         confirmBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = table.getSelectedRow();
-                if (row != -1 && table.getValueAt(row,0).equals(true)) {
+                if(table.getValueAt(row,0).equals(true)) {
                     sellPanel.updateUserInfo(
                             SellUserInfo.builder()
                                 .userNum(Integer.parseInt(table.getValueAt(row,1).toString()))
@@ -124,6 +124,7 @@ public class CustomerSearchDialogFrame extends JFrame {
                                 .nowReserves(Integer.parseInt(table.getValueAt(row, 4).toString()))
                                 .userGrade(table.getValueAt(row, 5).toString())
                                 .build());
+                    dispose();
                 }
                 dispose();
 

@@ -33,12 +33,12 @@ public class UserManagementService {
                 .toArray(Object[][]::new);
     }
 
-    public boolean updateCustomerInfo(int num, int totalCost, int usedPoint){
+    public boolean updateCustomerInfo(int num, int totalCost, int usedPoint,int savedPoint){
         Customer customer= customerDAO.selectId(num);
         int point = customer.getCustomerPoint();
         int totalPrice = customer.getCustomerTotalPrice();
 
-        point = point - usedPoint;
+        point = point - usedPoint+savedPoint;
         totalPrice = totalPrice+totalCost;
 
         int pointResult = customerDAO.updatePoint(num, point);

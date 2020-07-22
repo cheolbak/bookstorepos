@@ -129,27 +129,6 @@ public class SellListPanel extends JPanel {
             bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
         });
 
-        sellButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
-                int point = Integer.parseInt(usingPointTextField.getText());
-                int sellPrice;
-                try {
-                    sellPrice = numFormat.parse(sellPriceTextField.getText()).intValue();
-                    totalPriceTextField.setText(numFormat.format(sellPrice-point));
-                    int userId = Integer.parseInt(userNum.getText());
-                    //int userId = 7;
-                    System.out.println("=============================");
-                    System.out.println(userId);
-                    userManagementService.updateCustomerInfo(userId,sellPrice,point);
-
-                } catch (ParseException parseException) {
-                    if(log.isDebugEnabled())
-                        parseException.printStackTrace();
-                }
-            }
-        });
 
         sellButton.addActionListener(e -> {
             addButtonListener.action(bookInfoList.getDataList(modelType));
@@ -158,13 +137,13 @@ public class SellListPanel extends JPanel {
         setAddButtonListener(infoList -> {
             double count = infoList.size()*1.0;
             int usedPoint = Integer.parseInt(usingPointTextField.getText());
+            int savedPoint = 0;
             for (BookInfo bookInfo : infoList) {
                 if (bookInfo instanceof SellBookInfo) {
                     System.out.println(bookInfo.getTitle());
-
+                    savedPoint = savedPoint+((SellBookInfo) bookInfo).getPoint();
                     Sell s = Sell.builder()
                             .bookISBN(bookInfo.getIsbn())
-                            //.customerId(7)
                             .customerId(Integer.parseInt(userNum.getText()))
                             .sellCount(((SellBookInfo) bookInfo).getSellCount())
                             .sellPrice(((SellBookInfo) bookInfo).getSellPrice())
@@ -174,6 +153,20 @@ public class SellListPanel extends JPanel {
                     sellManagementService.subStock(bookInfo);
                 }
             }
+            NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
+            int point = Integer.parseInt(usingPointTextField.getText());
+            int sellPrice;
+            try {
+                sellPrice = numFormat.parse(sellPriceTextField.getText()).intValue();
+                totalPriceTextField.setText(numFormat.format(sellPrice-point));
+                int userId = Integer.parseInt(userNum.getText());
+                userManagementService.updateCustomerInfo(userId,sellPrice,point,savedPoint);
+
+            } catch (ParseException parseException) {
+                if(log.isDebugEnabled())
+                    parseException.printStackTrace();
+            }
+            bookInfoList.removeAll();
         });
 
         panel.add(new JLabel("판매 금액: "), createAddStockStandardConstraints(1));

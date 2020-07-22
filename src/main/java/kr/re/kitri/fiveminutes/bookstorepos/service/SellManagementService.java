@@ -18,10 +18,10 @@ public class SellManagementService {
     private CustomerDAO customerDAO = new CustomerDAO();
 
     public Book searchBook(String isbn){
-        Book book;
-        BookInfo dialogBook = BookInfoSearchRequester.requestBookSearchScopeISBN(isbn);
+        Book book = bookDAO.selectOne(isbn);
 
-        book = Book.fromViewBookInfo(dialogBook);
+        //BookInfo dialogBook = BookInfoSearchRequester.requestBookSearchScopeISBN(isbn);
+        //book = Book.fromViewBookInfo(dialogBook);
         return book;
     }
 
@@ -36,8 +36,7 @@ public class SellManagementService {
     }
 
     public boolean subStock(BookInfo BookInfo){
-        int stock = bookDAO.selectOne(BookInfo.getIsbn()).getBookStock()-1;
-        int result = bookDAO.updateSubtractStock(stock,BookInfo.getIsbn());
+        int result = bookDAO.updateSubtractStock(1,BookInfo.getIsbn());
         return result==1;
     }
 
