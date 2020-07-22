@@ -4,13 +4,10 @@ import kr.re.kitri.fiveminutes.bookstorepos.dao.BookDAO;
 import kr.re.kitri.fiveminutes.bookstorepos.dao.CustomerDAO;
 import kr.re.kitri.fiveminutes.bookstorepos.dao.SellDAO;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
-import kr.re.kitri.fiveminutes.bookstorepos.domain.Customer;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
-import kr.re.kitri.fiveminutes.bookstorepos.domain.Stock;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 
 public class SellManagementService {
 
@@ -39,7 +36,7 @@ public class SellManagementService {
     }
 
     public boolean subStock(BookInfo BookInfo){
-        int stock = bookDAO.select(BookInfo.getIsbn()).getBookStock()-1;
+        int stock = bookDAO.selectOne(BookInfo.getIsbn()).getBookStock()-1;
         int result = bookDAO.updateSubtractStock(stock,BookInfo.getIsbn());
         return result==1;
     }
