@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -26,7 +28,13 @@ public class CustomerManagementPanel extends JPanel {
     //회원 관리 페이지 패널 생성자
     public CustomerManagementPanel() {
         column = new Object[]{" ","회원번호","이름","전화번호","적립금","등급"};
-        model = new DefaultTableModel(column, 6);
+        model = new DefaultTableModel(column, 6){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return row >= 0 && (column == 2 || column==3);
+            }
+        };
+
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -59,7 +67,24 @@ public class CustomerManagementPanel extends JPanel {
         memberTablePanel.add(scroll, BorderLayout.CENTER);
         memberTablePanel.add(pagePanel, BorderLayout.SOUTH);
 
-        updateTable(table, 1);
+        table.addMouseListener(new MouseAdapter() {
+            int row;
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                row=table.getSelectedRow();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                int id = Integer.parseInt(table.getModel().getValueAt(row, 1).toString());
+                String name = table.getModel().getValueAt(row,2).toString();
+                String tel = table.getModel().getValueAt(row,3).toString();
+                customerService.updateCustomerName(id,name);
+                customerService.updateCustomerTel(id,tel);
+            }
+        });
+
+                updateTable(table, 1);
 
         return memberTablePanel;
     }
@@ -129,6 +154,8 @@ public class CustomerManagementPanel extends JPanel {
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton deleteBtn = new JButton("삭제");
+        JButton lookUpBtn = new JButton("조회");
+
 
         deleteBtn.addActionListener(e -> {
             for (int selectedRow : table.getSelectedRows()) {
@@ -140,6 +167,16 @@ public class CustomerManagementPanel extends JPanel {
             updateTable(table, 1);
         });
 
+        lookUpBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pagePanel.setLastPage(customerService.getCustomerCount() / 20 + 1);
+                pagePanel.updateUI();
+                updateTable(table, 1);
+            }
+        });
+
+        panel.add(lookUpBtn);
         panel.add(deleteBtn);
         margin.add(panel, BorderLayout.CENTER);
 

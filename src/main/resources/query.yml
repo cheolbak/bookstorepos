@@ -132,6 +132,19 @@ query: >
   SET pos_customer_tel = ?
   WHERE pos_customer_id = ?
 ---
+tag: customer.update_name
+query: >
+  UPDATE pos_customer
+  SET pos_customer_name = ?
+  WHERE pos_customer_id = ?
+---
+tag: customer.update_user
+query: >
+  UPDATE pos_customer
+  SET pos_customer_name= ?,
+      pos_customer_tel=?
+  WHERE pos_customer_id = ?
+---
 tag: customer.update_total
 query: >
   UPDATE pos_customer
