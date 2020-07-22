@@ -81,6 +81,12 @@ public class CustomerSearchDialogFrame extends JFrame {
             }
         };
 
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                row=table.getSelectedRow();
+            }
+        });
         center.setHorizontalAlignment(JLabel.CENTER);
         right.setHorizontalAlignment(JLabel.RIGHT);
         boxRender.setHorizontalAlignment(JLabel.CENTER);
@@ -115,7 +121,7 @@ public class CustomerSearchDialogFrame extends JFrame {
         confirmBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(table.getValueAt(row,0).equals(true)) {
+                if(table.getSelectedRow()==row) {
                     sellPanel.updateUserInfo(
                             SellUserInfo.builder()
                                 .userNum(Integer.parseInt(table.getValueAt(row,1).toString()))
