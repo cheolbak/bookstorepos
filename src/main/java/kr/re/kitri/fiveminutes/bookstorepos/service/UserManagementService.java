@@ -60,4 +60,16 @@ public class UserManagementService {
         customerDAO.insertAdd(name,tel);
     }
 
+    public void updateCustomerName(int id, String name){
+        customerDAO.updateName(id,name);
+    }
+
+    public void updateCustomerTel(int id, String tel){
+        customerDAO.updateTel(id,tel);
+    }
+
+    public void updateCustomer(int id,String name, String tel){
+        customerDAO.updateUser(id,name,tel);
+    }
+
 }

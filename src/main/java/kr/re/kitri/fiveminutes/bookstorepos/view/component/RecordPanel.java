@@ -1,10 +1,10 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.service.SellChartService;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerManagementFrame;
-import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -13,47 +13,28 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_MONTHS;
-import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_WEEKS;
-
 public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoReceiver
 {
     JPanel chartSetPanel;
-    JPanel sellChartPanel;
-    JPanel sellChartPanel2;
-    SellDataSet sellDataSet;
-    JTextField inputBookname;
+    SellChartPanel sellChartPanel;
+    JTextField inputBookName;
     JTextField inputMemberName;
+    private final SellChartService chartService;
 
     public RecordPanel(){
-        setLayout(null);
-        setSize(1600,900);
+        chartService = new SellChartService();
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
-        sellChartPanel=createSellChartPanel(SIX_WEEKS);
-        sellChartPanel2=createSellChartPanel(SIX_MONTHS);
-        chartSetPanel=createChartSetPanel();
-        sellChartPanel2.setVisible(false);
+        sellChartPanel = new SellChartPanel();
+        chartSetPanel = createChartSetPanel();
 
-        add(chartSetPanel);
         add(sellChartPanel);
-        add(sellChartPanel2);
-
-        sellChartPanel.setLocation(10,30);
-        sellChartPanel2.setLocation(10,30);
-        chartSetPanel.setLocation(1220,30);
+        add(chartSetPanel);
 
         setVisible(true);
     }
 
-    JPanel createSellChartPanel(SellChartSection section){
-        sellDataSet = new SellDataSet(section);
-        JPanel tempChartPanel = new SellChartPanel(sellDataSet);
-        tempChartPanel.setSize(1200, 700);
-
-        return tempChartPanel;
-    }
-
-    JPanel createChartSetPanel(){
+    private JPanel createChartSetPanel(){
         chartSetPanel = new JPanel();
         TitledBorder tBorder= new TitledBorder(new LineBorder(Color.BLACK),"조건");
 
@@ -61,33 +42,25 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         JLabel bookName = new JLabel("책");
         JLabel memberName = new JLabel("회원");
 
-        inputBookname = new JTextField();
+        inputBookName = new JTextField();
         inputMemberName = new JTextField();
 
-        String[] periodArray = {"최근 6주", "최근 6달"};
-        JComboBox periodComboBox = new JComboBox(periodArray);
-        periodComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String cb = ((JComboBox) e.getSource()).getSelectedItem().toString();
-                if(cb.equals("최근 6달")){
-                    sellChartPanel.setVisible(false);
-                    sellChartPanel2.setVisible(true);
-                } else{
-                    sellChartPanel.setVisible(true);
-                    sellChartPanel2.setVisible(false);
-                }
-            }
-        });
+        JComboBox<SellChartSection> periodComboBox = new JComboBox<>(SellChartSection.values());
 
         JButton completeBtn = new JButton("확인");
         completeBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-        }
-    });
-    JButton bookSearchBtn = new JButton("검색");
+                Object itemObj = periodComboBox.getSelectedItem();
+                if (!(itemObj instanceof SellChartSection)) {
+                    return;
+                }
+                SellChartSection section = (SellChartSection) itemObj;
+                SellDataSet sellDataSet = chartService.requestSellChartDataSet(section, inputBookName.getText(), 0);
+                sellChartPanel.updateChart(sellDataSet);
+            }
+        });
+        JButton bookSearchBtn = new JButton("검색");
         bookSearchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,7 +68,7 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
             }
         });
 
-    JButton memberSearchBtn = new JButton("검색");
+        JButton memberSearchBtn = new JButton("검색");
         memberSearchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -113,7 +86,7 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         memberName.setSize(30,50);
 
         //텍스트박스 크기 설정
-        inputBookname.setSize(200,40);
+        inputBookName.setSize(200,40);
         inputMemberName.setSize(200,40);
 
         //체크박스 크기설정
@@ -128,7 +101,7 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         chartSetPanel.add(bookName);
         chartSetPanel.add(memberName);
         chartSetPanel.add(inputMemberName);
-        chartSetPanel.add(inputBookname);
+        chartSetPanel.add(inputBookName);
         chartSetPanel.add(periodComboBox);
         chartSetPanel.add(completeBtn);
         chartSetPanel.add(bookSearchBtn);
@@ -139,7 +112,7 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         periodComboBox.setLocation(110,100);
 
         bookName.setLocation(30,250);
-        inputBookname.setLocation(70,250);
+        inputBookName.setLocation(70,250);
         bookSearchBtn.setLocation(280,255);
 
         memberName.setLocation(30,450);
@@ -153,11 +126,11 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
 
     @Override
     public void sendBookInfoToReceiver(String isbn) {
-        RecordPanel.this.inputBookname.setText(isbn);
+        this.inputBookName.setText(isbn);
     }
 
     @Override
     public void sendIdInfoToReceiver(String id) {
-        RecordPanel.this.inputMemberName.setText(id);
+        this.inputMemberName.setText(id);
     }
 }

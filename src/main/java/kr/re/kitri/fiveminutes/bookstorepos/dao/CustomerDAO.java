@@ -256,6 +256,41 @@ public class CustomerDAO {
         }
         return 0;
     }
+    public int updateName(int id, String name) {
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.executeUpdateFromQuery("customer.update_name",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setString(1, name);
+                            pstmt.setInt(2, id);
+                        }
+                    });
+        } catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+    public int updateUser(int id, String name, String tel) {
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.executeUpdateFromQuery("customer.update_name",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setString(1, name);
+                            pstmt.setString(2, tel);
+                            pstmt.setInt(3, id);
+                        }
+                    });
+        } catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
 
     public int updateTotal(int id, int price) {
         try (DBPlug dbPlug = new DBPlug()) {
