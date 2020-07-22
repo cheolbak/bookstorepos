@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 
 import javax.swing.*;
@@ -110,6 +112,18 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 			}
 		});
 		userCheckbox = new JCheckBox("비회원 구매",true);
+		userCheckbox.setEnabled(false);
+		userCheckbox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				userNum.setText("0");
+				userName.setText("비회원");
+				userPhone.setText("0");
+				nowPoint.setText("0");
+				memberGrade.setText("비회원");
+
+			}
+		});
 
 		memberSearchList.addItem("전화번호");
 		memberSearchList.addItem("이름");
@@ -377,11 +391,13 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 	public void updateUserInfo(SellUserInfo info) {
 		// TODO: 유저 정보 갱신
 		userCheckbox.setSelected(false);
+		userCheckbox.setEnabled(true);
 		userNum.setText(String.valueOf(info.getUserNum()));
 		userName.setText(info.getUserName());
 		userPhone.setText(info.getUserPhoneNum());
 		nowPoint.setText(String.valueOf(info.getNowReserves()));
 		memberGrade.setText(info.getUserGrade());
+
 	}
 
 	@Override
