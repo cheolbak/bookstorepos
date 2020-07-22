@@ -12,7 +12,6 @@ import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BookInfoList extends JList<BookInfo> implements DataRegister<BookInfo> {
 
@@ -51,10 +50,14 @@ public class BookInfoList extends JList<BookInfo> implements DataRegister<BookIn
         updateUI();
     }
 
-    public List<? extends BookInfo> getDataList(Class<? extends BookInfo> type) {
-        return listModel.getBookInfoMap().values().stream()
-                .map(type::cast)
-                .collect(Collectors.toList());
+    public void clear() {
+        listModel.clear();
+        changeListListener.change(listModel.getBookInfoMap());
+        updateUI();
+    }
+
+    public List<BookInfo> getDataList() {
+        return new ArrayList<>(listModel.getBookInfoMap().values());
     }
 
     private static class BookInfoListCellRenderer implements ListCellRenderer<BookInfo> {
@@ -159,6 +162,9 @@ public class BookInfoList extends JList<BookInfo> implements DataRegister<BookIn
         }
 
         public void put(BookInfo info) {
+            if (bookInfoMap.containsKey(info.getIsbn())) {
+                return;
+            }
             isbnList.add(info.getIsbn());
             bookInfoMap.put(info.getIsbn(), info);
         }
@@ -166,6 +172,11 @@ public class BookInfoList extends JList<BookInfo> implements DataRegister<BookIn
         public void remove(String isbn) {
             isbnList.remove(isbn);
             bookInfoMap.remove(isbn);
+        }
+
+        public void clear() {
+            isbnList.clear();
+            bookInfoMap.clear();
         }
 
         @Override

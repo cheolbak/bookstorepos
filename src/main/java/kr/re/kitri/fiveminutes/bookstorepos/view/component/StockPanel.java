@@ -20,7 +20,7 @@ public class StockPanel extends JPanel implements ChangeBookInfoListener {
 
 	public StockPanel(){
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
-		stockListPanel = new ListPanel("입고", StockBookInfo.class);
+		stockListPanel = new ListPanel("입고");
 		stockService = new StockManagementService();
 
 		add(Box.createVerticalGlue());
@@ -43,8 +43,10 @@ public class StockPanel extends JPanel implements ChangeBookInfoListener {
 		stockListPanel.setBookInfoViewPanelReceiver(infoViewPanel);
 
 		stockListPanel.setAddButtonListener(infoList -> {
-			infoList.stream().filter(bookInfo -> bookInfo instanceof StockBookInfo)
+			infoList.stream()
+					.filter(bookInfo -> bookInfo instanceof StockBookInfo)
 					.forEach(bookInfo -> stockService.pushStock((StockBookInfo) bookInfo));
+			stockListPanel.clear();
 		});
 
 		rightPanel.add(searchPanel, BorderLayout.NORTH);
