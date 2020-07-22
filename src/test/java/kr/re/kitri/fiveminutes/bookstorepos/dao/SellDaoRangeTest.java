@@ -7,7 +7,7 @@ public class SellDaoRangeTest {
     @Test
     public void test() {
         SellDAO sellDAO = new SellDAO();
-        System.out.println(sellDAO.getChartRangeMapForMonth());
-        System.out.println(sellDAO.getChartRangeMapForWeek());
+        //System.out.println(sellDAO.getChartRangeMapForMonth());
+        //System.out.println(sellDAO.getChartRangeMapForWeek());
     }
 }
