@@ -45,6 +45,10 @@ public class SellBookInfo implements BookInfo {
     }
 
     public static SellBookInfo fromBookInfo(BookInfo info, int sellCount){
+        SellManagementService sellManagementService = new SellManagementService();
+        Book book = sellManagementService.searchBook(info.getIsbn());
+        int discountedPrice =(int)(book.getBookMSRP() - book.getBookMSRP()*(book.getBookDiscountRate()/100.0));
+        int savedPoint = (int)(book.getBookMSRP()*(book.getBookPointRate()/100.0));
         return SellBookInfo.builder()
                 .isbn(info.getIsbn())
                 .title(info.getTitle())
@@ -53,8 +57,8 @@ public class SellBookInfo implements BookInfo {
                 .releaseDate(info.getReleaseDate())
                 .bookCoverImage(info.getBookCoverImage())
                 .price(info.getPrice())
-                .sellPrice((int)(info.getPrice() * (90 / 100.0)))
-                .point((int)(info.getPrice()*(10 / 100.0)))
+                .sellPrice(discountedPrice)
+                .point(savedPoint)
                 .sellCount(sellCount)
                 .build();
     }
@@ -68,9 +72,11 @@ public class SellBookInfo implements BookInfo {
         BufferedImage image;
         int discountedPrice =(int)(book.getBookMSRP() - book.getBookMSRP()*(book.getBookDiscountRate()/100.0));
         int savedPoint = (int)(book.getBookMSRP()*(book.getBookPointRate()/100.0));
+
         try {
             image = BookCoverImageRequester.requestBookCoverImage(book.getBookISBN());
         }
+
         catch (IOException e) {
             if (log.isDebugEnabled()) {
                 e.printStackTrace();
