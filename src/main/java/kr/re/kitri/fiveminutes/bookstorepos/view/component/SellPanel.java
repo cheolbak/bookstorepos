@@ -5,7 +5,7 @@ import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
-import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchDialogFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerSearchDialogFrame;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -95,14 +95,14 @@ public class SellPanel extends JPanel{
 					System.out.println(userInfo);
 					Object[][] data =userManagementService.searchUserPhone(userInfo);
 
-					new UserSearchDialogFrame(data,SellPanel.this);
+					new CustomerSearchDialogFrame(data,SellPanel.this);
 				}
 				//이름으로 콤보 박스 해서 확인
 				else if(memberSearchnum==COMBO_NAME){
 					UserManagementService userManagementService =new UserManagementService();
 					String userInfo = userSearchTextField.getText();
 					Object[][] data=userManagementService.searchUserName(userInfo);
-					new UserSearchDialogFrame(data,SellPanel.this);
+					new CustomerSearchDialogFrame(data,SellPanel.this);
 				}
 
 			}
@@ -304,8 +304,8 @@ public class SellPanel extends JPanel{
 			author.setText(sellBookInfo.getAuthor());
 			publisher.setText(sellBookInfo.getPublisher());
 			isbn.setText(sellBookInfo.getIsbn());
-			originPrice.setText(Integer.toString(sellBookInfo.getPrice())+ "원");
-			sellPrice.setText(Integer.toString(sellBookInfo.getSellPrice())+ "원");
+			originPrice.setText(sellBookInfo.getPrice() + "원");
+			sellPrice.setText(sellBookInfo.getSellPrice() + "원");
 			point.setText(Integer.toString(sellBookInfo.getPoint()));
 			nowStock.setText(Integer.toString(sellBookInfo.getStock()));
 			bookImage.setIcon(imageIcon);

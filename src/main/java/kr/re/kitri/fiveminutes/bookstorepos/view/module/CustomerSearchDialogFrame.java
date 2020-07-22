@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 
-public class UserSearchDialogFrame extends JFrame {
+public class CustomerSearchDialogFrame extends JFrame {
 
 
     private final SellPanel sellPanel;
@@ -22,7 +22,7 @@ public class UserSearchDialogFrame extends JFrame {
     private Object[][] data;
 
 
-    public UserSearchDialogFrame(Object[][] data, SellPanel sellPanel) {
+    public CustomerSearchDialogFrame(Object[][] data, SellPanel sellPanel) {
         this.sellPanel = sellPanel;
         this.data=data;
         setTitle("회원검색");
@@ -40,11 +40,7 @@ public class UserSearchDialogFrame extends JFrame {
         DefaultTableModel dtm = new DefaultTableModel(data, column){
             @Override
             public boolean isCellEditable(int row, int column) {
-                if(row>=0 && column==0 ) {
-                    return true;
-                }else{
-                    return false;
-                }
+                return row >= 0 && column == 0;
             }
         };
 
