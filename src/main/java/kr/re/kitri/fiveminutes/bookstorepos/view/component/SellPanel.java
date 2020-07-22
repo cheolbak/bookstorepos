@@ -16,7 +16,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLOutput;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -137,7 +139,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 				userNum.setText("0");
 				userName.setText("비회원");
 				userPhone.setText("0");
-				nowPoint.setText("0");
+				nowPoint.setText("0 원");
 				memberGrade.setText("비회원");
 
 			}
@@ -178,7 +180,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		userNum = new JLabel("1");
 		userName = new JLabel("비회원");
 		userPhone = new JLabel("0");
-		nowPoint = new JLabel("0");
+		nowPoint = new JLabel("0 원");
 		memberGrade = new JLabel("비회원");
 
 
@@ -339,6 +341,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 
 			else {
 				updateBookInfo(sellBookInfo);
+
 			}
 		};
 
@@ -397,12 +400,14 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 
 	public void updateUserInfo(SellUserInfo info) {
 		// TODO: 유저 정보 갱신
+		NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
 		userCheckbox.setSelected(false);
 		userCheckbox.setEnabled(true);
 		userNum.setText(String.valueOf(info.getUserNum()));
 		userName.setText(info.getUserName());
 		userPhone.setText(info.getUserPhoneNum());
-		nowPoint.setText(String.valueOf(info.getNowReserves()));
+		nowPoint.setText(numFormat.format(info.getNowReserves())+"원");
+		//nowPoint.setText(String.valueOf(info.getNowReserves()));
 		memberGrade.setText(info.getUserGrade());
 	}
 
@@ -410,15 +415,17 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		Image img = sellBookInfo.getBookCoverImage();
 		Image resizeImage = img.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
 		ImageIcon imageIcon = new ImageIcon(resizeImage);
-
+		NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
 		System.out.println(sellBookInfo.getTitle());
 
 		title.setText(sellBookInfo.getTitle());
 		author.setText(sellBookInfo.getAuthor());
 		publisher.setText(sellBookInfo.getPublisher());
 		isbn.setText(sellBookInfo.getIsbn());
-		originPrice.setText(sellBookInfo.getPrice() + "원");
-		sellPrice.setText(sellBookInfo.getSellPrice() + "원");
+//		originPrice.setText(sellBookInfo.getPrice() + "원");
+//		sellPrice.setText(sellBookInfo.getSellPrice() + "원");
+		originPrice.setText(numFormat.format(sellBookInfo.getPrice()) + "원");
+		sellPrice.setText(numFormat.format(sellBookInfo.getPrice()) + "원");
 		point.setText(Integer.toString(sellBookInfo.getPoint()));
 		nowStock.setText(Integer.toString(sellBookInfo.getStock()));
 		bookImage.setIcon(imageIcon);

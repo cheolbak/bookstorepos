@@ -184,6 +184,9 @@ public class SellListPanel extends JPanel {
                     totalPriceTextField.setText(numFormat.format(sellPrice - usingPoint));
                     userManagementService.updateCustomerInfo(userId, sellPrice, usingPoint, savedPoint);
                     bookInfoList.removeAll();
+                    JOptionPane.showMessageDialog(this, "판매 완료\n 판매 금액: "+totalPriceTextField.getText(), "판매완료", JOptionPane.QUESTION_MESSAGE);
+                    usingPointTextField.setText("0");
+                    totalPriceTextField.setText("0");
                 }
             } catch (ParseException parseException) {
                 if (log.isDebugEnabled())
