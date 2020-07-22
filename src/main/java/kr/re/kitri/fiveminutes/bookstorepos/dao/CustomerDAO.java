@@ -165,6 +165,25 @@ public class CustomerDAO {
         return Collections.emptyList();
     }
 
+    public int selectFindMaxID(){
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.getMappedObjectFromExecuteQuery("customer.selectFindMaxID", pstmt -> {},
+                    new DBPlug.MappingResultSet<Integer>() {
+                        @Override
+                        public Integer mapping(ResultSet resultSet) throws SQLException {
+                            resultSet.next();
+                            return resultSet.getInt(1);
+                        }
+                    });
+        }
+        catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
+
     public int insertCustomer(Customer customer) {
         try (DBPlug dbPlug = new DBPlug()) {
             return dbPlug.executeUpdateFromQuery("customer.insert",

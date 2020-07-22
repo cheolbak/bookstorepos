@@ -109,6 +109,11 @@ query: >
                            pos_customer_tel)
   VALUES(?,?)
 ---
+tag: customer.selectFindMaxID
+query: >
+  SELECT MAX(pos_customer_id)
+  FROM pos_customer;
+---
 tag: customer.update_point
 query: >
   UPDATE pos_customer
