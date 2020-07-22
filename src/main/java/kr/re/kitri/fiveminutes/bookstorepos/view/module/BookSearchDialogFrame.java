@@ -102,7 +102,7 @@ public class BookSearchDialogFrame extends JFrame implements BookInfoReceiver {
         paginationPanel.updateUI();
         infoListPanel.updateUI();
         if (meta.getTotalCount() == 0) {
-            JOptionPane.showMessageDialog(this, "검색된 내용이 없습니다.", "오류", JOptionPane.WARNING_MESSAGE);
+
         }
     }
 
