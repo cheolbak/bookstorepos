@@ -1,24 +1,18 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
-import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
 import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
-import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
-import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchDialogFrame;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -101,14 +95,14 @@ public class SellPanel extends JPanel{
 					System.out.println(userInfo);
 					Object[][] data =userManagementService.searchUserPhone(userInfo);
 
-					new UserSearchFrame(data,SellPanel.this);
+					new UserSearchDialogFrame(data,SellPanel.this);
 				}
 				//이름으로 콤보 박스 해서 확인
 				else if(memberSearchnum==COMBO_NAME){
 					UserManagementService userManagementService =new UserManagementService();
 					String userInfo = userSearchTextField.getText();
 					Object[][] data=userManagementService.searchUserName(userInfo);
-					new UserSearchFrame(data,SellPanel.this);
+					new UserSearchDialogFrame(data,SellPanel.this);
 				}
 
 			}

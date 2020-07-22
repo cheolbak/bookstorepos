@@ -13,17 +13,16 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 
-public class UserSearchFrame extends JFrame {
+public class UserSearchDialogFrame extends JFrame {
 
 
     private final SellPanel sellPanel;
     private JPanel userTablePanel;
     private JTable table;
-    int row;
     private Object[][] data;
 
 
-    public UserSearchFrame(Object[][] data,SellPanel sellPanel) {
+    public UserSearchDialogFrame(Object[][] data, SellPanel sellPanel) {
         this.sellPanel = sellPanel;
         this.data=data;
         setTitle("회원검색");
@@ -31,7 +30,7 @@ public class UserSearchFrame extends JFrame {
         add(userTablePanel);
         setSize(1300,900);
         setVisible(true);
-        setDefaultCloseOperation(UserSearchFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     JPanel createUserPanel() {
@@ -85,13 +84,6 @@ public class UserSearchFrame extends JFrame {
             }
         };
 
-        //테이블에 마우스클릭으로 로우 값 얻기
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                row=table.getSelectedRow();
-            }
-        });
         center.setHorizontalAlignment(JLabel.CENTER);
         right.setHorizontalAlignment(JLabel.RIGHT);
         boxRender.setHorizontalAlignment(JLabel.CENTER);
@@ -126,7 +118,8 @@ public class UserSearchFrame extends JFrame {
         confirmBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(table.getValueAt(row,0).equals(true)) {
+                int row = table.getSelectedRow();
+                if (row != -1 && table.getValueAt(row,0).equals(true)) {
                     sellPanel.updateUserInfo(
                             SellUserInfo.builder()
                                 .userNum(Integer.parseInt(table.getValueAt(row,1).toString()))
@@ -135,11 +128,8 @@ public class UserSearchFrame extends JFrame {
                                 .nowReserves(Integer.parseInt(table.getValueAt(row, 4).toString()))
                                 .userGrade(table.getValueAt(row, 5).toString())
                                 .build());
-                    dispose();
                 }
-                else{
-                    dispose();
-                }
+                dispose();
 
             }
         });
