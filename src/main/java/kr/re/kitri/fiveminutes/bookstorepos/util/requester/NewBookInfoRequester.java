@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -63,7 +64,16 @@ public class NewBookInfoRequester {
                                         : requestWebNewBookHtmlAndSaveTempFile(year, month, week, categoryCode, sortCode, file);
             Document doc = Jsoup.parse(html);
             if (page > 0) {
-                int totalCount = Integer.parseInt(doc.select("tr").last().select("td:eq(0)").get(0).text());
+                int totalCount;
+                try {
+                    totalCount = Integer.parseInt(doc.select("tr").last().select("td:eq(0)").get(0).text());
+                }
+                catch (NumberFormatException e) {
+                    return SearchMeta.builder()
+                            .totalCount(0)
+                            .bookInfoList(Collections.emptyList())
+                            .build();
+                }
                 metaBuilder.totalCount(totalCount);
                 String selector = pagingSelectHtmlTag(totalCount, page);
                 Elements rowList = doc.select(selector);
@@ -84,7 +94,7 @@ public class NewBookInfoRequester {
                 }
             }
         }
-        catch (IOException | ParseException | NullPointerException e) {
+        catch (IOException | ParseException | RuntimeException e) {
             if (log.isDebugEnabled()) {
                 e.printStackTrace();
             }
