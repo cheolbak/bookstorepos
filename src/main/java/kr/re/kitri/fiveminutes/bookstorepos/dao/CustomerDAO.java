@@ -171,9 +171,9 @@ public class CustomerDAO {
                     new DBPlug.InjectPreparedStatement() {
                         @Override
                         public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, customer.getCustomerId());
-                            pstmt.setString(2, customer.getCustomerName());
-                            pstmt.setString(3, customer.getCustomerTel());
+                           // pstmt.setInt(1, customer.getCustomerId());
+                            pstmt.setString(1, customer.getCustomerName());
+                            pstmt.setString(2, customer.getCustomerTel());
                         }
                     });
         } catch (SQLException e) {

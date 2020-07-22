@@ -104,10 +104,10 @@ query: >
 ---
 tag: customer.insert
 query: >
-  INSERT INTO pos_customer(pos_customer_id,
+  INSERT INTO pos_customer(
                            pos_customer_name,
                            pos_customer_tel)
-  VALUES(?,?,?)
+  VALUES(?,?)
 ---
 tag: customer.update_point
 query: >
