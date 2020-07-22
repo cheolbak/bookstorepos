@@ -8,7 +8,7 @@ import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BarcodeImageReadDialogFrame;
-import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerSearchDialogFrame;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -103,14 +103,14 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 					System.out.println(userInfo);
 					Object[][] data =userManagementService.searchUserPhone(userInfo);
 
-					new UserSearchFrame(data,SellPanel.this);
+					new CustomerSearchDialogFrame(data,SellPanel.this);
 				}
 				//이름으로 콤보 박스 해서 확인
 				else if(memberSearchnum==COMBO_NAME){
 					UserManagementService userManagementService =new UserManagementService();
 					String userInfo = userSearchTextField.getText();
 					Object[][] data=userManagementService.searchUserName(userInfo);
-					new UserSearchFrame(data,SellPanel.this);
+					new CustomerSearchDialogFrame(data,SellPanel.this);
 				}
 
 			}
