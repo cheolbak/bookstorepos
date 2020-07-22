@@ -104,10 +104,15 @@ query: >
 ---
 tag: customer.insert
 query: >
-  INSERT INTO pos_customer(pos_customer_id,
+  INSERT INTO pos_customer(
                            pos_customer_name,
                            pos_customer_tel)
-  VALUES(?,?,?)
+  VALUES(?,?)
+---
+tag: customer.selectFindMaxID
+query: >
+  SELECT MAX(pos_customer_id)
+  FROM pos_customer;
 ---
 tag: customer.insert_add
 query: >
@@ -163,6 +168,13 @@ tag: sell.update_usedPoint
 query: >
   UPDATE pos_sell
   SET pos_sell_used_point = pos_sell_used_point + ?
+  WHERE pos_sell_id = ?
+---
+tag: sell.selectSell
+query: >
+  SELECT pos_sell_id, pos_book_isbn, pos_customer_id, pos_sell_count,
+  pos_sell_date
+  FROM pos_sell
   WHERE pos_sell_id = ?
 ---
 tag: stock.insert

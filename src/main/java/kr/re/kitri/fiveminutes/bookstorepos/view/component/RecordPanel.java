@@ -1,56 +1,107 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerManagementFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class RecordPanel extends JPanel {
-    JPanel chartPanel;
+import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_MONTHS;
+import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_WEEKS;
+
+public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoReceiver
+{
     JPanel chartSetPanel;
+    JPanel sellChartPanel;
+    JPanel sellChartPanel2;
+    SellDataSet sellDataSet;
+    JTextField inputBookname;
+    JTextField inputMemberName;
 
     public RecordPanel(){
         setLayout(null);
         setSize(1600,900);
 
-        chartPanel=createChartPanel();
+        sellChartPanel=createSellChartPanel(SIX_WEEKS);
+        sellChartPanel2=createSellChartPanel(SIX_MONTHS);
         chartSetPanel=createChartSetPanel();
+        sellChartPanel2.setVisible(false);
 
-        add(chartPanel);
         add(chartSetPanel);
+        add(sellChartPanel);
+        add(sellChartPanel2);
 
-        chartPanel.setLocation(10,30);
+        sellChartPanel.setLocation(10,30);
+        sellChartPanel2.setLocation(10,30);
         chartSetPanel.setLocation(1220,30);
+
+        setVisible(true);
     }
 
-    JPanel createChartPanel(){
-        JPanel chart = new JPanel();
+    JPanel createSellChartPanel(SellChartSection section){
+        sellDataSet = new SellDataSet(section);
+        JPanel tempChartPanel = new SellChartPanel(sellDataSet);
+        tempChartPanel.setSize(1200, 700);
 
-        chart.setLayout(null);
-        chart.setSize(1200,750);
-        chart.setBackground(Color.cyan);
-
-        return chart;
+        return tempChartPanel;
     }
 
     JPanel createChartSetPanel(){
-        JPanel chartSetPanel = new JPanel();
+        chartSetPanel = new JPanel();
         TitledBorder tBorder= new TitledBorder(new LineBorder(Color.BLACK),"조건");
 
         JLabel period = new JLabel("기간");
         JLabel bookName = new JLabel("책");
         JLabel memberName = new JLabel("회원");
 
-        JTextField inputBookname = new JTextField();
-        JTextField inputMemberName = new JTextField();
+        inputBookname = new JTextField();
+        inputMemberName = new JTextField();
 
         String[] periodArray = {"최근 6주", "최근 6달"};
         JComboBox periodComboBox = new JComboBox(periodArray);
+        periodComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String cb = ((JComboBox) e.getSource()).getSelectedItem().toString();
+                if(cb.equals("최근 6달")){
+                    sellChartPanel.setVisible(false);
+                    sellChartPanel2.setVisible(true);
+                } else{
+                    sellChartPanel.setVisible(true);
+                    sellChartPanel2.setVisible(false);
+                }
+            }
+        });
 
         JButton completeBtn = new JButton("확인");
-        JButton bookSearchBtn = new JButton("검색");
-        JButton memberSearchBtn = new JButton("검색");
+        completeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+        }
+    });
+    JButton bookSearchBtn = new JButton("검색");
+        bookSearchBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new BookSearchDialogFrame(RecordPanel.this);
+            }
+        });
+
+    JButton memberSearchBtn = new JButton("검색");
+        memberSearchBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CustomerManagementFrame(RecordPanel.this);
+            }
+        });
 
         chartSetPanel.setSize(350,750);
         chartSetPanel.setLayout(null);
@@ -98,5 +149,15 @@ public class RecordPanel extends JPanel {
         completeBtn.setLocation(150,550);
 
         return chartSetPanel;
+    }
+
+    @Override
+    public void sendBookInfoToReceiver(String isbn) {
+        RecordPanel.this.inputBookname.setText(isbn);
+    }
+
+    @Override
+    public void sendIdInfoToReceiver(String id) {
+        RecordPanel.this.inputMemberName.setText(id);
     }
 }

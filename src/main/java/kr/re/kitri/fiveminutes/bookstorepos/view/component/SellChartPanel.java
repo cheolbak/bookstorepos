@@ -1,9 +1,13 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
+import lombok.Data;
+import lombok.Setter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -24,11 +28,13 @@ public class SellChartPanel extends JPanel {
         chartPanel.setBackground(Color.WHITE);
         chartPanel.setMaximumDrawWidth(500);
         chartPanel.setMaximumDrawHeight(500);
+        chartPanel.setVisible(true);
+        chartPanel.setLayout(null);
         add(chartPanel);
     }
 
     private JFreeChart createChart() {
-        return ChartFactory.createBarChart(
+        JFreeChart chart = ChartFactory.createBarChart(
                 "최근 " + sellDataSet.getSection() + "간 판매량",
                 "최근 " + sellDataSet.getSection(),
                 "판매량",
@@ -36,6 +42,13 @@ public class SellChartPanel extends JPanel {
                 PlotOrientation.VERTICAL,
                 false, true, true
         );
+        CategoryPlot p = chart.getCategoryPlot();
+        p.getDomainAxis().setLabelFont(new Font("돋움", Font.BOLD, 13));
+        p.getDomainAxis().setTickLabelFont(new Font("돋움", Font.BOLD, 8));
+        p.getRangeAxis().setLabelFont(new Font("돋움", Font.BOLD, 8));
+        p.getRangeAxis().setTickLabelFont(new Font("돋움", Font.BOLD, 8));
+        chart.getTitle().setFont(new Font("돋움", Font.BOLD, 15));
+        return chart;
     }
 
     private CategoryDataset createDataset() {
