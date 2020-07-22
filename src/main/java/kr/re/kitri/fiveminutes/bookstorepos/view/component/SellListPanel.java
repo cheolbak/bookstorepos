@@ -1,5 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
+import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
 import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
@@ -16,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,7 +27,8 @@ public class SellListPanel extends JPanel {
     private final SellBookInfoList bookInfoList;
     private final String buttonText;
     private final Class<? extends BookInfo> modelType;
-    JLabel userNum;
+    SellPanel sellPanel;
+
 
     SellManagementService sellManagementService;
     UserManagementService userManagementService;
@@ -36,13 +39,14 @@ public class SellListPanel extends JPanel {
     @Setter
     private AddButtonListener addButtonListener = infoList -> {};
 
-    public SellListPanel(String buttonText, Class<? extends BookInfo> modelType, JLabel userNum) {
+    public SellListPanel(String buttonText, Class<? extends BookInfo> modelType, SellPanel sellPanel) {
         super(new BorderLayout());
         this.buttonText = buttonText;
         this.modelType = modelType;
         this.bookInfoList = createBookInfoList();
+        this.sellPanel = sellPanel;
 
-        this.userNum=userNum;
+
         sellManagementService = new SellManagementService();
         userManagementService = new UserManagementService();
 
@@ -86,8 +90,13 @@ public class SellListPanel extends JPanel {
 
     private SellBookInfoList createBookInfoList() {
         SellBookInfoList list = new SellBookInfoList();
+
+
         list.addListSelectionListener(e -> {
             BookInfo value = list.getSelectedValue();
+            Book book = sellManagementService.searchBook(value.getIsbn());
+            SellBookInfo sellBookInfo = SellBookInfo.fromBookDomain(book);
+            sellPanel.updateBookInfo(sellBookInfo);
             bookInfoViewPanelReceiver.sendBookInfoToViewPanel(value);
         });
         return list;
@@ -125,7 +134,6 @@ public class SellListPanel extends JPanel {
 
             NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
             sellPriceTextField.setText(numFormat.format(sum));
-
             bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
         });
 
@@ -135,38 +143,50 @@ public class SellListPanel extends JPanel {
         });
 
         setAddButtonListener(infoList -> {
+            NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
+            List<Sell> sellList = new ArrayList<>();
             double count = infoList.size()*1.0;
             int usedPoint = Integer.parseInt(usingPointTextField.getText());
-            int savedPoint = 0;
-            for (BookInfo bookInfo : infoList) {
-                if (bookInfo instanceof SellBookInfo) {
-                    System.out.println(bookInfo.getTitle());
-                    savedPoint = savedPoint+((SellBookInfo) bookInfo).getPoint();
-                    Sell s = Sell.builder()
-                            .bookISBN(bookInfo.getIsbn())
-                            .customerId(Integer.parseInt(userNum.getText()))
-                            .sellCount(((SellBookInfo) bookInfo).getSellCount())
-                            .sellPrice(((SellBookInfo) bookInfo).getSellPrice())
-                            .usedPoint((int)(usedPoint/count))
-                            .build();
-                    sellManagementService.pushSellInfo(s);
-                    sellManagementService.subStock(bookInfo);
-                }
-            }
-            NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
-            int point = Integer.parseInt(usingPointTextField.getText());
+            int userId = Integer.parseInt(sellPanel.userNum.getText());
             int sellPrice;
-            try {
-                sellPrice = numFormat.parse(sellPriceTextField.getText()).intValue();
-                totalPriceTextField.setText(numFormat.format(sellPrice-point));
-                int userId = Integer.parseInt(userNum.getText());
-                userManagementService.updateCustomerInfo(userId,sellPrice,point,savedPoint);
 
+            try {
+               sellPrice  = numFormat.parse(sellPriceTextField.getText()).intValue();
+
+                //고객 적립금 <> 사용 적립금 비교
+                if(usedPoint < userManagementService.getCustomerPoint(userId)){
+                    JOptionPane.showMessageDialog(this, "보유 적립금이 부족합니다.", "오류", JOptionPane.WARNING_MESSAGE);
+                }
+                //구매 가격 <> 사용 적립금 비교
+                else if(usedPoint > sellPrice){
+                    JOptionPane.showMessageDialog(this, "사용 적립금이 구입 금액을 초과했습니다.", "오류", JOptionPane.WARNING_MESSAGE);
+                }
+                else {
+                    int savedPoint = 0;
+                    for (BookInfo bookInfo : infoList) {
+                        if (bookInfo instanceof SellBookInfo) {
+                            System.out.println(bookInfo.getTitle());
+                            savedPoint = savedPoint + ((SellBookInfo) bookInfo).getPoint();
+                            Sell s = Sell.builder()
+                                    .bookISBN(bookInfo.getIsbn())
+                                    .customerId(userId)
+                                    .sellCount(((SellBookInfo) bookInfo).getSellCount())
+                                    .sellPrice(((SellBookInfo) bookInfo).getSellPrice())
+                                    .usedPoint((int) (usedPoint / count))
+                                    .build();
+                            sellList.add(s);
+                            sellManagementService.pushSellInfo(s);
+                            sellManagementService.subStock(bookInfo);
+                        }
+                    }
+                    totalPriceTextField.setText(numFormat.format(sellPrice - usedPoint));
+                    userManagementService.updateCustomerInfo(userId, sellPrice, usedPoint, savedPoint);
+                    bookInfoList.removeAll();
+                }
             } catch (ParseException parseException) {
-                if(log.isDebugEnabled())
+                if (log.isDebugEnabled())
                     parseException.printStackTrace();
             }
-            bookInfoList.removeAll();
         });
 
         panel.add(new JLabel("판매 금액: "), createAddStockStandardConstraints(1));

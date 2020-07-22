@@ -5,6 +5,7 @@ import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.BarcodeImageReadDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerSearchDialogFrame;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLOutput;
 import java.util.List;
 
 import javax.swing.*;
@@ -41,24 +43,42 @@ public class SellPanel extends JPanel{
 	public JLabel memberGrade;
 	int memberSearchnum=0;
 
+	public JLabel title;
+	public JLabel author;
+	public JLabel publisher;
+	public JLabel isbn;
+	public JLabel originPrice;
+	public JLabel sellPrice;
+	public JLabel point;
+	public JLabel nowStock;
+	public JLabel bookImage;
+
+	JTextField inputIsbnField;
+
+	@Setter
+	BookInfoReceiver bookInfoReceiver;
+
 	public SellPanel() {
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
 
+		JLabel title = new JLabel(" ");
+		JLabel author = new JLabel();
+		JLabel publisher = new JLabel();
+		JLabel isbn = new JLabel();
+		JLabel originPrice = new JLabel();
+		JLabel sellPrice = new JLabel();
+		JLabel point = new JLabel();
+		JLabel nowStock = new JLabel();
+		JLabel bookImage = new JLabel();
+
 		userInfoPanel = createMemberPanel();
 		bookInfoPanel = createBookInfoPanel();
-		bookListPanel = new SellListPanel("판매", SellBookInfo.class,userNum);
+		bookListPanel = new SellListPanel("판매", SellBookInfo.class,this);
 
 		add(bookListPanel);
 		add(bookInfoPanel);
 		add(userInfoPanel);
-		/*setLayout(null);
-		setSize(1600,900);
-		userInfoPanel = createMemberPanel();
 
-		add(userInfoPanel);
-		userInfoPanel.setLocation(1060,0);
-
-		 */
 	}
 
 	JPanel createMemberPanel(){
@@ -223,7 +243,7 @@ public class SellPanel extends JPanel{
 
 	JPanel createBookInfoPanel(){
 
-		BookInfoReceiver bookInfoReceiver = isbn -> {
+		bookInfoReceiver = isbn -> {
 			bookListPanel.pushData(SellBookInfo.fromBookInfo(BookInfoSearchRequester.requestBookSearchScopeISBN(isbn)));
 		};
 
@@ -238,9 +258,11 @@ public class SellPanel extends JPanel{
 		searchIsbnPanel.setLocation(30,30);
 
 		JLabel isbnLabel = new JLabel("ISBN: ");
-		JTextField inputIsbnField = new JTextField();
+		inputIsbnField = new JTextField();
 		JButton isbnAddBtn = new JButton("추가");
 		JButton imageCognitionBtn = new JButton("사진 인식");
+
+		imageCognitionBtn.addActionListener(e -> new BarcodeImageReadDialogFrame(bookInfoReceiver));
 
 		isbnLabel.setSize(45,20);
 		isbnLabel.setLocation(15,30);
@@ -278,7 +300,18 @@ public class SellPanel extends JPanel{
 		JLabel nowStockLabel = new JLabel("현재 재고량:");
 
 		//책정보 value 레이블
-		JLabel title = new JLabel();
+
+		title = new JLabel("");
+		author = new JLabel();
+		publisher = new JLabel();
+		isbn = new JLabel();
+		originPrice = new JLabel();
+		sellPrice = new JLabel();
+		point = new JLabel();
+		nowStock = new JLabel();
+		bookImage = new JLabel();
+		/*
+		JLabel title = new JLabel(" ");
 		JLabel author = new JLabel();
 		JLabel publisher = new JLabel();
 		JLabel isbn = new JLabel();
@@ -287,6 +320,7 @@ public class SellPanel extends JPanel{
 		JLabel point = new JLabel();
 		JLabel nowStock = new JLabel();
 		JLabel bookImage = new JLabel();
+		*/
 
 		ActionListener listener = e -> {
 			if (!inputIsbnField.getText().matches("^97[89][0-9]{10}$")) {
@@ -295,22 +329,30 @@ public class SellPanel extends JPanel{
 			Book book = sellService.searchBook(inputIsbnField.getText());
 			SellBookInfo sellBookInfo = SellBookInfo.fromBookDomain(book);
 
+			if(sellBookInfo.getIsbn().equals("ERROR")||sellBookInfo.getStock()==0){
+				JOptionPane.showMessageDialog(this, "해당 책이 재고에 존재하지 않습니다.", "오류", JOptionPane.WARNING_MESSAGE);
+			}
 
-			Image img = sellBookInfo.getBookCoverImage();
-			Image resizeImage = img.getScaledInstance(200,300,Image.SCALE_SMOOTH);
-			ImageIcon imageIcon = new ImageIcon(resizeImage);
+			else {
+				/*Image img = sellBookInfo.getBookCoverImage();
+				Image resizeImage = img.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
+				ImageIcon imageIcon = new ImageIcon(resizeImage);
 
-			title.setText(sellBookInfo.getTitle());
-			author.setText(sellBookInfo.getAuthor());
-			publisher.setText(sellBookInfo.getPublisher());
-			isbn.setText(sellBookInfo.getIsbn());
-			originPrice.setText(sellBookInfo.getPrice() + "원");
-			sellPrice.setText(sellBookInfo.getSellPrice() + "원");
-			point.setText(Integer.toString(sellBookInfo.getPoint()));
-			nowStock.setText(Integer.toString(sellBookInfo.getStock()));
-			bookImage.setIcon(imageIcon);
-			bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
-			inputIsbnField.setText("");
+				title.setText(sellBookInfo.getTitle());
+				author.setText(sellBookInfo.getAuthor());
+				publisher.setText(sellBookInfo.getPublisher());
+				isbn.setText(sellBookInfo.getIsbn());
+				originPrice.setText(sellBookInfo.getPrice() + "원");
+				sellPrice.setText(sellBookInfo.getSellPrice() + "원");
+				point.setText(Integer.toString(sellBookInfo.getPoint()));
+				nowStock.setText(Integer.toString(sellBookInfo.getStock()));
+				bookImage.setIcon(imageIcon);
+				bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
+				inputIsbnField.setText("");*/
+				//System.out.println(sellBookInfo.getTitle());
+				//title.getText();
+				updateBookInfo(sellBookInfo);
+			}
 		};
 
 		inputIsbnField.addActionListener(listener);
@@ -374,8 +416,26 @@ public class SellPanel extends JPanel{
 		userPhone.setText(info.getUserPhoneNum());
 		nowPoint.setText(String.valueOf(info.getNowReserves()));
 		memberGrade.setText(info.getUserGrade());
+	}
 
+	public void updateBookInfo(SellBookInfo sellBookInfo){
+		Image img = sellBookInfo.getBookCoverImage();
+		Image resizeImage = img.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
+		ImageIcon imageIcon = new ImageIcon(resizeImage);
 
+		System.out.println(sellBookInfo.getTitle());
+
+		title.setText(sellBookInfo.getTitle());
+		author.setText(sellBookInfo.getAuthor());
+		publisher.setText(sellBookInfo.getPublisher());
+		isbn.setText(sellBookInfo.getIsbn());
+		originPrice.setText(sellBookInfo.getPrice() + "원");
+		sellPrice.setText(sellBookInfo.getSellPrice() + "원");
+		point.setText(Integer.toString(sellBookInfo.getPoint()));
+		nowStock.setText(Integer.toString(sellBookInfo.getStock()));
+		bookImage.setIcon(imageIcon);
+		bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
+		inputIsbnField.setText("");
 	}
 }
 

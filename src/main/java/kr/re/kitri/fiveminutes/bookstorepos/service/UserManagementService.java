@@ -48,6 +48,11 @@ public class UserManagementService {
         return pointResult == 1 && totalResult==1;
     }
 
+    public int getCustomerPoint(int num){
+        Customer customer = customerDAO.selectId(num);
+        return customer.getCustomerPoint();
+    }
+
     public void deleteCustomer(int id) {
         customerDAO.deleteCustomer(id);
     }

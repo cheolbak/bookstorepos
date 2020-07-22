@@ -20,8 +20,6 @@ public class SellManagementService {
     public Book searchBook(String isbn){
         Book book = bookDAO.selectOne(isbn);
 
-        //BookInfo dialogBook = BookInfoSearchRequester.requestBookSearchScopeISBN(isbn);
-        //book = Book.fromViewBookInfo(dialogBook);
         return book;
     }
 
