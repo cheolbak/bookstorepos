@@ -7,6 +7,7 @@ import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.BarcodeImageReadDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 @Slf4j
-public class SellPanel extends JPanel{
+public class SellPanel extends JPanel implements BookInfoReceiver {
 
 	private static final int COMBO_PHONE = 0;
 	private static final int COMBO_NAME = 1;
@@ -46,6 +47,7 @@ public class SellPanel extends JPanel{
 	public JLabel nowPoint;
 	public JLabel memberGrade;
 	int memberSearchnum=0;
+	JTextField inputIsbnField;
 
 	public SellPanel() {
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
@@ -244,9 +246,15 @@ public class SellPanel extends JPanel{
 		searchIsbnPanel.setLocation(30,30);
 
 		JLabel isbnLabel = new JLabel("ISBN: ");
-		JTextField inputIsbnField = new JTextField();
+		inputIsbnField = new JTextField();
 		JButton isbnAddBtn = new JButton("추가");
 		JButton imageCognitionBtn = new JButton("사진 인식");
+		imageCognitionBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new BarcodeImageReadDialogFrame(SellPanel.this);
+			}
+		});
 
 		isbnLabel.setSize(45,20);
 		isbnLabel.setLocation(15,30);
@@ -380,8 +388,11 @@ public class SellPanel extends JPanel{
 		userPhone.setText(info.getUserPhoneNum());
 		nowPoint.setText(String.valueOf(info.getNowReserves()));
 		memberGrade.setText(info.getUserGrade());
+	}
 
-
+	@Override
+	public void sendBookInfoToReceiver(String isbn) {
+		SellPanel.this.inputIsbnField.setText(isbn);
 	}
 }
 
