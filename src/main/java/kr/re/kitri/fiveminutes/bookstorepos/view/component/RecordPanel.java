@@ -3,6 +3,8 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellDataSet;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerManagementFrame;
+import kr.re.kitri.fiveminutes.bookstorepos.view.module.UserSearchFrame;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -14,12 +16,14 @@ import java.awt.event.ActionListener;
 import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_MONTHS;
 import static kr.re.kitri.fiveminutes.bookstorepos.view.model.SellChartSection.SIX_WEEKS;
 
-public class RecordPanel extends JPanel implements BookInfoReceiver {
+public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoReceiver
+{
     JPanel chartSetPanel;
     JPanel sellChartPanel;
     JPanel sellChartPanel2;
     SellDataSet sellDataSet;
     JTextField inputBookname;
+    JTextField inputMemberName;
 
     public RecordPanel(){
         setLayout(null);
@@ -58,7 +62,7 @@ public class RecordPanel extends JPanel implements BookInfoReceiver {
         JLabel memberName = new JLabel("회원");
 
         inputBookname = new JTextField();
-        JTextField inputMemberName = new JTextField();
+        inputMemberName = new JTextField();
 
         String[] periodArray = {"최근 6주", "최근 6달"};
         JComboBox periodComboBox = new JComboBox(periodArray);
@@ -95,7 +99,7 @@ public class RecordPanel extends JPanel implements BookInfoReceiver {
         memberSearchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // new UserSearchFrame();
+                new CustomerManagementFrame(RecordPanel.this);
             }
         });
 
@@ -150,5 +154,10 @@ public class RecordPanel extends JPanel implements BookInfoReceiver {
     @Override
     public void sendBookInfoToReceiver(String isbn) {
         RecordPanel.this.inputBookname.setText(isbn);
+    }
+
+    @Override
+    public void sendIdInfoToReceiver(String id) {
+        RecordPanel.this.inputMemberName.setText(id);
     }
 }
