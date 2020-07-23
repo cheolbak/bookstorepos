@@ -77,6 +77,7 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         });
 
         JCheckBox checkBookName = new JCheckBox("책 검색");
+        checkBookName.setSelected(true);
         checkBookName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,6 +94,8 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         });
 
         JCheckBox checkMemberName = new JCheckBox("회원 검색");
+        memberSearchBtn.setEnabled(false);
+        inputMemberName.setEnabled(false);
         checkMemberName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
