@@ -25,7 +25,7 @@ public class SellChartService {
 
         for (Map.Entry<String, List<LocalDateTime>> rangeEntry : rangeMap.entrySet()) {
             int countData;
-            if(!isbn.equals("")){
+            if(!isbn.isBlank()){
                 countData = sellDAO.selectDateRangeSumScopeISBN(isbn, rangeEntry.getValue().get(0), rangeEntry.getValue().get(1));
             }
             else if(customerId > 0){
