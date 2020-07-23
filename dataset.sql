@@ -51,9 +51,9 @@ commit;
 -- 책 만들기
 
 insert into pos_book(pos_book_isbn, POS_BOOK_TITLE, POS_BOOK_AUTHOR, POS_BOOK_PUBLISHER,
-POS_BOOK_RELEASE_DATE) values('9788968481475','이것이 자바다','신용권','한빛미디어','2015-01-15');
+POS_BOOK_RELEASE_DATE,pos_book_msrp,pos_book_discount_rate,pos_book_point_rate) values('9788968481475','이것이 자바다','신용권','한빛미디어','2015-01-15',30000,10,5);
 insert into pos_book(pos_book_isbn, POS_BOOK_TITLE, POS_BOOK_AUTHOR, POS_BOOK_PUBLISHER,
-POS_BOOK_RELEASE_DATE) values('9791162241875','혼자 공부하는 자바','신용권','한빛미디어','2019-06-10');
+POS_BOOK_RELEASE_DATE,pos_book_msrp,pos_book_discount_rate,pos_book_point_rate) values('9791162241875','혼자 공부하는 자바','신용권','한빛미디어','2019-06-10',24000,10,5);
 commit;
 
 -- 사람 만들기(32명)
