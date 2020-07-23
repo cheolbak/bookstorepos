@@ -22,9 +22,14 @@ public class StockManagementService {
         if(book.getBookISBN().equals("ERROR")){
             BookInfo dialogBook = BookInfoSearchRequester.requestBookSearchScopeISBN(isbn);
             book = Book.fromViewBookInfo(dialogBook);
-            bookDAO.insertBook(book);
+            int result = bookDAO.insertBook(book);
+            log.debug("stockService.ifSelectElseThenSearchBook() result: {}", result == 1);
         }
         return StockBookInfo.fromBookDomain(book);
+    }
+
+    public void updateDiscountAndPointRate(StockBookInfo info) {
+        bookDAO.updateDiscountAndPointRate(info.getIsbn(), info.getSalePercentPoint(), info.getPointSavePercentPoint());
     }
 
     public void pushStock(StockBookInfo stockBookInfo) {

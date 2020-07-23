@@ -48,6 +48,13 @@ query: >
   SET pos_book_stock = pos_book_stock - ?
   WHERE pos_book_isbn = ?
 ---
+tag: book.update_discount_and_point_rate
+query: >
+  UPDATE pos_book
+  SET pos_book_discount_rate = ?,
+      pos_book_point_rate = ?
+  WHERE pos_book_isbn = ?
+---
 tag: book.select_author
 query: >
   SELECT pos_book_title, pos_book_author, pos_book_publisher,
