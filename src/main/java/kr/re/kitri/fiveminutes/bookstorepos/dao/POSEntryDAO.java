@@ -13,24 +13,6 @@ import java.time.LocalDateTime;
 @Slf4j
 public class POSEntryDAO {
 
-    public int insertPassword(String password) {
-        try (DBPlug dbPlug = new DBPlug()) {
-            return dbPlug.executeUpdateFromQuery("pos_entry.insert_password",
-                    new DBPlug.InjectPreparedStatement() {
-                        @Override
-                        public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setString(1, BCrypt.hashpw(password, BCrypt.gensalt()));
-                        }
-                    });
-        }
-        catch (SQLException e) {
-            if (log.isDebugEnabled()) {
-                e.printStackTrace();
-            }
-        }
-        return 0;
-    }
-
     public int updatePassword(int id, String password) {
         try (DBPlug dbPlug = new DBPlug()) {
             return dbPlug.executeUpdateFromQuery("pos_entry.update_password",

@@ -1,7 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 
 import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BarcodeImageReadDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BookSearchDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.NewBookListDialogFrame;
