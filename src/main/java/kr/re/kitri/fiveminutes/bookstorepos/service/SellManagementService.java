@@ -5,7 +5,6 @@ import kr.re.kitri.fiveminutes.bookstorepos.dao.CustomerDAO;
 import kr.re.kitri.fiveminutes.bookstorepos.dao.SellDAO;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
-import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
 

@@ -1,11 +1,8 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.module;
 
-import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
-import kr.re.kitri.fiveminutes.bookstorepos.service.StockManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.BarcodeImageViewPanel;
 import kr.re.kitri.fiveminutes.bookstorepos.view.component.BookInfoReceiver;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.BarcodeImage;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.StockBookInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;

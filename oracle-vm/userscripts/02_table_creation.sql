@@ -68,3 +68,11 @@ INCREMENT BY 1;
 CREATE SEQUENCE SEQ_pos_stock
 START WITH 1
 INCREMENT BY 1;
+
+INSERT INTO pos_customer (pos_customer_id, pos_customer_name, pos_customer_tel)
+VALUES (0, '비회원', '00000000000');
+
+INSERT INTO pos_entry (pos_entry_id, pos_entry_password)
+VALUES (0, '$2a$10$n6sPufGH.rKPt92hgOvy5eyDUZojHHhv7wlo1N4oXZOJOwYhFl1Uy');
+
+COMMIT;
