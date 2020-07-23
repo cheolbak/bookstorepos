@@ -10,15 +10,9 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -34,9 +28,6 @@ public class SellListPanel extends JPanel {
 
     SellManagementService sellManagementService;
     UserManagementService userManagementService;
-
-    @Setter
-    private BookInfoViewPanelReceiver bookInfoViewPanelReceiver = bookInfo -> {};
 
     @Setter
     private AddButtonListener addButtonListener = infoList -> {};
@@ -93,13 +84,13 @@ public class SellListPanel extends JPanel {
     private SellBookInfoList createBookInfoList() {
         SellBookInfoList list = new SellBookInfoList();
 
-
         list.addListSelectionListener(e -> {
             BookInfo value = list.getSelectedValue();
             Book book = sellManagementService.searchBook(value.getIsbn());
             SellBookInfo sellBookInfo = SellBookInfo.fromBookDomain(book);
-            sellPanel.updateBookInfo(sellBookInfo);
-            bookInfoViewPanelReceiver.sendBookInfoToViewPanel(value);
+            if (list.getSelectedIndex() != -1) {
+                sellPanel.refreshBookInfoView(sellBookInfo);
+            }
         });
         return list;
     }
@@ -136,7 +127,7 @@ public class SellListPanel extends JPanel {
 
             NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
             sellPriceTextField.setText(numFormat.format(sum));
-            bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
+            sellPanel.refreshBookInfoView((SellBookInfo) bookInfoList.getSelectedValue());
         });
 
 

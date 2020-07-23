@@ -51,6 +51,7 @@ public class StockPanel extends JPanel implements ChangeBookInfoListener {
 						stockService.pushStock(bookInfo);
 					});
 			stockListPanel.clear();
+			JOptionPane.showMessageDialog(this, "입고 완료!");
 		});
 
 		rightPanel.add(searchPanel, BorderLayout.NORTH);

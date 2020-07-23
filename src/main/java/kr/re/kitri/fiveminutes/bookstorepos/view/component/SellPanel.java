@@ -3,7 +3,7 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
 import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
-import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
+import kr.re.kitri.fiveminutes.bookstorepos.util.Util;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.DefaultBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellUserInfo;
@@ -59,8 +59,8 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 
 	JTextField inputIsbnField;
 
-	@Setter
-	BookInfoReceiver bookInfoReceiver;
+//	@Setter
+//	BookInfoReceiver bookInfoReceiver;
 
 	public SellPanel() {
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
@@ -250,10 +250,6 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 
 	JPanel createBookInfoPanel(){
 
-		bookInfoReceiver = isbn -> {
-			bookListPanel.pushData(SellBookInfo.fromBookInfo(BookInfoSearchRequester.requestBookSearchScopeISBN(isbn)));
-		};
-
 		JPanel bookInfoPanel = new JPanel();
 		bookInfoPanel.setLayout(null);
 		bookInfoPanel.setSize(530,900);
@@ -278,7 +274,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 			}
 		});*/
 
-		imageCognitionBtn.addActionListener(e -> new BarcodeImageReadDialogFrame(bookInfoReceiver));
+		imageCognitionBtn.addActionListener(e -> new BarcodeImageReadDialogFrame(this));
 
 		isbnLabel.setSize(45,20);
 		isbnLabel.setLocation(15,30);
@@ -340,7 +336,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 			}
 
 			else {
-				updateBookInfo(sellBookInfo);
+				updateBookInfoList(sellBookInfo);
 
 			}
 		};
@@ -411,27 +407,29 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		memberGrade.setText(info.getUserGrade());
 	}
 
-	public void updateBookInfo(SellBookInfo sellBookInfo) {
-		Image img = sellBookInfo.getBookCoverImage();
-		Image resizeImage = img.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
-		ImageIcon imageIcon = new ImageIcon(resizeImage);
+	public void refreshBookInfoView(SellBookInfo info) {
+		if (info == null) {
+			return;
+		}
 		NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
-		System.out.println(sellBookInfo.getTitle());
 
-		title.setText(sellBookInfo.getTitle());
-		author.setText(sellBookInfo.getAuthor());
-		publisher.setText(sellBookInfo.getPublisher());
-		isbn.setText(sellBookInfo.getIsbn());
-//		originPrice.setText(sellBookInfo.getPrice() + "원");
-//		sellPrice.setText(sellBookInfo.getSellPrice() + "원");
-		originPrice.setText(numFormat.format(sellBookInfo.getPrice()) + "원");
-		sellPrice.setText(numFormat.format(sellBookInfo.getPrice()) + "원");
-		point.setText(Integer.toString(sellBookInfo.getPoint()));
-		nowStock.setText(Integer.toString(sellBookInfo.getStock()));
-		bookImage.setIcon(imageIcon);
-		bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
+		title.setText(info.getTitle());
+		author.setText(info.getAuthor());
+		publisher.setText(info.getPublisher());
+		isbn.setText(info.getIsbn());
+		originPrice.setText(numFormat.format(info.getPrice()) + "원");
+		sellPrice.setText(numFormat.format(info.getPrice()) + "원");
+		point.setText(Integer.toString(info.getPoint()));
+		nowStock.setText(Integer.toString(info.getStock()));
+		bookImage.setIcon(new ImageIcon(Util.resizeImage(info.getBookCoverImage(), 200, 300)));
+	}
+
+	public void updateBookInfoList(SellBookInfo sellBookInfo) {
+		bookListPanel.pushData(sellBookInfo);
+		refreshBookInfoView(sellBookInfo);
 		inputIsbnField.setText("");
 	}
+
 	@Override
 	public void sendBookInfoToReceiver(String isbn) {
 		SellBookInfo info = SellBookInfo.fromBookDomain(sellService.searchBook(isbn));
@@ -441,7 +439,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 											"오류", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		updateBookInfo(info);
+		updateBookInfoList(info);
 	}
 }
 
