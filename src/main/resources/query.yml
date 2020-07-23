@@ -203,6 +203,20 @@ query: >
   FROM pos_sell
   WHERE pos_sell_date BETWEEN ? AND ?
 ---
+tag: sell.select_date_range_sum_scope_isbn
+query: >
+  SELECT SUM(pos_sell_count)
+  FROM pos_sell
+  WHERE pos_sell_date BETWEEN ? AND ?
+    AND pos_book_isbn = ?
+---
+tag: sell.select_date_range_sum_scope_customer
+query: >
+  SELECT SUM(pos_sell_count)
+  FROM pos_sell
+  WHERE pos_sell_date BETWEEN ? AND ?
+    AND pos_customer_id = ?
+---
 tag: stock.insert
 query: >
   INSERT INTO pos_stock(pos_book_isbn, pos_stock_amount)
