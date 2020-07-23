@@ -56,7 +56,8 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
                     return;
                 }
                 SellChartSection section = (SellChartSection) itemObj;
-                SellDataSet sellDataSet = chartService.requestSellChartDataSet(section, inputBookName.getText(), 0);
+                SellDataSet sellDataSet = chartService.requestSellChartDataSet(section, inputBookName.getText(),
+                        inputMemberName.getText().equals("") ? 0 : Integer.parseInt(inputMemberName.getText()));
                 sellChartPanel.updateChart(sellDataSet);
             }
         });
@@ -73,6 +74,43 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
             @Override
             public void actionPerformed(ActionEvent e) {
                 new CustomerManagementFrame(RecordPanel.this);
+            }
+        });
+
+        JCheckBox checkBookName = new JCheckBox("책 검색");
+        checkBookName.setSelected(true);
+        checkBookName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean selected = checkBookName.isSelected();
+                if(selected){
+                    memberSearchBtn.setEnabled(false);
+                    inputMemberName.setEnabled(false);
+                    inputMemberName.setText("");
+                }
+                else{
+                    memberSearchBtn.setEnabled(true);
+                    inputMemberName.setEnabled(true);
+                }
+            }
+        });
+
+        JCheckBox checkMemberName = new JCheckBox("회원 검색");
+        memberSearchBtn.setEnabled(false);
+        inputMemberName.setEnabled(false);
+        checkMemberName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean selected = checkMemberName.isSelected();
+                if(selected){
+                    bookSearchBtn.setEnabled(false);
+                    inputBookName.setEnabled(false);
+                    inputBookName.setText("");
+                }
+                else{
+                    bookSearchBtn.setEnabled(true);
+                    inputBookName.setEnabled(true);
+                }
             }
         });
 
@@ -97,6 +135,9 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         bookSearchBtn.setSize(60,25);
         memberSearchBtn.setSize(60,25);
 
+        checkBookName.setSize(100,30);
+        checkMemberName.setSize(100,30);
+
         chartSetPanel.add(period);
         chartSetPanel.add(bookName);
         chartSetPanel.add(memberName);
@@ -106,7 +147,8 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         chartSetPanel.add(completeBtn);
         chartSetPanel.add(bookSearchBtn);
         chartSetPanel.add(memberSearchBtn);
-
+        chartSetPanel.add(checkBookName);
+        chartSetPanel.add(checkMemberName);
 
         period.setLocation(30,100);
         periodComboBox.setLocation(110,100);
@@ -120,6 +162,9 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         memberSearchBtn.setLocation(280,455);
 
         completeBtn.setLocation(150,550);
+
+        checkBookName.setLocation(30,220);
+        checkMemberName.setLocation(30,420);
 
         return chartSetPanel;
     }

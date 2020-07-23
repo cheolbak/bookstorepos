@@ -48,6 +48,22 @@ public class UserManagementService {
         return customer.getCustomerPoint();
     }
 
+    public boolean insertCustomerInfo(String name, String tel){
+        Customer customer= new Customer();
+        customer.setCustomerName(name);
+        customer.setCustomerTel(tel);
+
+        int result = customerDAO.insertCustomer(customer);
+        if(result == 0){
+            return true;
+        }
+        else return false;
+    }
+
+    public int getFindMaxID() {
+        return customerDAO.selectFindMaxID();
+    }
+
     public void deleteCustomer(int id) {
         customerDAO.deleteCustomer(id);
     }

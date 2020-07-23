@@ -24,7 +24,16 @@ public class SellChartService {
         List<Entry> entries = new ArrayList<>();
 
         for (Map.Entry<String, List<LocalDateTime>> rangeEntry : rangeMap.entrySet()) {
-            int countData = sellDAO.selectDateRangeSum(rangeEntry.getValue().get(0), rangeEntry.getValue().get(1));
+            int countData;
+            if(!isbn.equals("")){
+                countData = sellDAO.selectDateRangeSumScopeISBN(isbn, rangeEntry.getValue().get(0), rangeEntry.getValue().get(1));
+            }
+            else if(customerId > 0){
+                countData = sellDAO.selectDateRangeSumScopeCustomer(customerId, rangeEntry.getValue().get(0), rangeEntry.getValue().get(1));
+            }
+            else {
+                countData = sellDAO.selectDateRangeSum(rangeEntry.getValue().get(0), rangeEntry.getValue().get(1));
+            }
             entries.add(new Entry(rangeEntry.getKey(), countData));
         }
 
