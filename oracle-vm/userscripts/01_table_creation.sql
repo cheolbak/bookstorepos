@@ -114,21 +114,3 @@ BEGIN
   FROM DUAL;
 END;
 /
-
-ALTER TABLE pos_sell
-  ADD CONSTRAINT FK_pos_customer_TO_pos_sell
-    FOREIGN KEY (pos_customer_id)
-    REFERENCES pos_customer (pos_customer_id);
-/
-
-ALTER TABLE pos_sell
-  ADD CONSTRAINT FK_pos_book_TO_pos_sell
-    FOREIGN KEY (pos_book_isbn)
-    REFERENCES pos_book (pos_book_isbn);
-/
-
-ALTER TABLE pos_stock
-  ADD CONSTRAINT FK_pos_book_TO_pos_stock
-    FOREIGN KEY (pos_book_isbn)
-    REFERENCES pos_book (pos_book_isbn);
-/
