@@ -1,9 +1,6 @@
 package kr.re.kitri.fiveminutes.bookstorepos.view.model;
 
-
-
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
-import kr.re.kitri.fiveminutes.bookstorepos.domain.Sell;
 import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookCoverImageRequester;
 import lombok.Builder;
@@ -36,6 +33,7 @@ public class SellBookInfo implements BookInfo {
     @Builder.Default
     private int pointSavePercentPoint = 5;
 
+    @Builder.Default
     private int sellCount = 1;
 
     private BufferedImage bookCoverImage;

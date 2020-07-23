@@ -2,7 +2,6 @@ package kr.re.kitri.fiveminutes.bookstorepos.service;
 
 import kr.re.kitri.fiveminutes.bookstorepos.dao.CustomerDAO;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Customer;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.BookInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellUserInfo;
 import lombok.extern.slf4j.Slf4j;
 

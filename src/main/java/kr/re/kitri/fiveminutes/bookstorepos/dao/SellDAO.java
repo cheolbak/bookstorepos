@@ -53,44 +53,6 @@ public class SellDAO {
         return 0;
     }
 
-    public int updatePrice(int id, int price){
-        try(DBPlug dbPlug = new DBPlug()){
-            return dbPlug.executeUpdateFromQuery("sell.update_price",
-                    new DBPlug.InjectPreparedStatement() {
-                        @Override
-                        public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, price);
-                            pstmt.setInt(2, id);
-                        }
-                    });
-        }
-        catch (SQLException e){
-            if(log.isDebugEnabled()){
-                e.printStackTrace();
-            }
-        }
-        return 0;
-    }
-
-    public int updateUsedPoint(int id, int used){
-        try(DBPlug dbPlug = new DBPlug()){
-            return dbPlug.executeUpdateFromQuery("sell.update_usedPoint",
-                    new DBPlug.InjectPreparedStatement() {
-                        @Override
-                        public void inject(PreparedStatement pstmt) throws SQLException {
-                            pstmt.setInt(1, used);
-                            pstmt.setInt(2, id);
-                        }
-                    });
-        }
-        catch (SQLException e){
-            if(log.isDebugEnabled()){
-                e.printStackTrace();
-            }
-        }
-        return 0;
-    }
-
     public int selectDateRangeSum(LocalDateTime start, LocalDateTime end) {
         try (DBPlug dbPlug = new DBPlug()) {
             return dbPlug.getMappedObjectFromExecuteQuery("sell.select_date_range_sum",
