@@ -4,25 +4,25 @@ import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
 import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.DefaultBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellUserInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BarcodeImageReadDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerSearchDialogFrame;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.sql.SQLOutput;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 
 @Slf4j
 public class SellPanel extends JPanel implements BookInfoReceiver {
@@ -434,7 +434,14 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 	}
 	@Override
 	public void sendBookInfoToReceiver(String isbn) {
-		SellPanel.this.inputIsbnField.setText(isbn);
+		SellBookInfo info = SellBookInfo.fromBookDomain(sellService.searchBook(isbn));
+
+		if (info.getIsbn().equals("ERROR") || info.getStock() == 0) {
+			JOptionPane.showMessageDialog(this, "해당 책이 재고에 존재하지 않습니다.",
+											"오류", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		updateBookInfo(info);
 	}
 }
 
