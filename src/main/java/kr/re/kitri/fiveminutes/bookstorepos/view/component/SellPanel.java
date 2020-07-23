@@ -3,26 +3,26 @@ package kr.re.kitri.fiveminutes.bookstorepos.view.component;
 import kr.re.kitri.fiveminutes.bookstorepos.domain.Book;
 import kr.re.kitri.fiveminutes.bookstorepos.service.SellManagementService;
 import kr.re.kitri.fiveminutes.bookstorepos.service.UserManagementService;
-import kr.re.kitri.fiveminutes.bookstorepos.util.requester.BookInfoSearchRequester;
-import kr.re.kitri.fiveminutes.bookstorepos.view.model.*;
+import kr.re.kitri.fiveminutes.bookstorepos.util.Util;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.DefaultBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellBookInfo;
+import kr.re.kitri.fiveminutes.bookstorepos.view.model.SellUserInfo;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.BarcodeImageReadDialogFrame;
 import kr.re.kitri.fiveminutes.bookstorepos.view.module.CustomerSearchDialogFrame;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.sql.SQLOutput;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 
 @Slf4j
 public class SellPanel extends JPanel implements BookInfoReceiver {
@@ -60,8 +60,8 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 	JTextField inputIsbnField;
 	JTextField userSearchTextField;
 
-	@Setter
-	BookInfoReceiver bookInfoReceiver;
+//	@Setter
+//	BookInfoReceiver bookInfoReceiver;
 
 	public SellPanel() {
 		setLayout(new BoxLayout(this ,BoxLayout.X_AXIS));
@@ -112,6 +112,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//전화번호로 콤보박스 해서 확인
+
 
 				if(memberSearchnum==COMBO_PHONE) {
 					UserManagementService userManagementService =new UserManagementService();
@@ -250,10 +251,6 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 
 	JPanel createBookInfoPanel(){
 
-		bookInfoReceiver = isbn -> {
-			bookListPanel.pushData(SellBookInfo.fromBookInfo(BookInfoSearchRequester.requestBookSearchScopeISBN(isbn)));
-		};
-
 		JPanel bookInfoPanel = new JPanel();
 		bookInfoPanel.setLayout(null);
 		bookInfoPanel.setSize(530,900);
@@ -278,7 +275,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 			}
 		});*/
 
-		imageCognitionBtn.addActionListener(e -> new BarcodeImageReadDialogFrame(bookInfoReceiver));
+		imageCognitionBtn.addActionListener(e -> new BarcodeImageReadDialogFrame(this));
 
 		isbnLabel.setSize(45,20);
 		isbnLabel.setLocation(15,30);
@@ -340,7 +337,8 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 			}
 
 			else {
-				updateBookInfo(sellBookInfo);
+				updateBookInfoList(sellBookInfo);
+
 			}
 		};
 
@@ -410,28 +408,39 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		memberGrade.setText(info.getUserGrade());
 	}
 
-	public void updateBookInfo(SellBookInfo sellBookInfo) {
-		Image img = sellBookInfo.getBookCoverImage();
-		Image resizeImage = img.getScaledInstance(200, 300, Image.SCALE_SMOOTH);
-		ImageIcon imageIcon = new ImageIcon(resizeImage);
+	public void refreshBookInfoView(SellBookInfo info) {
+		if (info == null) {
+			return;
+		}
 		NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
-		System.out.println(sellBookInfo.getTitle());
 
-		title.setText(sellBookInfo.getTitle());
-		author.setText(sellBookInfo.getAuthor());
-		publisher.setText(sellBookInfo.getPublisher());
-		isbn.setText(sellBookInfo.getIsbn());
-		originPrice.setText(numFormat.format(sellBookInfo.getPrice()) + "원");
-		sellPrice.setText(numFormat.format(sellBookInfo.getSellPrice()) + "원");
-		point.setText(Integer.toString(sellBookInfo.getPoint()));
-		nowStock.setText(Integer.toString(sellBookInfo.getStock()));
-		bookImage.setIcon(imageIcon);
-		bookInfoReceiver.sendBookInfoToReceiver(sellBookInfo.getIsbn());
+		title.setText(info.getTitle());
+		author.setText(info.getAuthor());
+		publisher.setText(info.getPublisher());
+		isbn.setText(info.getIsbn());
+		originPrice.setText(numFormat.format(info.getPrice()) + "원");
+		sellPrice.setText(numFormat.format(info.getSellPrice()) + "원");
+		point.setText(Integer.toString(info.getPoint()));
+		nowStock.setText(Integer.toString(info.getStock()));
+		bookImage.setIcon(new ImageIcon(Util.resizeImage(info.getBookCoverImage(), 200, 300)));
+	}
+
+	public void updateBookInfoList(SellBookInfo sellBookInfo) {
+		bookListPanel.pushData(sellBookInfo);
+		refreshBookInfoView(sellBookInfo);
 		inputIsbnField.setText("");
 	}
+
 	@Override
 	public void sendBookInfoToReceiver(String isbn) {
-		inputIsbnField.setText(isbn);
+		SellBookInfo info = SellBookInfo.fromBookDomain(sellService.searchBook(isbn));
+
+		if (info.getIsbn().equals("ERROR") || info.getStock() == 0) {
+			JOptionPane.showMessageDialog(this, "해당 책이 재고에 존재하지 않습니다.",
+											"오류", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		updateBookInfoList(info);
 	}
 }
 
