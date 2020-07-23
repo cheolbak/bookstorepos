@@ -58,6 +58,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 	public JLabel bookImage;
 
 	JTextField inputIsbnField;
+	JTextField userSearchTextField;
 
 	@Setter
 	BookInfoReceiver bookInfoReceiver;
@@ -106,12 +107,11 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		searchMemberPanel.setBorder(searchMemberTitleBorder);
 
 		JComboBox memberSearchList = new JComboBox();
-		JTextField userSearchTextField = new JTextField();
+		userSearchTextField = new JTextField();
 		JButton searchBtn = new JButton("확인");
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//전화번호로 콤보박스 해서 확인
-
 
 				if(memberSearchnum==COMBO_PHONE) {
 					UserManagementService userManagementService =new UserManagementService();
@@ -341,7 +341,6 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 
 			else {
 				updateBookInfo(sellBookInfo);
-
 			}
 		};
 
@@ -422,10 +421,8 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		author.setText(sellBookInfo.getAuthor());
 		publisher.setText(sellBookInfo.getPublisher());
 		isbn.setText(sellBookInfo.getIsbn());
-//		originPrice.setText(sellBookInfo.getPrice() + "원");
-//		sellPrice.setText(sellBookInfo.getSellPrice() + "원");
 		originPrice.setText(numFormat.format(sellBookInfo.getPrice()) + "원");
-		sellPrice.setText(numFormat.format(sellBookInfo.getPrice()) + "원");
+		sellPrice.setText(numFormat.format(sellBookInfo.getSellPrice()) + "원");
 		point.setText(Integer.toString(sellBookInfo.getPoint()));
 		nowStock.setText(Integer.toString(sellBookInfo.getStock()));
 		bookImage.setIcon(imageIcon);
@@ -434,7 +431,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 	}
 	@Override
 	public void sendBookInfoToReceiver(String isbn) {
-		SellPanel.this.inputIsbnField.setText(isbn);
+		inputIsbnField.setText(isbn);
 	}
 }
 

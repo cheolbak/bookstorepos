@@ -72,7 +72,7 @@ public class SellListPanel extends JPanel {
     }
 
     private JButton createRemoveAtSelectedButton() {
-        JButton button = new JButton("선택삭제");
+        JButton button = new JButton("선택 삭제");
         button.addActionListener(e -> bookInfoList.removeAtSelected());
         return button;
     }
@@ -93,13 +93,22 @@ public class SellListPanel extends JPanel {
     private SellBookInfoList createBookInfoList() {
         SellBookInfoList list = new SellBookInfoList();
 
-
         list.addListSelectionListener(e -> {
-            BookInfo value = list.getSelectedValue();
-            Book book = sellManagementService.searchBook(value.getIsbn());
-            SellBookInfo sellBookInfo = SellBookInfo.fromBookDomain(book);
-            sellPanel.updateBookInfo(sellBookInfo);
-            bookInfoViewPanelReceiver.sendBookInfoToViewPanel(value);
+                BookInfo value = list.getSelectedValue();
+                Book book = sellManagementService.searchBook(value.getIsbn());
+                SellBookInfo sellBookInfo = SellBookInfo.fromBookDomain(book);
+                sellPanel.updateBookInfo(sellBookInfo);
+                bookInfoViewPanelReceiver.sendBookInfoToViewPanel(value);
+                System.out.println("인덱스 : " + list.getSelectedIndex());
+
+                if(list.getSelectedValue() == null){
+                    if(list.getModel().getSize()==1){
+                        value = list.getModel().getElementAt(1);
+                        book = sellManagementService.searchBook(value.getIsbn());
+                        sellBookInfo = SellBookInfo.fromBookDomain(book);
+                        sellPanel.updateBookInfo(sellBookInfo);
+                    }
+                }
         });
         return list;
     }
@@ -136,7 +145,18 @@ public class SellListPanel extends JPanel {
 
             NumberFormat numFormat = NumberFormat.getCurrencyInstance(Locale.KOREA);
             sellPriceTextField.setText(numFormat.format(sum));
-            bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
+
+
+            if(bookInfoList.getModel().getSize() == 1){
+                BookInfo value = bookInfoList.getSelectedValue();
+                Book book = sellManagementService.searchBook(value.getIsbn());
+                SellBookInfo sellBookInfo = SellBookInfo.fromBookDomain(book);
+                sellPanel.updateBookInfo(sellBookInfo);
+            }
+
+            if(bookInfoList.getSelectedIndex() == 1) {
+                bookInfoViewPanelReceiver.sendBookInfoToViewPanel(bookInfoList.getSelectedValue());
+            }
         });
 
 
@@ -187,6 +207,15 @@ public class SellListPanel extends JPanel {
                     userManagementService.updateCustomerInfo(userId, sellPrice, usingPoint, savedPoint);
                     bookInfoList.removeAll();
                     JOptionPane.showMessageDialog(this, "판매 완료\n 판매 금액: "+totalPriceTextField.getText(), "판매완료", JOptionPane.QUESTION_MESSAGE);
+
+                    sellPanel.userNum.setText("1");
+                    sellPanel.userName.setText("비회원");
+                    sellPanel.userPhone.setText("0");
+                    sellPanel.nowPoint.setText("0 원");
+                    sellPanel.memberGrade.setText("비회원");
+                    sellPanel.userCheckbox.setSelected(true);
+                    sellPanel.userSearchTextField.setText("");
+
                     usingPointTextField.setText("0");
                     totalPriceTextField.setText("0");
                 }
