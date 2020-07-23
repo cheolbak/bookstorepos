@@ -78,41 +78,54 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
         });
 
         JCheckBox checkBookName = new JCheckBox("책 검색");
-        checkBookName.setSelected(true);
-        checkBookName.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean selected = checkBookName.isSelected();
-                if(selected){
-                    memberSearchBtn.setEnabled(false);
-                    inputMemberName.setEnabled(false);
-                    inputMemberName.setText("");
-                }
-                else{
-                    memberSearchBtn.setEnabled(true);
-                    inputMemberName.setEnabled(true);
-                }
-            }
-        });
 
         JCheckBox checkMemberName = new JCheckBox("회원 검색");
         memberSearchBtn.setEnabled(false);
         inputMemberName.setEnabled(false);
-        checkMemberName.addActionListener(new ActionListener() {
+
+        ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean selected = checkMemberName.isSelected();
-                if(selected){
-                    bookSearchBtn.setEnabled(false);
-                    inputBookName.setEnabled(false);
-                    inputBookName.setText("");
+                JCheckBox checkedSource = (JCheckBox) e.getSource();
+                if (checkedSource == checkBookName && checkedSource.isSelected()) {
+                    checkMemberName.setSelected(false);
+                    checkBookName.setSelected(true);
+                    enableMemberName(false);
+                    enableBookName(true);
                 }
-                else{
-                    bookSearchBtn.setEnabled(true);
-                    inputBookName.setEnabled(true);
+                else if (checkedSource == checkMemberName && checkedSource.isSelected()) {
+                    checkMemberName.setSelected(true);
+                    checkBookName.setSelected(false);
+                    enableMemberName(true);
+                    enableBookName(false);
+                }
+                else {
+                    checkMemberName.setSelected(false);
+                    checkBookName.setSelected(false);
+                    enableMemberName(false);
+                    enableBookName(false);
                 }
             }
-        });
+
+            private void enableBookName(boolean enable) {
+                inputBookName.setEnabled(enable);
+                bookSearchBtn.setEnabled(enable);
+                if (!enable) {
+                    inputBookName.setText("");
+                }
+            }
+
+            private void enableMemberName(boolean enable) {
+                inputMemberName.setEnabled(enable);
+                memberSearchBtn.setEnabled(enable);
+                if (!enable) {
+                    inputMemberName.setText("");
+                }
+            }
+        };
+
+        checkBookName.addActionListener(listener);
+        checkMemberName.addActionListener(listener);
 
         chartSetPanel.setSize(350,750);
         chartSetPanel.setLayout(null);
