@@ -85,6 +85,7 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
                 if(selected){
                     memberSearchBtn.setEnabled(false);
                     inputMemberName.setEnabled(false);
+                    inputMemberName.setText("");
                 }
                 else{
                     memberSearchBtn.setEnabled(true);
@@ -103,6 +104,7 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
                 if(selected){
                     bookSearchBtn.setEnabled(false);
                     inputBookName.setEnabled(false);
+                    inputBookName.setText("");
                 }
                 else{
                     bookSearchBtn.setEnabled(true);
