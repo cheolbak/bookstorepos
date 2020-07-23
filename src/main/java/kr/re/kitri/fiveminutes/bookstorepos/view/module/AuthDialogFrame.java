@@ -75,7 +75,7 @@ public class AuthDialogFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 POSEntryDAO posEntryDAO = new POSEntryDAO();
 
-                // posEntryDAO.updatePassword(0, "secret"); // testing
+                // posEntryDAO.updatePassword(0, "0000"); // testing
 
                 String realPassword = posEntryDAO.select(0).getPassword();
                 if(!BCrypt.checkpw(String.valueOf(passwordField.getPassword()), realPassword)){
