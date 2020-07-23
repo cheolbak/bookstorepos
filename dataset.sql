@@ -57,7 +57,11 @@ POS_BOOK_RELEASE_DATE) values('9791162241875','혼자 공부하는 자바','신�
 commit;
 
 -- 사람 만들기(32명)
-  
+alter trigger SEQ_TRG_pos_customer disable;
+insert into pos_customer(pos_customer_id, pos_customer_name, pos_customer_tel)
+values(0, '비회원','00000000000'); 
+alter trigger SEQ_TRG_pos_customer enable;
+
 insert into pos_customer(pos_customer_name, pos_customer_tel)
 values('test1','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
