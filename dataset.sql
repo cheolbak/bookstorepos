@@ -1,4 +1,4 @@
--- 전체 통계
+--전체 통계
 
 -- 초기화
 
@@ -27,70 +27,70 @@ commit;
 -- 사람 만들기(32명)
   
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test1','010-0000-0000');
+values('test1','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test2','010-0000-0000');
+values('test2','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test3','010-0000-0000');
+values('test3','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test4','010-0000-0000');
+values('test4','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test5','010-0000-0000');
+values('test5','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test6','010-0000-0000');
+values('test6','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test7','010-0000-0000');
+values('test7','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test8','010-0000-0000');
+values('test8','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test9','010-0000-0000');
+values('test9','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test10','010-0000-0000');
+values('test10','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test11','010-0000-0000');
+values('test11','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test12','010-0000-0000');
+values('test12','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test13','010-0000-0000');
+values('test13','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test14','010-0000-0000');
+values('test14','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test15','010-0000-0000');
+values('test15','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test16','010-0000-0000');
+values('test16','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test17','010-0000-0000');
+values('test17','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test18','010-0000-0000');
+values('test18','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test19','010-0000-0000');
+values('test19','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test20','010-0000-0000');
+values('test20','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test21','010-0000-0000');
+values('test21','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test22','010-0000-0000');
+values('test22','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test23','010-0000-0000');
+values('test23','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test24','010-0000-0000');
+values('test24','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test25','010-0000-0000');
+values('test25','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test26','010-0000-0000');
+values('test26','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test27','010-0000-0000');
+values('test27','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test28','010-0000-0000');
+values('test28','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test29','010-0000-0000');
+values('test29','01000000000');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('test30','010-0000-0000');
+values('test30','01000000000');
 
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('customer','010-9999-9999');
+values('customer','01099999999');
 insert into pos_customer(pos_customer_name, pos_customer_tel)
-values('customer2','010-9999-9999');
+values('customer2','01099999999');
 commit;
 
 -- 판매량 만들기

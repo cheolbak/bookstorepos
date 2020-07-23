@@ -56,7 +56,8 @@ public class RecordPanel extends JPanel implements BookInfoReceiver, IdInfoRecei
                     return;
                 }
                 SellChartSection section = (SellChartSection) itemObj;
-                SellDataSet sellDataSet = chartService.requestSellChartDataSet(section, inputBookName.getText(), 0);
+                SellDataSet sellDataSet = chartService.requestSellChartDataSet(section, inputBookName.getText(),
+                        inputMemberName.getText().equals("") ? 0 : Integer.parseInt(inputMemberName.getText()));
                 sellChartPanel.updateChart(sellDataSet);
             }
         });
