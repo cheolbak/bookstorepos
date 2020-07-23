@@ -56,9 +56,9 @@ public class DBPlug implements AutoCloseable {
             poolDataSource.setURL(info.getUrl());
             poolDataSource.setUser(info.getUser());
             poolDataSource.setPassword(info.getPassword());
-            poolDataSource.setInitialPoolSize(2);
-            poolDataSource.setMinPoolSize(2);
-            poolDataSource.setMaxPoolSize(6);
+            poolDataSource.setInitialPoolSize(6);
+            poolDataSource.setMinPoolSize(6);
+            poolDataSource.setMaxPoolSize(10);
             log.debug("PoolDataSource Created");
             return poolDataSource;
         }
@@ -92,7 +92,7 @@ public class DBPlug implements AutoCloseable {
             for (Object o : yaml.loadAll(inReader)) {
                 if (o instanceof QueryData) {
                     QueryData query = (QueryData) o;
-                    log.debug("{}", query);
+                    log.trace("{}", query);
                     map.put(query.getTag(), query);
                 }
             }

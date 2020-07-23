@@ -127,6 +127,7 @@ public class StockBookInfoViewPanel extends JPanel implements ListPanel.BookInfo
         panel.add(pointLabel);
         panel.add(pointRateField);
         panel.add(new JLabel("% 적립"));
+        panel.add(changeButton);
         return panel;
     }
 

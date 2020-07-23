@@ -49,7 +49,7 @@ public class BookDAO {
                     });
         }
         catch (SQLException e){
-            if(log.isDebugEnabled()){
+            if (log.isDebugEnabled()){
                 e.printStackTrace();
             }
         }
@@ -68,7 +68,27 @@ public class BookDAO {
                     });
         }
         catch (SQLException e){
-            if(log.isDebugEnabled()){
+            if (log.isDebugEnabled()){
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    public int updateDiscountAndPointRate(String isbn, int discountRate, int pointRate) {
+        try (DBPlug dbPlug = new DBPlug()) {
+            return dbPlug.executeUpdateFromQuery("book.update_discount_and_point_rate",
+                    new DBPlug.InjectPreparedStatement() {
+                        @Override
+                        public void inject(PreparedStatement pstmt) throws SQLException {
+                            pstmt.setInt(1, discountRate);
+                            pstmt.setInt(2, pointRate);
+                            pstmt.setString(3, isbn);
+                        }
+                    });
+        }
+        catch (SQLException e) {
+            if (log.isDebugEnabled()) {
                 e.printStackTrace();
             }
         }
@@ -103,7 +123,8 @@ public class BookDAO {
                             return Book.builder().build();
                         }
                     });
-        } catch(SQLException e){
+        }
+        catch (SQLException e){
             if (log.isDebugEnabled()){
                 e.printStackTrace();
             }

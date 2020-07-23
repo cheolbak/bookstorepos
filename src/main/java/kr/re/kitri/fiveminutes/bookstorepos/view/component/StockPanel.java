@@ -45,7 +45,11 @@ public class StockPanel extends JPanel implements ChangeBookInfoListener {
 		stockListPanel.setAddButtonListener(infoList -> {
 			infoList.stream()
 					.filter(bookInfo -> bookInfo instanceof StockBookInfo)
-					.forEach(bookInfo -> stockService.pushStock((StockBookInfo) bookInfo));
+					.map(bookInfo -> (StockBookInfo) bookInfo)
+					.forEach(bookInfo -> {
+						stockService.updateDiscountAndPointRate(bookInfo);
+						stockService.pushStock(bookInfo);
+					});
 			stockListPanel.clear();
 		});
 
