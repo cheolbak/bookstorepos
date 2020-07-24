@@ -19,7 +19,7 @@ CREATE TABLE pos_book
 CREATE TABLE pos_customer
 (
   pos_customer_id          NUMBER                       NOT NULL,
-  pos_customer_name        VARCHAR2(20)                 NOT NULL,
+  pos_customer_name        VARCHAR2(100)                NOT NULL,
   pos_customer_tel         CHAR(11)                     NOT NULL,
   pos_customer_point       NUMBER       DEFAULT 0       NOT NULL,
   pos_customer_total_price NUMBER       DEFAULT 0       NOT NULL,
