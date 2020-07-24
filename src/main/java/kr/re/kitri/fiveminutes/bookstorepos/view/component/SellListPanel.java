@@ -148,12 +148,12 @@ public class SellListPanel extends JPanel {
 
                 //고객 적립금 <> 사용 적립금 비교
                 if(usingPoint > userManagementService.getCustomerPoint(userId)){
-                    JOptionPane.showMessageDialog(this, "보유 적립금이 부족합니다.", "오류", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(sellPanel, "보유 적립금이 부족합니다.", "적립금 오류", JOptionPane.WARNING_MESSAGE);
                     usingPointTextField.setText("0");
                 }
                 //구매 가격 <> 사용 적립금 비교
                 else if(usingPoint > sellPrice){
-                    JOptionPane.showMessageDialog(this, "사용 적립금이 구입 금액을 초과했습니다.", "오류", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(sellPanel, "사용 적립금이 구입 금액을 초과했습니다.", "적립금 오류", JOptionPane.WARNING_MESSAGE);
                     usingPointTextField.setText("0");
                 }
                 else {
@@ -177,9 +177,9 @@ public class SellListPanel extends JPanel {
                     totalPriceTextField.setText(numFormat.format(sellPrice - usingPoint));
                     userManagementService.updateCustomerInfo(userId, sellPrice, usingPoint, savedPoint);
                     bookInfoList.removeAll();
-                    JOptionPane.showMessageDialog(this, "판매 완료\n 판매 금액: "+totalPriceTextField.getText(), "판매완료", JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.showMessageDialog(sellPanel, "판매 금액: "+totalPriceTextField.getText(), "판매완료", JOptionPane.QUESTION_MESSAGE);
 
-                    sellPanel.userNum.setText("1");
+                    sellPanel.userNum.setText("0");
                     sellPanel.userName.setText("비회원");
                     sellPanel.userPhone.setText("0");
                     sellPanel.nowPoint.setText("0 원");

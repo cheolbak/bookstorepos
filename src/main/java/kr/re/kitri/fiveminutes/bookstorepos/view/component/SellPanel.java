@@ -178,7 +178,7 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		JLabel userPhoneLabel = new JLabel("전화번호:");
 		JLabel nowPointLabel = new JLabel("현재 적립금:");
 
-		userNum = new JLabel("1");
+		userNum = new JLabel("0");
 		userName = new JLabel("비회원");
 		userPhone = new JLabel("0");
 		nowPoint = new JLabel("0 원");
@@ -266,14 +266,6 @@ public class SellPanel extends JPanel implements BookInfoReceiver {
 		JButton isbnAddBtn = new JButton("추가");
 
 		JButton imageCognitionBtn = new JButton("사진 인식");
-
-		/*
-		imageCognitionBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new BarcodeImageReadDialogFrame(SellPanel.this);
-			}
-		});*/
 
 		imageCognitionBtn.addActionListener(e -> new BarcodeImageReadDialogFrame(this));
 
