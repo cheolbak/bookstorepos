@@ -89,8 +89,8 @@ public class AuthDialogFrame extends JFrame {
                     if(inClick == JOptionPane.OK_OPTION) {
 
                         String inputPasswordText = String.valueOf(inputPassword.getPassword());
-                        if (inputPasswordText.equals("") || inputPasswordText.length() <= 5) {
-                            JOptionPane.showConfirmDialog(null, "비밀번호는 6자리이상 가능합니다."
+                        if (inputPasswordText.equals("") || inputPasswordText.length() <= 3) {
+                            JOptionPane.showConfirmDialog(null, "비밀번호는 4자리이상 가능합니다."
                                     , "비밀번호 조건오류", JOptionPane.DEFAULT_OPTION);
                         } else {
                             posEntryDAO.updatePassword(0, inputPasswordText);
